@@ -14,14 +14,14 @@ public class Guilde {
     @Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="id_guilde")
-    private long id_guilde;
+    private long idGuilde;
 
     @Column(name="guilde")
     private String guilde;
 
     //GETTERS SETTERS
-    public long getId_guilde() {
-        return id_guilde;
+    public long getIdGuilde() {
+        return idGuilde;
     }
 
     public String getGuilde() {

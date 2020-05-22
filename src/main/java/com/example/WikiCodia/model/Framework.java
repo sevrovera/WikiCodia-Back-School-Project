@@ -14,7 +14,7 @@ public class Framework {
     @Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="id_framework")
-    private long id_framework;
+    private long idFramework;
 
     @Column(name="framework")
     private String framework;
@@ -23,8 +23,8 @@ public class Framework {
     private String verstion;
 
     //GETTERS SETTERS
-    public long getId_framework() {
-        return id_framework;
+    public long getIdFramework() {
+        return idFramework;
     }
 
     public String getFramework() {

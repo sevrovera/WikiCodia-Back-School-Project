@@ -14,14 +14,14 @@ public class Role {
     @Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="id_role")
-    private long id_role;
+    private long idRole;
 
     @Column(name="role")
     private String role;
 
     //GETTERS SETTERS
-    public long getId_role() {
-        return id_role;
+    public long getIdRole() {
+        return idRole;
     }
 
     public String getRole() {

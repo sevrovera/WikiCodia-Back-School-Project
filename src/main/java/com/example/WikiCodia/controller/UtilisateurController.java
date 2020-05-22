@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,11 +20,18 @@ public class UtilisateurController {
 	
 	@Autowired
 	private UtilisateurRepository utilisateurRepository;
+
+	@RequestMapping(value = "/creation", method = RequestMethod.POST)
+	@ResponseBody
+	public Utilisateur cree(@RequestBody Utilisateur u) {
+		utilisateurRepository.save(u);
+		return u;
+	}
 	
+/*
 	@RequestMapping(value = "", method = RequestMethod.POST)
 	@ResponseBody
 	public void nouvelUtilisateur(
-			@RequestHeader("idUtilisateur") Long idUtilisateur, 
 			@RequestHeader ("prenom") String prenom, 
 			@RequestHeader("nom") String nom, 
 			@RequestHeader("pseudo") String pseudo, 
@@ -31,9 +39,9 @@ public class UtilisateurController {
 			@RequestHeader("lienLinkedin") String lienLinkedin, 
 			@RequestHeader("statut") String statut) {
 		LocalDate dateIncription = LocalDate.now();	
-		Utilisateur nouvelUtilisateur = new Utilisateur(idUtilisateur,prenom,nom,pseudo,mail,lienLinkedin,statut,dateIncription);
+		Utilisateur nouvelUtilisateur = new Utilisateur(prenom,nom,pseudo,mail,lienLinkedin,statut,dateIncription);
 		utilisateurRepository.save(nouvelUtilisateur);
-	}
+	} */
 	
 	
 	/*

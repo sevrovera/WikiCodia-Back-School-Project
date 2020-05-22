@@ -14,14 +14,14 @@ public class Etat {
     @Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="id_etat")
-    private long id_etat;
+    private long idEtat;
 
     @Column(name="etat")
     private String etat;
 
     //GETTERS SETTERS
-	public long getId_etat() {
-		return id_etat;
+	public long getIdEtat() {
+		return idEtat;
 	}
 
 	public String getEtat() {

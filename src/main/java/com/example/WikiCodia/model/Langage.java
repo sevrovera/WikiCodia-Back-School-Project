@@ -14,7 +14,7 @@ public class Langage {
     @Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="id_lang")
-    private long id_lang;
+    private long idLang;
 
     @Column(name="lang")
     private String lang;
@@ -23,8 +23,8 @@ public class Langage {
     private String verstion;
 
     //GETTERS SETTERS
-    public long getId_lang() {
-        return id_lang;
+    public long getIdLang() {
+        return idLang;
     }
     
     public String getLang() {
