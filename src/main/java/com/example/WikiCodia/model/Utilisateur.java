@@ -1,7 +1,6 @@
 package com.example.WikiCodia.model;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -46,104 +45,89 @@ public class Utilisateur {
 	@Column(name="date_derniere_connexion")
 	private LocalDate dateDerniereConnexion;
 	
-	
 	//GETTERS SETTERS
-		public Long getIdUtilisateur() {
-			return idUtilisateur;
-		}
+	public Long getIdUtilisateur() {
+		return idUtilisateur;
+	}
 
-		public void setIdUtilisateur(Long idUtilisateur) {
-			this.idUtilisateur = idUtilisateur;
-		}
+	public String getPrenom() {
+		return prenom;
+	}
 
-		public String getPrenom() {
-			return prenom;
-		}
+	public void setPrenom(String prenom) {
+		this.prenom = prenom;
+	}
 
-		public void setPrenom(String prenom) {
-			this.prenom = prenom;
-		}
+	public String getNom() {
+		return nom;
+	}
 
-		public String getNom() {
-			return nom;
-		}
+	public void setNom(String nom) {
+		this.nom = nom;
+	}
 
-		public void setNom(String nom) {
-			this.nom = nom;
-		}
+	public String getPseudo() {
+		return pseudo;
+	}
 
-		public String getPseudo() {
-			return pseudo;
-		}
+	public void setPseudo(String pseudo) {
+		this.pseudo = pseudo;
+	}
 
-		public void setPseudo(String pseudo) {
-			this.pseudo = pseudo;
-		}
+	public String getMail() {
+		return mail;
+	}
 
-		public String getMail() {
-			return mail;
-		}
+	public void setMail(String mail) {
+		this.mail = mail;
+	}
 
-		public void setMail(String mail) {
-			this.mail = mail;
-		}
+	public String getLienLinkedIn() {
+		return lienLinkedin;
+	}
 
-		public String getLienLinkedIn() {
-			return lienLinkedin;
-		}
+	public void setLienLinkedIn(String lienLinkedin) {
+		this.lienLinkedin = lienLinkedin;
+	}
 
-		public void setLienLinkedIn(String lienLinkedin) {
-			this.lienLinkedin = lienLinkedin;
-		}
+	public String getStatut() {
+		return statut;
+	}
 
-		public String getStatut() {
-			return statut;
-		}
+	public void setStatut(String statut) {
+		this.statut = statut;
+	}
 
-		public void setStatut(String statut) {
-			this.statut = statut;
-		}
+	public LocalDate getDateInscription() {
+		return dateInscription;
+	}
 
-		public LocalDate getDateInscription() {
-			return dateInscription;
-		}
+	public void setDateInscription(LocalDate dateInscription) {
+		this.dateInscription = dateInscription;
+	}
 
-		public void setDateInscription(LocalDate dateInscription) {
-			this.dateInscription = dateInscription;
-		}
+	public LocalDate getDateDerniereConnexion() {
+		return dateDerniereConnexion;
+	}
 
-		public LocalDate getDateDerniereConnexion() {
-			return dateDerniereConnexion;
-		}
-
-		public void setDateDerniereConnexion(LocalDate dateDerniereConnexion) {
-			this.dateDerniereConnexion = dateDerniereConnexion;
-		}
-
+	public void setDateDerniereConnexion(LocalDate dateDerniereConnexion) {
+		this.dateDerniereConnexion = dateDerniereConnexion;
+	}
+	
+	//CONSTRUCTOR	
+	public Utilisateur(String prenom, String nom, String pseudo, String mail,
+			String lienLinkedin, String statut, LocalDate dateDerniereConnexion) {
+		super();
+		this.prenom = prenom;
+		this.nom = nom;
+		this.pseudo = pseudo;
+		this.mail = mail;
+		this.lienLinkedin = lienLinkedin;
+		this.statut = statut;
+		this.dateDerniereConnexion = dateDerniereConnexion;
+	}
+	
+	public Utilisateur() {
 		
-		
-		//CONSTRUCTOR
-		
-		
-		public Utilisateur(Long idUtilisateur, String prenom, String nom, String pseudo, String mail,
-				String lienLinkedin, String statut, LocalDate dateDerniereConnexion) {
-			super();
-			this.idUtilisateur = idUtilisateur;
-			this.prenom = prenom;
-			this.nom = nom;
-			this.pseudo = pseudo;
-			this.mail = mail;
-			this.lienLinkedin = lienLinkedin;
-			this.statut = statut;
-			this.dateDerniereConnexion = dateDerniereConnexion;
-		}
-		
-		public Utilisateur() {
-			
-		}
-		
-		
-		
-		
-		
+	}		
 }

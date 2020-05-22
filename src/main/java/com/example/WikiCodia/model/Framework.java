@@ -1,5 +1,12 @@
 package com.example.WikiCodia.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 @Entity
 @Table(name="framework") 
 public class Framework {
@@ -14,5 +21,33 @@ public class Framework {
 
     @Column(name="verstion")
     private String verstion;
+
+    //GETTERS SETTERS
+    public long getId_framework() {
+        return id_framework;
+    }
+
+    public String getFramework() {
+        return framework;
+    }
+
+    public void setFramework(String framework) {
+        this.framework = framework;
+    }
+
+    public String getVerstion() {
+        return verstion;
+    }
+
+    public void setVerstion(String verstion) {
+        this.verstion = verstion;
+    }
+
+    //CONSTRUCTOR
+    public Framework(String framework, String verstion) {
+        super();
+        this.framework = framework;
+        this.verstion = verstion;
+    }
 
 }
