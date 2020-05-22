@@ -14,7 +14,6 @@ import javax.persistence.Table;
 @Table(name="utilisateur")
 public class Utilisateur {
 	
-	//Todo : remplir les annotation
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="id_utilisateur")
