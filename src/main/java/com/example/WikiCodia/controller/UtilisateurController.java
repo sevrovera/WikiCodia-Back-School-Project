@@ -2,6 +2,7 @@ package com.example.WikiCodia.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -14,7 +15,6 @@ import com.example.WikiCodia.repository.UtilisateurRepository;
 @RequestMapping("/utilisateur")
 public class UtilisateurController {
 	
-	
 	@Autowired
 	private UtilisateurRepository utilisateurRepository;
 
@@ -24,8 +24,49 @@ public class UtilisateurController {
 		utilisateurRepository.save(u);
 		return u;
 	}
-	
-/*
+
+	@RequestMapping(value = "/modification", method = RequestMethod.PUT)
+	@ResponseBody
+	public Utilisateur modification(@RequestBody Utilisateur u) {
+
+		Utilisateur modifUtilisateur = utilisateurRepository.findById(u.getIdUtilisateur()).get();
+
+		modifUtilisateur.setNom(u.getNom());
+		modifUtilisateur.setPrenom(u.getPrenom());
+		modifUtilisateur.setPseudo(u.getPseudo());
+		modifUtilisateur.setMail(u.getMail());
+		modifUtilisateur.setLienLinkedIn(u.getLienLinkedIn());
+		modifUtilisateur.setStatut(u.getStatut());
+		modifUtilisateur.setEtat(u.getEtat());
+		modifUtilisateur.setRole(u.getRole());
+		modifUtilisateur.setGuilde(u.getGuilde());
+		modifUtilisateur.setMotDePasse(u.getMotDePasse());
+		modifUtilisateur.setFramework(u.getFramework());
+		modifUtilisateur.setLangage(u.getLangage());
+		modifUtilisateur.setType(u.getType());
+		modifUtilisateur.setCategorie(u.getCategorie());
+
+		utilisateurRepository.save(modifUtilisateur);
+
+		return modifUtilisateur;
+	}
+
+	@RequestMapping(value = "/supression/{id}", method = RequestMethod.DELETE)
+	@ResponseBody
+	public Boolean supression(@PathVariable("id") Long id) {
+		utilisateurRepository.deleteById(id);
+		return true;
+	}
+
+	@RequestMapping("/{id}")
+	@ResponseBody
+	public Utilisateur voir(@PathVariable("id") Long id) {
+
+		return utilisateurRepository.findById(id).get();
+
+	}
+
+	/*
 	@RequestMapping(value = "", method = RequestMethod.POST)
 	@ResponseBody
 	public void nouvelUtilisateur(

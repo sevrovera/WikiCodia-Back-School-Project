@@ -1,5 +1,12 @@
 package com.example.WikiCodia.repository;
 
-public class GuildeRepository {
+import org.springframework.stereotype.Repository;
+
+import com.example.WikiCodia.model.Guilde;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+@Repository
+public interface GuildeRepository extends JpaRepository<Guilde , Long> {
 
 }

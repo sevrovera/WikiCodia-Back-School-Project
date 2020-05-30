@@ -1,5 +1,12 @@
 package com.example.WikiCodia.repository;
 
-public class LangageRepository {
+import org.springframework.stereotype.Repository;
+
+import com.example.WikiCodia.model.Langage;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+@Repository
+public interface LangageRepository extends JpaRepository<Langage , Long> {
 
 }
