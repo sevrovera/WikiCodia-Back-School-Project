@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/role")
-
 public class RoleController {
+	
     @Autowired
 	private RoleRepository roleRepository;
 
