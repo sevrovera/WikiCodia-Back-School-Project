@@ -20,7 +20,7 @@ import javax.validation.constraints.NotNull;
 public class Article {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="id_article")
 	private Long idArticle;
 
@@ -65,16 +65,14 @@ public class Article {
 	private Categorie categorie;
 	
 	
-	
 	public Article() {
 	}
 
-
-
-	public Article(@NotNull String titre, String description, String contenu, LocalDate dateCreation,
-			LocalDate dateDerniereModif, Boolean estPublie, Boolean estPromu, @NotNull Utilisateur auteur,
-			@NotNull Type type, @NotNull Categorie categorie) {
+	public Article(Long idArticle, @NotNull String titre, String description, String contenu, LocalDate dateCreation,
+			LocalDate dateDerniereModif, Boolean estPublie, Boolean estPromu, List<Vote> vote,
+			@NotNull Utilisateur auteur, @NotNull Type type, @NotNull Categorie categorie) {
 		super();
+		this.idArticle = idArticle;
 		this.titre = titre;
 		this.description = description;
 		this.contenu = contenu;
@@ -82,143 +80,107 @@ public class Article {
 		this.dateDerniereModif = dateDerniereModif;
 		this.estPublie = estPublie;
 		this.estPromu = estPromu;
+		this.vote = vote;
 		this.auteur = auteur;
 		this.type = type;
 		this.categorie = categorie;
 	}
-
-
 
 	public Long getIdArticle() {
 		return idArticle;
 	}
 
-
-
 	public void setIdArticle(Long idArticle) {
 		this.idArticle = idArticle;
 	}
-
-
 
 	public String getTitre() {
 		return titre;
 	}
 
-
-
 	public void setTitre(String titre) {
 		this.titre = titre;
 	}
-
-
 
 	public String getDescription() {
 		return description;
 	}
 
-
-
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
-
 
 	public String getContenu() {
 		return contenu;
 	}
 
-
-
 	public void setContenu(String contenu) {
 		this.contenu = contenu;
 	}
-
-
 
 	public LocalDate getDateCreation() {
 		return dateCreation;
 	}
 
-
-
 	public void setDateCreation(LocalDate dateCreation) {
 		this.dateCreation = dateCreation;
 	}
-
-
 
 	public LocalDate getDateDerniereModif() {
 		return dateDerniereModif;
 	}
 
-
-
 	public void setDateDerniereModif(LocalDate dateDerniereModif) {
 		this.dateDerniereModif = dateDerniereModif;
 	}
-
-
 
 	public Boolean getEstPublie() {
 		return estPublie;
 	}
 
-
-
 	public void setEstPublie(Boolean estPublie) {
 		this.estPublie = estPublie;
 	}
-
-
 
 	public Boolean getEstPromu() {
 		return estPromu;
 	}
 
-
-
 	public void setEstPromu(Boolean estPromu) {
 		this.estPromu = estPromu;
 	}
 
+	public List<Vote> getVote() {
+		return vote;
+	}
 
+	public void setVote(List<Vote> vote) {
+		this.vote = vote;
+	}
 
 	public Utilisateur getAuteur() {
 		return auteur;
 	}
 
-
-
 	public void setAuteur(Utilisateur auteur) {
 		this.auteur = auteur;
 	}
-
-
 
 	public Type getType() {
 		return type;
 	}
 
-
-
 	public void setType(Type type) {
 		this.type = type;
 	}
-
-
 
 	public Categorie getCategorie() {
 		return categorie;
 	}
 
-
-
 	public void setCategorie(Categorie categorie) {
 		this.categorie = categorie;
 	}
 
-	
 	
 }

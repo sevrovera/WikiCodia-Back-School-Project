@@ -5,7 +5,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "vote")
@@ -14,29 +17,48 @@ public class Vote {
     @Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="id_vote")
-    private long idVote;
-
-    @Column(name="like")
-    private Boolean like;
-
-    @Column(name="utilisateur")
+    private Long idVote;
+    
+    @Column(name = "liked", columnDefinition = "boolean default false")
+    private Boolean liked;
+    
+    @NotNull
+	@ManyToOne
+    @JoinColumn(name ="id_utilisateur")
     private Utilisateur utilisateur;
 
     @Column(name="commentaire")
     private String commentaire;
 
-    public long getIdVote() {
+    
+    public Vote() {
+    	
+    }
+    
+    public Vote(Long idVote, Boolean liked, @NotNull Utilisateur utilisateur, String commentaire) {
+		super();
+		this.idVote = idVote;
+		this.liked = liked;
+		this.utilisateur = utilisateur;
+		this.commentaire = commentaire;
+	}
+	
+	public Long getIdVote() {
         return idVote;
     }
     
-    public Boolean getLike() {
-        return like;
+	public void setIdVote(Long idVote) {
+        this.idVote = idVote;
+    }
+	
+    public Boolean getLiked() {
+        return liked;
     }
 
-    public void setLike(Boolean like) {
-        this.like = like;
+    public void setLiked(Boolean liked) {
+        this.liked = liked;
     }
-
+    
     public Utilisateur getUtilisateur() {
         return utilisateur;
     }
@@ -44,7 +66,7 @@ public class Vote {
     public void setUtilisateur(Utilisateur utilisateur) {
         this.utilisateur = utilisateur;
     }
-
+    
     public String getCommentaire() {
         return commentaire;
     }

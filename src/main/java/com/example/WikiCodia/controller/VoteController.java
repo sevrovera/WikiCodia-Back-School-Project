@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping("/vote")
 public class VoteController {
-
+	
     @Autowired
 	private VoteRepository voteRepository;
 
@@ -31,7 +31,7 @@ public class VoteController {
 
 		Vote modifVote = voteRepository.findById(v.getIdVote()).get();
 
-		modifVote.setLike(v.getLike());
+		modifVote.setLiked(v.getLiked());
 		modifVote.setUtilisateur(v.getUtilisateur());
 		modifVote.setCommentaire(v.getCommentaire());
 
@@ -62,5 +62,5 @@ public class VoteController {
         return voteRepository.findAll();
         
     }
-    
+
 }
