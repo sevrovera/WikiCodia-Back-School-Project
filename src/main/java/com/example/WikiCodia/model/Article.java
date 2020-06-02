@@ -9,10 +9,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 
 @Entity
@@ -49,17 +53,24 @@ public class Article {
 	@OneToMany
 	private List<Vote> vote;
 	
-	@NotNull
+	// En partant du principe qu'un article peut être associé à plusieurs langages ou framework (par ex un article comparatif) :
+	
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@ManyToMany
+	private List<Langage> langage;
+	
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@ManyToMany
+	private List<Framework> framework;
+	
 	@ManyToOne
     @JoinColumn(name ="id_utilisateur")
 	private Utilisateur auteur;
 	
-	@NotNull
 	@ManyToOne
     @JoinColumn(name ="id_type")
 	private Type type;
 	
-	@NotNull
 	@ManyToOne
     @JoinColumn(name ="id_categorie")
 	private Categorie categorie;
@@ -67,10 +78,10 @@ public class Article {
 	
 	public Article() {
 	}
-
+	
 	public Article(Long idArticle, @NotNull String titre, String description, String contenu, LocalDate dateCreation,
-			LocalDate dateDerniereModif, Boolean estPublie, Boolean estPromu, List<Vote> vote,
-			@NotNull Utilisateur auteur, @NotNull Type type, @NotNull Categorie categorie) {
+			LocalDate dateDerniereModif, Boolean estPublie, Boolean estPromu, List<Vote> vote, List<Langage> langage,
+			List<Framework> framework, Utilisateur auteur, Type type, Categorie categorie) {
 		super();
 		this.idArticle = idArticle;
 		this.titre = titre;
@@ -81,10 +92,14 @@ public class Article {
 		this.estPublie = estPublie;
 		this.estPromu = estPromu;
 		this.vote = vote;
+		this.langage = langage;
+		this.framework = framework;
 		this.auteur = auteur;
 		this.type = type;
 		this.categorie = categorie;
 	}
+
+
 
 	public Long getIdArticle() {
 		return idArticle;
@@ -153,9 +168,25 @@ public class Article {
 	public List<Vote> getVote() {
 		return vote;
 	}
-
+	
 	public void setVote(List<Vote> vote) {
 		this.vote = vote;
+	}
+	
+	public List<Langage> getLangage() {
+		return langage;
+	}
+
+	public void setLangage(List<Langage> langage) {
+		this.langage = langage;
+	}
+
+	public List<Framework> getFramework() {
+		return framework;
+	}
+
+	public void setFramework(List<Framework> framework) {
+		this.framework = framework;
 	}
 
 	public Utilisateur getAuteur() {

@@ -232,10 +232,11 @@ public class Utilisateur {
 		this.statut = statut;
 		this.dateDerniereConnexion = dateDerniereConnexion;
 	}
+	*/
 	
 	public Utilisateur() {
 		
-	}*/
+	}
 
 	public Utilisateur(String prenom, String nom, String pseudo, String mail, String motDePasse, String lienLinkedin,
 			String statut, LocalDate dateInscription, LocalDate dateDerniereConnexion, Etat etat, Role role,

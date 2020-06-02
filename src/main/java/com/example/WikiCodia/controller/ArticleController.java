@@ -17,128 +17,143 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.WikiCodia.model.Article;
 import com.example.WikiCodia.repository.ArticleRepository;
 
-
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
-@RequestMapping("/main")
+@RequestMapping("/articles")
 public class ArticleController {
-	
+
 	@Autowired
-	  ArticleRepository articleRepository;
-	
-	  @GetMapping("/articles/all")
-	  public ResponseEntity<List<Article>> getAllArticles(@RequestParam(required = false) String titre) {
-	    try {
-	      List<Article> articles = new ArrayList<Article>();
+	ArticleRepository articleRepository;
 
-	      if (titre == null)
-	        articleRepository.findAll().forEach(articles::add);
-	      else
-	        articleRepository.findByTitreContaining(titre).forEach(articles::add);
+	@GetMapping("/all")
+	public ResponseEntity<List<Article>> getAllArticles(@RequestParam(required = false) String titre) {
+		try {
+			List<Article> articles = new ArrayList<Article>();
 
-	      if (articles.isEmpty()) {
-	        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-	      }
+			if (titre == null)
+				articleRepository.findAll().forEach(articles::add);
+			else
+				articleRepository.findByTitreContaining(titre).forEach(articles::add);
 
-	      return new ResponseEntity<>(articles, HttpStatus.OK);
-	    } catch (Exception e) {
-	      return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-	    }
-	  }
+			if (articles.isEmpty()) {
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			}
 
-	  @GetMapping("/articles/{id}")
-	  public ResponseEntity<Article> getArticleById(@PathVariable("id") long id) {
-	    Optional<Article> articleData = articleRepository.findById(id);
+			return new ResponseEntity<>(articles, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
-	    if (articleData.isPresent()) {
-	      return new ResponseEntity<>(articleData.get(), HttpStatus.OK);
-	    } else {
-	      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-	    }
-	  }
+	@GetMapping("/{id}")
+	public ResponseEntity<Article> getArticleById(@PathVariable("id") long id) {
+		Optional<Article> articleData = articleRepository.findById(id);
 
-	  @PostMapping("/articles")
-	  public ResponseEntity<Article> createArticle(@RequestBody Article article) {
-	    try {
-	      Article _article = articleRepository
-	          .save(new Article(
-	        		  article.getTitre(), article.getDescription(), article.getContenu(),
-	        		  LocalDate.now(), article.getDateDerniereModif(), article.getEstPublie(),
-	        		  article.getEstPromu(), article.getAuteur(), article.getType(), article.getCategorie()));
-	      return new ResponseEntity<>(_article, HttpStatus.CREATED);
-	    } catch (Exception e) {
-	      return new ResponseEntity<>(null, HttpStatus.EXPECTATION_FAILED);
-	    }
-	  }
+		if (articleData.isPresent()) {
+			return new ResponseEntity<>(articleData.get(), HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
+	/*
+	@PostMapping("/creation")
+	public ResponseEntity<Article> createArticle(@RequestBody Article article) {
+		try {
+			Article _article = articleRepository.save(new Article(article.getTitre(), article.getDescription(),
+					article.getContenu(), LocalDate.now(), article.getDateDerniereModif(), article.getEstPublie(),
+					article.getEstPromu(), null, article.getLangage(), article.getFramework(), article.getAuteur(),
+					article.getType(), article.getCategorie()));
+			return new ResponseEntity<>(_article, HttpStatus.CREATED);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.EXPECTATION_FAILED);
+		}
+	}
+	*/
 
-	  @PutMapping("/articles/{id}")
-	  public ResponseEntity<Article> updateArticle(@PathVariable("id") long id, @RequestBody Article articleUpdated) {
-	    Optional<Article> articleData = articleRepository.findById(id);
-	    
-	    if (articleData.isPresent()) {
-	    	
-	      Article _article = articleData.get();
-	      
-	      if (articleUpdated.getTitre() != null) {
-	    	  _article.setTitre(articleUpdated.getTitre());
-	      }
-	      if (articleUpdated.getDescription() != null) {
-	    	  _article.setDescription(articleUpdated.getDescription());
-	      }
-	      if (articleUpdated.getContenu() != null) {
-	    	  _article.setContenu(articleUpdated.getContenu());
-	      }
-	      if (articleUpdated.getDateDerniereModif() != null) {
-	    	  _article.setDateDerniereModif(LocalDate.now());
-	      }
-	      if (articleUpdated.getEstPublie()) {
-	    	  _article.setEstPublie(articleUpdated.getEstPublie());
-	      } else {
-	    	  _article.setEstPublie(false);
-	      }
-	      if (articleUpdated.getEstPromu()) {
-	    	  _article.setEstPromu(articleUpdated.getEstPromu());
-	      } else {
-	    	  _article.setEstPromu(false);
-	      }
-	      if (articleUpdated.getType() != null) {
-	    	  _article.setType(articleUpdated.getType());
-	      }
-	      if (articleUpdated.getCategorie() != null) {
-	    	  _article.setCategorie(articleUpdated.getCategorie());
-	      }
-	  
-	      return new ResponseEntity<>(articleRepository.save(_article), HttpStatus.OK);
-	    } else {
-	      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-	    }
-	  }
+	@PostMapping("/creation")
+	@ResponseBody
+	public Article createArticle(@RequestBody Article a) {
+		articleRepository.save(a);
+		return a;
+	}
 
-	  @DeleteMapping("/articles/{id}")
-	  public ResponseEntity<HttpStatus> deleteArticle(@PathVariable("id") long id) {
-	    try {
-	      articleRepository.deleteById(id);
-	      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-	    } catch (Exception e) {
-	      return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
-	    }
-	  }
+	@PutMapping("/modification/{id}")
+	public ResponseEntity<Article> updateArticle(@PathVariable("id") long id, @RequestBody Article articleUpdated) {
+		Optional<Article> articleData = articleRepository.findById(id);
 
-	  @DeleteMapping("/articles")
-	  public ResponseEntity<HttpStatus> deleteAllArticles() {
-	    try {
-	      articleRepository.deleteAll();
-	      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-	    } catch (Exception e) {
-	      return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
-	    }
+		if (articleData.isPresent()) {
 
-	  }
+			Article _article = articleData.get();
 
+			if (articleUpdated.getTitre() != null) {
+				_article.setTitre(articleUpdated.getTitre());
+			}
+			if (articleUpdated.getDescription() != null) {
+				_article.setDescription(articleUpdated.getDescription());
+			}
+			if (articleUpdated.getContenu() != null) {
+				_article.setContenu(articleUpdated.getContenu());
+			}
+			if (articleUpdated.getDateDerniereModif() != null) {
+				_article.setDateDerniereModif(LocalDate.now());
+			}
+			if (articleUpdated.getEstPublie()) {
+				_article.setEstPublie(articleUpdated.getEstPublie());
+			} else {
+				_article.setEstPublie(false);
+			}
+			if (articleUpdated.getEstPromu()) {
+				_article.setEstPromu(articleUpdated.getEstPromu());
+			} else {
+				_article.setEstPromu(false);
+			}
+			if (articleUpdated.getVote() != null) {
+				_article.setVote(articleUpdated.getVote());
+			}
+			if (articleUpdated.getLangage() != null) {
+				_article.setLangage(articleUpdated.getLangage());
+			}
+			if (articleUpdated.getFramework() != null) {
+				_article.setFramework(articleUpdated.getFramework());
+			}
+			if (articleUpdated.getType() != null) {
+				_article.setType(articleUpdated.getType());
+			}
+			if (articleUpdated.getCategorie() != null) {
+				_article.setCategorie(articleUpdated.getCategorie());
+			}
+
+			return new ResponseEntity<>(articleRepository.save(_article), HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
+
+	@DeleteMapping("/suppression/{id}")
+	public ResponseEntity<HttpStatus> deleteArticle(@PathVariable("id") long id) {
+		try {
+			articleRepository.deleteById(id);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+		}
+	}
+
+	@DeleteMapping("/suppression/all")
+	public ResponseEntity<HttpStatus> deleteAllArticles() {
+		try {
+			articleRepository.deleteAll();
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+		}
+
+	}
 
 }

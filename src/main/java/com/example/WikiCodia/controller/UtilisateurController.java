@@ -51,9 +51,9 @@ public class UtilisateurController {
 		return modifUtilisateur;
 	}
 
-	@RequestMapping(value = "/supression/{id}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/suppression/{id}", method = RequestMethod.DELETE)
 	@ResponseBody
-	public Boolean supression(@PathVariable("id") Long id) {
+	public Boolean suppression(@PathVariable("id") Long id) {
 		utilisateurRepository.deleteById(id);
 		return true;
 	}

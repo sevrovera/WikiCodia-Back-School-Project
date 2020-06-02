@@ -15,95 +15,103 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.WikiCodia.model.Langage;
 import com.example.WikiCodia.model.Type;
 import com.example.WikiCodia.repository.TypeRepository;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/types")
 public class TypeController {
-	
+
 	@Autowired
 	TypeRepository typeRepository;
+
+	@GetMapping("/all")
+	public ResponseEntity<List<Type>> getAllTypes(@RequestParam(required = false) String libType) {
+		try {
+			List<Type> types = new ArrayList<Type>();
+
+			if (libType == null)
+				typeRepository.findAll().forEach(types::add);
+			else
+				typeRepository.findByLibTypeContaining(libType).forEach(types::add);
+
+			if (types.isEmpty()) {
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			}
+
+			return new ResponseEntity<>(types, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@GetMapping("/{id}")
+	public ResponseEntity<Type> getTypeById(@PathVariable("id") long id) {
+		Optional<Type> typeData = typeRepository.findById(id);
+
+		if (typeData.isPresent()) {
+			return new ResponseEntity<>(typeData.get(), HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
 	
-	@GetMapping("/types/all")
-	  public ResponseEntity<List<Type>> getAllTypes(@RequestParam(required = false) String libType) {
-	    try {
-	      List<Type> types = new ArrayList<Type>();
+	/*
+	 * @PostMapping("/types") public ResponseEntity<Type> createType(@RequestBody
+	 * Type type) { try { Type _type = typeRepository.save(new
+	 * Type(type.getLibType())); return new ResponseEntity<>(_type,
+	 * HttpStatus.CREATED); } catch (Exception e) { return new
+	 * ResponseEntity<>(null, HttpStatus.EXPECTATION_FAILED); } }
+	 */
 
-	      if (libType == null)
-	        typeRepository.findAll().forEach(types::add);
-	      else
-	        typeRepository.findByLibTypeContaining(libType).forEach(types::add);
+	@PostMapping("/creation")
+	@ResponseBody
+	public Type createType(@RequestBody Type t) {
+		typeRepository.save(t);
+		return t;
+	}
 
-	      if (types.isEmpty()) {
-	        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-	      }
+	@PutMapping("/modification/{id}")
+	public ResponseEntity<Type> updateType(@PathVariable("id") long id, @RequestBody Type typeUpdated) {
+		Optional<Type> typeData = typeRepository.findById(id);
 
-	      return new ResponseEntity<>(types, HttpStatus.OK);
-	    } catch (Exception e) {
-	      return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-	    }
-	  }
+		if (typeData.isPresent()) {
+			Type _type = typeData.get();
+			if (typeUpdated.getLibType() != null) {
+				_type.setLibType(typeUpdated.getLibType());
+			}
+			return new ResponseEntity<>(typeRepository.save(_type), HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
 
-	  @GetMapping("/types/{id}")
-	  public ResponseEntity<Type> getTypeById(@PathVariable("id") long id) {
-	    Optional<Type> typeData = typeRepository.findById(id);
+	@DeleteMapping("/suppression/{id}")
+	public ResponseEntity<HttpStatus> deleteType(@PathVariable("id") long id) {
+		try {
+			typeRepository.deleteById(id);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+		}
+	}
 
-	    if (typeData.isPresent()) {
-	      return new ResponseEntity<>(typeData.get(), HttpStatus.OK);
-	    } else {
-	      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-	    }
-	  }
+	@DeleteMapping("/suppression/all")
+	public ResponseEntity<HttpStatus> deleteAllTypes() {
+		try {
+			typeRepository.deleteAll();
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+		}
 
-	  @PostMapping("/types")
-	  public ResponseEntity<Type> createType(@RequestBody Type type) {
-	    try {
-	      Type _type = typeRepository.save(new Type(type.getLibType()));
-	      return new ResponseEntity<>(_type, HttpStatus.CREATED);
-	    } catch (Exception e) {
-	      return new ResponseEntity<>(null, HttpStatus.EXPECTATION_FAILED);
-	    }
-	  }
-
-	  @PutMapping("/types/{id}")
-	  public ResponseEntity<Type> updateType(@PathVariable("id") long id, @RequestBody Type typeUpdated) {
-	    Optional<Type> typeData = typeRepository.findById(id);
-	    
-	    if (typeData.isPresent()) {
-	      Type _type = typeData.get();
-	      if (typeUpdated.getLibType() != null) {
-	    	  _type.setLibType(typeUpdated.getLibType());
-	      }
-	      return new ResponseEntity<>(typeRepository.save(_type), HttpStatus.OK);
-	    } else {
-	      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-	    }
-	  }
-
-	  @DeleteMapping("/types/{id}")
-	  public ResponseEntity<HttpStatus> deleteType(@PathVariable("id") long id) {
-	    try {
-	      typeRepository.deleteById(id);
-	      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-	    } catch (Exception e) {
-	      return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
-	    }
-	  }
-
-	  @DeleteMapping("/types")
-	  public ResponseEntity<HttpStatus> deleteAllTypes() {
-	    try {
-	      typeRepository.deleteAll();
-	      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-	    } catch (Exception e) {
-	      return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
-	    }
-
-	  }
+	}
 
 }

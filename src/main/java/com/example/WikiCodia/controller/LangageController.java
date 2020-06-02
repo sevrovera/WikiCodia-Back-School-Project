@@ -32,16 +32,16 @@ public class LangageController {
 		Langage modifLangage = langageRepository.findById(l.getIdLang()).get();
 
 		modifLangage.setLang(l.getLang());
-		modifLangage.setVerstion(l.getVerstion());
+		modifLangage.setVersion(l.getVersion());
 
 		langageRepository.save(modifLangage);
 
 		return modifLangage;
 	}
 
-	@RequestMapping(value = "/supression/{id}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/suppression/{id}", method = RequestMethod.DELETE)
 	@ResponseBody
-	public Boolean supression(@PathVariable("id") Long id) {
+	public Boolean suppression(@PathVariable("id") Long id) {
 		langageRepository.deleteById(id);
 		return true;
 	}
