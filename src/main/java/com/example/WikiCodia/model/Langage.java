@@ -19,8 +19,8 @@ public class Langage {
     @Column(name="lang")
     private String lang;
 
-    @Column(name="verstion")
-    private String verstion;
+    @Column(name="version")
+    private String version;
 
     //GETTERS SETTERS
     public long getIdLang() {
@@ -35,18 +35,18 @@ public class Langage {
         this.lang = lang;
     }
 
-    public String getVerstion() {
-        return verstion;
+    public String getVersion() {
+        return version;
     }
 
-    public void setVerstion(String verstion) {
-        this.verstion = verstion;
+    public void setVersion(String version) {
+        this.version = version;
     }
 
     //CONSTRUCTOR
-    public Langage(String lang, String verstion) {
+    public Langage(String lang, String version) {
         super();
         this.lang = lang;
-        this.verstion = verstion;
+        this.version = version;
     }
 }

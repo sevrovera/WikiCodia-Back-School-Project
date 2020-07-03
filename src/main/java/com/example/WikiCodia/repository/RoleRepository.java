@@ -1,5 +1,12 @@
 package com.example.WikiCodia.repository;
 
-public class RoleRepository {
+import org.springframework.stereotype.Repository;
+
+import com.example.WikiCodia.model.Role;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+@Repository
+public interface RoleRepository extends JpaRepository<Role , Long> {
 
 }
