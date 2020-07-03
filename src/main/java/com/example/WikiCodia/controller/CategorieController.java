@@ -63,15 +63,6 @@ public class CategorieController {
 		}
 	}
 
-	/*
-	 * @PostMapping("/categories") public ResponseEntity<Categorie>
-	 * createCategorie(@RequestBody Categorie categorie) { try { Categorie
-	 * _categorie = categorieRepository.save(new
-	 * Categorie(categorie.getLibCategorie())); return new
-	 * ResponseEntity<>(_categorie, HttpStatus.CREATED); } catch (Exception e) {
-	 * return new ResponseEntity<>(null, HttpStatus.EXPECTATION_FAILED); } }
-	 */
-
 	@PostMapping("/creation")
 	@ResponseBody
 	public Categorie createCategorie(@RequestBody Categorie cat) {

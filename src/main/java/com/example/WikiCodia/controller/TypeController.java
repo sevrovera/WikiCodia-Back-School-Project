@@ -61,15 +61,7 @@ public class TypeController {
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-	}
-	
-	/*
-	 * @PostMapping("/types") public ResponseEntity<Type> createType(@RequestBody
-	 * Type type) { try { Type _type = typeRepository.save(new
-	 * Type(type.getLibType())); return new ResponseEntity<>(_type,
-	 * HttpStatus.CREATED); } catch (Exception e) { return new
-	 * ResponseEntity<>(null, HttpStatus.EXPECTATION_FAILED); } }
-	 */
+	} 
 
 	@PostMapping("/creation")
 	@ResponseBody
