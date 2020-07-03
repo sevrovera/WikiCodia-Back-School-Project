@@ -15,12 +15,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.WikiCodia.model.Langage;
 import com.example.WikiCodia.model.Type;
 import com.example.WikiCodia.repository.TypeRepository;
 
@@ -61,15 +59,7 @@ public class TypeController {
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-	}
-	
-	/*
-	 * @PostMapping("/types") public ResponseEntity<Type> createType(@RequestBody
-	 * Type type) { try { Type _type = typeRepository.save(new
-	 * Type(type.getLibType())); return new ResponseEntity<>(_type,
-	 * HttpStatus.CREATED); } catch (Exception e) { return new
-	 * ResponseEntity<>(null, HttpStatus.EXPECTATION_FAILED); } }
-	 */
+	} 
 
 	@PostMapping("/creation")
 	@ResponseBody

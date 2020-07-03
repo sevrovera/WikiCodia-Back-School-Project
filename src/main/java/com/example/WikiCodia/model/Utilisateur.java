@@ -1,6 +1,8 @@
 package com.example.WikiCodia.model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -14,10 +16,12 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @Table(name="utilisateur")
-public class Utilisateur {
+public class Utilisateur implements Serializable , UserDetails {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -219,21 +223,41 @@ public class Utilisateur {
 		this.categorie = categorie;
 	}		
 	
-	//CONSTRUCTOR	
-	/*
-	public Utilisateur(String prenom, String nom, String pseudo, String mail,
-			String lienLinkedin, String statut, LocalDate dateDerniereConnexion) {
-		super();
-		this.prenom = prenom;
-		this.nom = nom;
-		this.pseudo = pseudo;
-		this.mail = mail;
-		this.lienLinkedin = lienLinkedin;
-		this.statut = statut;
-		this.dateDerniereConnexion = dateDerniereConnexion;
+	// SPRING SECURITY
+	public String getUsername() {
+        return pseudo;
+    }
+    @Override
+    public boolean isAccountNonExpired() {
+        return false;
+    }
+    @Override
+    public boolean isAccountNonLocked() {
+        return false;
+    }
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+    @Override
+    public boolean isEnabled() {
+        return false;
+    }
+    public void setUsername(String username) {
+        this.pseudo = username;
+    }
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+    public String getPassword() {
+        return motDePasse;
+    }
+    public void setPassword(String password) {
+        this.motDePasse = password;
 	}
-	*/
 	
+	//CONSTRUCTOR	
 	public Utilisateur() {
 		
 	}
