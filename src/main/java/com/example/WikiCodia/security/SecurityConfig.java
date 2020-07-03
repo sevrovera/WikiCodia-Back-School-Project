@@ -58,11 +58,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .invalidateHttpSession(true)
                 .and()
                 .authorizeRequests()
-                //Route accesibles a tout le monde
+                //Route accessibles à tout le monde
                 .antMatchers("/wikicodia").permitAll()
                 .antMatchers("/login").permitAll()
                 .antMatchers("/logout").permitAll()
-                //Routes accesible au personnes connectés
+                //Routes accessibles aux personnes connectées
                 .antMatchers("/user").authenticated()
                 //Parametre pour toutes les autres routes
                 .anyRequest().permitAll();
