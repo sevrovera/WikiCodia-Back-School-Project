@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.WikiCodia.model.Type;
 import com.example.WikiCodia.repository.TypeRepository;
 
-@CrossOrigin(origins = "http://localhost:4200")
+// @CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/types")
 public class TypeController {
@@ -51,7 +51,7 @@ public class TypeController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Type> getTypeById(@PathVariable("id") long id) {
+	public ResponseEntity<Type> getTypeById(@PathVariable("id") Long id) {
 		Optional<Type> typeData = typeRepository.findById(id);
 
 		if (typeData.isPresent()) {
@@ -69,7 +69,7 @@ public class TypeController {
 	}
 
 	@PutMapping("/modification/{id}")
-	public ResponseEntity<Type> updateType(@PathVariable("id") long id, @RequestBody Type typeUpdated) {
+	public ResponseEntity<Type> updateType(@PathVariable("id") Long id, @RequestBody Type typeUpdated) {
 		Optional<Type> typeData = typeRepository.findById(id);
 
 		if (typeData.isPresent()) {
@@ -84,7 +84,7 @@ public class TypeController {
 	}
 
 	@DeleteMapping("/suppression/{id}")
-	public ResponseEntity<HttpStatus> deleteType(@PathVariable("id") long id) {
+	public ResponseEntity<HttpStatus> deleteType(@PathVariable("id") Long id) {
 		try {
 			typeRepository.deleteById(id);
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);

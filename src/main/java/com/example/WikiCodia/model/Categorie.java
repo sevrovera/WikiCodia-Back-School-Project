@@ -30,7 +30,7 @@ public class Categorie {
 		this.libCategorie = libCategorie;
 	}
 
-	public long getIdCategorie() {
+	public Long getIdCategorie() {
 		return idCategorie;
 	}
 

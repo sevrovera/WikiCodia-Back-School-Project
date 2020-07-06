@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.WikiCodia.model.Categorie;
 import com.example.WikiCodia.repository.CategorieRepository;
 
-@CrossOrigin(origins = "http://localhost:4200")
+// @CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/categories")
 public class CategorieController {
@@ -51,7 +51,7 @@ public class CategorieController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Categorie> getCategorieById(@PathVariable("id") long id) {
+	public ResponseEntity<Categorie> getCategorieById(@PathVariable("id") Long id) {
 		Optional<Categorie> categorieData = categorieRepository.findById(id);
 
 		if (categorieData.isPresent()) {
@@ -69,7 +69,7 @@ public class CategorieController {
 	}
 
 	@PutMapping("/modification/{id}")
-	public ResponseEntity<Categorie> updateCategorie(@PathVariable("id") long id,
+	public ResponseEntity<Categorie> updateCategorie(@PathVariable("id") Long id,
 			@RequestBody Categorie categorieUpdated) {
 		Optional<Categorie> categorieData = categorieRepository.findById(id);
 
@@ -85,7 +85,7 @@ public class CategorieController {
 	}
 
 	@DeleteMapping("/suppression/{id}")
-	public ResponseEntity<HttpStatus> deleteCategorie(@PathVariable("id") long id) {
+	public ResponseEntity<HttpStatus> deleteCategorie(@PathVariable("id") Long id) {
 		try {
 			categorieRepository.deleteById(id);
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);

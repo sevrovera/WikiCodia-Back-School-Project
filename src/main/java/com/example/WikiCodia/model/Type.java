@@ -30,7 +30,7 @@ public class Type {
 		this.libType = libType;
 	}
 
-	public long getIdType() {
+	public Long getIdType() {
 		return idType;
 	}
 
