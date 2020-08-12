@@ -9,4 +9,6 @@ import com.example.WikiCodia.model.Categorie;
 
 public interface CategorieRepository extends JpaRepository<Categorie, Long> {
 	List<Categorie> findByLibCategorieContaining(String libCategorie);
+	
+	Categorie findByLibCategorieEquals(String libCategorie);
 }

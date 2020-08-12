@@ -8,5 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 @Repository
 public interface LangageRepository extends JpaRepository<Langage , Long> {
+	
+	Langage findByLangAndVersionEquals(String lang, String version);
 
+	
 }
