@@ -8,5 +8,6 @@ import com.example.WikiCodia.model.Type;
 
 public interface TypeRepository extends JpaRepository<Type, Long>{
 	List<Type> findByLibTypeContaining(String libType);
-
+	
+	Type findByLibTypeEquals(String libType);
 }
