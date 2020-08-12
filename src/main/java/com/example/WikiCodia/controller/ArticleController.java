@@ -5,6 +5,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.Column;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +30,26 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.WikiCodia.model.Article;
+import com.example.WikiCodia.model.Categorie;
+import com.example.WikiCodia.model.Etat;
+import com.example.WikiCodia.model.Framework;
+import com.example.WikiCodia.model.Guilde;
+import com.example.WikiCodia.model.Langage;
+import com.example.WikiCodia.model.Role;
+import com.example.WikiCodia.model.Type;
+import com.example.WikiCodia.model.Utilisateur;
+import com.example.WikiCodia.model.Vote;
 import com.example.WikiCodia.repository.ArticleRepository;
+import com.example.WikiCodia.repository.CategorieRepository;
+import com.example.WikiCodia.repository.EtatRepository;
+import com.example.WikiCodia.repository.FrameworkRepository;
+import com.example.WikiCodia.repository.GuildeRepository;
+import com.example.WikiCodia.repository.LangageRepository;
+import com.example.WikiCodia.repository.RoleRepository;
+import com.example.WikiCodia.repository.TypeRepository;
+import com.example.WikiCodia.repository.UtilisateurRepository;
+import com.example.WikiCodia.repository.VoteRepository;
+import com.example.WikiCodia.service.ArticleService;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
@@ -30,6 +58,37 @@ public class ArticleController {
 
 	@Autowired
 	ArticleRepository articleRepository;
+	
+	@Autowired
+	GuildeRepository guildeRepository;
+	
+	@Autowired
+	RoleRepository roleRepository;
+	
+	@Autowired
+	TypeRepository typeRepository;
+	
+	@Autowired
+	UtilisateurRepository utilisateurRepository;
+	
+	
+	@Autowired
+	VoteRepository voteRepository;
+	
+	@Autowired
+	LangageRepository langageRepository;
+	
+	
+	@Autowired
+	FrameworkRepository frameworkRepository;
+	
+	
+	@Autowired
+	CategorieRepository categorieRepository;
+	
+	
+	@Autowired
+	EtatRepository etatRepository;
 
 	@GetMapping("/all")
 	public ResponseEntity<List<Article>> getAllArticles(@RequestParam(required = false) String titre) {
@@ -44,6 +103,8 @@ public class ArticleController {
 			if (articles.isEmpty()) {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 			}
+			System.out.println("coucou");
+			System.out.println(articles);
 
 			return new ResponseEntity<>(articles, HttpStatus.OK);
 		} catch (Exception e) {
@@ -75,14 +136,108 @@ public class ArticleController {
 		}
 	}
 	*/
+	
+	
+	
+	
 
+//	@PostMapping("/creation")
+//	@ResponseBody
+//	public Article createArticle(Article a) {
+//		articleRepository.save(a);
+//		return a;
+//	}
+
+
+// METHODE POUR IMPLEMENTER LA BDD SI ELLE EST VIDE
+	
 	@PostMapping("/creation")
 	@ResponseBody
-	public Article createArticle(@RequestBody Article a) {
-		articleRepository.save(a);
-		return a;
+	public Article createArticle() {
+		
+		Guilde guilde = new Guilde();
+		guilde.setGuilde("nom de la guilde");
+		guildeRepository.save(guilde);
+		
+		Role role = new Role();
+		role.setRole("role");
+		roleRepository.save(role);
+		
+		Type type = new Type();
+		type.setLibType("libType");
+		typeRepository.save(type);
+		List<Type> types = new ArrayList<Type>();
+		types.add(type);
+		
+		Etat etat = new Etat();
+		etat.setEtat("etat");
+		etatRepository.save(etat);
+		
+		Langage langage = new Langage();
+		langage.setLang("langage");
+		langage.setVersion("version langage");
+		langageRepository.save(langage);
+		List<Langage> langages = new ArrayList<Langage>();
+		langages.add(langage);
+		
+		Framework framework = new Framework();
+		framework.setFramework("framework");
+		framework.setVerstion("verstion framework");
+		frameworkRepository.save(framework);
+		List<Framework> frameworks = new ArrayList<Framework>();
+		frameworks.add(framework);
+		
+		Categorie categorie = new Categorie();
+		categorie.setLibCategorie("libCategorie");
+		categorieRepository.save(categorie);
+		
+		Utilisateur utilisateur = new Utilisateur();
+		utilisateur.setCategorie(new ArrayList<Categorie>());
+		utilisateur.setDateDerniereConnexion(LocalDate.now());
+		utilisateur.setDateInscription(LocalDate.now());
+		utilisateur.setEtat(etat);
+		utilisateur.setFramework(new ArrayList<Framework>());
+		utilisateur.setGuilde(new ArrayList<Guilde>());
+		utilisateur.setLangage(new ArrayList<Langage>());
+		utilisateur.setLienLinkedin("lienLinkedin");
+		utilisateur.setMail("mail@test.fr");
+		utilisateur.setMotDePasse("motDePasse");
+		utilisateur.setNom("nom utilisateur");
+		utilisateur.setPrenom("prenom");
+		utilisateur.setPseudo("pseudo");
+		utilisateur.setRole(role);
+		utilisateur.setStatut("statut");
+		utilisateur.setType(types);
+		utilisateurRepository.save(utilisateur);
+				
+		Vote vote = new Vote();
+		vote.setCommentaire("commentaire de test");
+		vote.setUtilisateur(utilisateur);
+		voteRepository.save(vote);
+		List<Vote> votes = new ArrayList<Vote>();
+		votes.add(vote);
+		
+		
+		Article article = new Article();
+		article.setAuteur(utilisateur);
+		article.setCategorie(categorie);
+		article.setContenu("contenu texte de l'article");
+		article.setDateCreation(LocalDate.now());
+		article.setDateDerniereModif(LocalDate.now());
+		article.setDescription("texte de description de l'article");
+		article.setFramework(frameworks);
+		article.setLangage(langages);
+		article.setTitre("titre");
+		article.setType(type);
+		article.setVote(null);
+		
+		articleRepository.save(article);
+		return article;
 	}
+	
 
+	
+	
 	@PutMapping("/modification/{id}")
 	public ResponseEntity<Article> updateArticle(@PathVariable("id") long id, @RequestBody Article articleUpdated) {
 		Optional<Article> articleData = articleRepository.findById(id);

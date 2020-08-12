@@ -16,7 +16,7 @@ public class Vote {
     
     @Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="id_vote")
+	@Column(name="id_vote", unique = true, nullable = false)
     private Long idVote;
     
     @Column(name = "liked", columnDefinition = "boolean default false")

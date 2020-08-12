@@ -13,10 +13,10 @@ public class Guilde {
 
     @Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="id_guilde")
+	@Column(name="id_guilde",unique = true, nullable = false)
     private long idGuilde;
 
-    @Column(name="guilde")
+    @Column(name="guilde",unique = true, nullable = false)
     private String guilde;
 
     //GETTERS SETTERS
@@ -36,5 +36,8 @@ public class Guilde {
     public Guilde(String guilde) {
         super();
         this.guilde = guilde;
+    }
+    
+    public Guilde() {
     }
 }

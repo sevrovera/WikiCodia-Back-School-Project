@@ -25,7 +25,7 @@ public class Utilisateur implements Serializable , UserDetails {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="id_utilisateur")
+	@Column(name="id_utilisateur", unique = true, nullable = false)
 	private Long idUtilisateur;
 	
 	@Column(name="prenom")
@@ -34,10 +34,10 @@ public class Utilisateur implements Serializable , UserDetails {
 	@Column(name="nom")
 	private String nom;
 	
-	@Column(name="pseudo")
+	@Column(name="pseudo", unique = true, nullable = false)
 	private String pseudo;
 	
-	@Column(name="mail")
+	@Column(name="mail", unique = true, nullable = false)
 	private String mail;
 	
 	@Column(name="mot_de_passe")

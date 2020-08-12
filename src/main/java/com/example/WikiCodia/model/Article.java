@@ -25,7 +25,7 @@ public class Article {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="id_article")
+	@Column(name="id_article",unique = true, nullable = false)
 	private Long idArticle;
 
 	@NotNull

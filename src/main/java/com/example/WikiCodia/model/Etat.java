@@ -13,10 +13,10 @@ public class Etat {
 
     @Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="id_etat")
+	@Column(name="id_etat", unique = true, nullable = false)
     private long idEtat;
 
-    @Column(name="etat")
+    @Column(name="etat", unique = true, nullable = false)
     private String etat;
 
     //GETTERS SETTERS
@@ -36,5 +36,9 @@ public class Etat {
 	public Etat(String etat) {
         super();
 		this.etat = etat;
+	}
+	
+	public Etat() {
+
 	}
 }

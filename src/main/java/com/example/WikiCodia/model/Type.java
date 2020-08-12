@@ -14,11 +14,11 @@ public class Type {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="id_type")
+	@Column(name="id_type", unique = true, nullable = false)
 	private Long idType;
 	
 	@NotNull
-	@Column(name = "lib_type")
+	@Column(name = "lib_type", unique = true, nullable = false)
 	private String libType;
 
 	public Type() {
