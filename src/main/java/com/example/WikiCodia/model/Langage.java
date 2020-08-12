@@ -13,7 +13,7 @@ public class Langage {
 
     @Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="id_lang")
+	@Column(name="id_lang",unique = true, nullable = false)
     private long idLang;
 
     @Column(name="lang")
@@ -48,5 +48,9 @@ public class Langage {
         super();
         this.lang = lang;
         this.version = version;
+    }
+    
+    public Langage() {
+
     }
 }

@@ -14,11 +14,11 @@ public class Categorie {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="id_categorie")
+	@Column(name="id_categorie",unique = true, nullable = false)
 	private Long idCategorie;
 	
 	@NotNull
-	@Column(name = "lib_categorie")
+	@Column(name = "lib_categorie",unique = true, nullable = false)
 	private String libCategorie;
 
 	public Categorie() {

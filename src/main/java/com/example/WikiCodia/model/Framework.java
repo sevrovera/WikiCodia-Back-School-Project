@@ -13,7 +13,7 @@ public class Framework {
 
     @Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="id_framework")
+	@Column(name="id_framework",unique = true, nullable = false)
     private long idFramework;
 
     @Column(name="framework")
@@ -48,6 +48,9 @@ public class Framework {
         super();
         this.framework = framework;
         this.verstion = verstion;
+    }
+    
+    public Framework() {
     }
 
 }

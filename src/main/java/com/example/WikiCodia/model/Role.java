@@ -13,10 +13,10 @@ public class Role {
 
     @Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="id_role")
+	@Column(name="id_role", unique = true, nullable = false)
     private long idRole;
 
-    @Column(name="role")
+    @Column(name="role", unique = true, nullable = false)
     private String role;
 
     //GETTERS SETTERS
@@ -36,5 +36,8 @@ public class Role {
     public Role(String role) {
         super();
         this.role = role;
+    }
+    
+    public Role() {
     }
 }
