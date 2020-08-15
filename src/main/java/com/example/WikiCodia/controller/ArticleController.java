@@ -162,23 +162,24 @@ public class ArticleController {
 			//suppose que seuls les types, catégories, languages, framework, versions ... enregistrés préalablements sont valides et disponibles pour la création d'un article
 			List<Framework> listFram = new ArrayList<Framework>();
 			for (Framework frameworkItere : article.getFramework()) {
-				listFram.add(frameworkRepository.findByFrameworkAndVerstionEquals(frameworkItere.getFramework(), frameworkItere.getVerstion()));
+				listFram.add(frameworkRepository.findByFrameworkEquals(frameworkItere.getFramework()));
+				// listFram.add(frameworkRepository.findByFrameworkAndVersionEquals(frameworkItere.getFramework(), frameworkItere.getVersion()));
 			}
 			a.setFramework(listFram);
 			
-
 			List<Langage> listLang = new ArrayList<Langage>();
 			for (Langage langageItere : article.getLangage()) {
-				listLang.add(langageRepository.findByLangAndVersionEquals(langageItere.getLang(), langageItere.getVersion()));
+				listLang.add(langageRepository.findByLangEquals(langageItere.getLang()));
+				// listLang.add(langageRepository.findByLangAndVersionEquals(langageItere.getLang(), langageItere.getVersion()));
 			}
 			a.setLangage(listLang);
-			
 			
 			a.setCategorie(categorieRepository.findByLibCategorieEquals(article.getCategorie().getLibCategorie()));
 			
 			a.setType(typeRepository.findByLibTypeEquals(article.getType().getLibType()));
 			
-			a.setAuteur(utilisateurRepository.findByMailAndPseudoEquals(article.getAuteur().getMail(), article.getAuteur().getPseudo()));
+			// a.setAuteur(utilisateurRepository.findByPseudoEquals(article.getAuteur().getPseudo()));
+			// a.setAuteur(utilisateurRepository.findByMailAndPseudoEquals(article.getAuteur().getMail(), article.getAuteur().getPseudo()));
 			
 			articleRepository.save(a);
 			
@@ -222,7 +223,7 @@ public class ArticleController {
 //		
 //		Framework framework = new Framework();
 //		framework.setFramework("framework");
-//		framework.setVerstion("verstion framework");
+//		framework.setVersion("version framework");
 //		frameworkRepository.save(framework);
 //		List<Framework> frameworks = new ArrayList<Framework>();
 //		frameworks.add(framework);

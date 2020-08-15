@@ -19,8 +19,8 @@ public class Framework {
     @Column(name="framework")
     private String framework;
 
-    @Column(name="verstion")
-    private String verstion;
+    @Column(name="version")
+    private String version;
 
     //GETTERS SETTERS
     public long getIdFramework() {
@@ -35,19 +35,19 @@ public class Framework {
         this.framework = framework;
     }
 
-    public String getVerstion() {
-        return verstion;
+    public String getVersion() {
+        return version;
     }
 
-    public void setVerstion(String verstion) {
-        this.verstion = verstion;
+    public void setVersion(String verstion) {
+        this.version = verstion;
     }
 
     //CONSTRUCTOR
-    public Framework(String framework, String verstion) {
+    public Framework(String framework, String version) {
         super();
         this.framework = framework;
-        this.verstion = verstion;
+        this.version = version;
     }
     
     public Framework() {

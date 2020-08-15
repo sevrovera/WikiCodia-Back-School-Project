@@ -14,5 +14,6 @@ public interface UtilisateurRepository extends JpaRepository<Utilisateur , Long>
     " where u.mail = ?1")
     Optional<Utilisateur> findUserWithMail(String mail);
     
+    Utilisateur findByPseudoEquals (String pseudo);
     Utilisateur findByMailAndPseudoEquals (String mail, String pseudo);
 }

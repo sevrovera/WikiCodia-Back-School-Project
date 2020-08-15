@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 @Repository
 public interface FrameworkRepository extends JpaRepository<Framework , Long> {
-
-	Framework findByFrameworkAndVerstionEquals(String framework, String verstion);
+	Framework findByFrameworkEquals(String framework);
+	Framework findByFrameworkAndVersionEquals(String framework, String version);
 
 }
