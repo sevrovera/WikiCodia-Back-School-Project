@@ -141,9 +141,9 @@ public class ArticleController {
 	
 	
 
-	@PostMapping("/creation")
+	@PostMapping("/creation/{idUser}")
 //	@ResponseBody
-	public ResponseEntity<Article> createArticle(@RequestBody Article article) {
+	public ResponseEntity<Article> createArticle(@PathVariable("idUser") Long idUser, @RequestBody Article article) {
 		
 		try {
 			Article a = new Article();
@@ -159,17 +159,35 @@ public class ArticleController {
 			//suppose qu'on ne peut pas voter pour son propre article 
 			a.setVote(null);
 
-			//suppose que seuls les types, catégories, languages, framework, versions ... enregistrés préalablements sont valides et disponibles pour la création d'un article
 			List<Framework> listFram = new ArrayList<Framework>();
 			for (Framework frameworkItere : article.getFramework()) {
-				listFram.add(frameworkRepository.findByFrameworkAndVerstionEquals(frameworkItere.getFramework(), frameworkItere.getVerstion()));
+				if (frameworkRepository.findByFrameworkAndVerstionEquals(frameworkItere.getFramework(), frameworkItere.getVerstion()) != null) {
+					listFram.add(frameworkRepository.findByFrameworkAndVerstionEquals(frameworkItere.getFramework(), frameworkItere.getVerstion()));
+				}
+				else {
+					Framework newFram = new Framework();
+					newFram.setFramework(frameworkItere.getFramework());
+					newFram.setVerstion(frameworkItere.getVerstion());
+					frameworkRepository.save(newFram);
+					listFram.add(frameworkRepository.findByFrameworkAndVerstionEquals(frameworkItere.getFramework(), frameworkItere.getVerstion()));
+				}
 			}
 			a.setFramework(listFram);
 			
 
 			List<Langage> listLang = new ArrayList<Langage>();
 			for (Langage langageItere : article.getLangage()) {
-				listLang.add(langageRepository.findByLangAndVersionEquals(langageItere.getLang(), langageItere.getVersion()));
+				
+				if (langageRepository.findByLangAndVersionEquals(langageItere.getLang(), langageItere.getVersion()) != null) {
+					listLang.add(langageRepository.findByLangAndVersionEquals(langageItere.getLang(), langageItere.getVersion()));
+				}
+				else {
+					Langage newLang = new Langage();
+					newLang.setLang(langageItere.getLang());
+					newLang.setVersion(langageItere.getVersion());
+					langageRepository.save(newLang);
+					listLang.add(langageRepository.findByLangAndVersionEquals(langageItere.getLang(), langageItere.getVersion()));
+				}				
 			}
 			a.setLangage(listLang);
 			
@@ -178,7 +196,9 @@ public class ArticleController {
 			
 			a.setType(typeRepository.findByLibTypeEquals(article.getType().getLibType()));
 			
-			a.setAuteur(utilisateurRepository.findByMailAndPseudoEquals(article.getAuteur().getMail(), article.getAuteur().getPseudo()));
+//			a.setAuteur(utilisateurRepository.findByMailAndPseudoEquals(article.getAuteur().getMail(), article.getAuteur().getPseudo()));
+			a.setAuteur(utilisateurRepository.findByIdUtilisateurEquals(idUser));
+
 			
 			articleRepository.save(a);
 			
