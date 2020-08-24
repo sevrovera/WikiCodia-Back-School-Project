@@ -39,8 +39,8 @@ public class Framework {
         return version;
     }
 
-    public void setVersion(String verstion) {
-        this.version = verstion;
+    public void setVersion(String version) {
+        this.version = version;
     }
 
     //CONSTRUCTOR
