@@ -28,7 +28,7 @@ public class UtilisateurController {
 
 	@RequestMapping(value = "/modification", method = RequestMethod.PUT)
 	@ResponseBody
-	public Utilisateur modification(Utilisateur u) {
+	public Utilisateur modification(@RequestBody Utilisateur u) {
 		System.out.println(u);
 
 		Utilisateur modifUtilisateur = utilisateurRepository.findById(u.getIdUtilisateur()).get();
