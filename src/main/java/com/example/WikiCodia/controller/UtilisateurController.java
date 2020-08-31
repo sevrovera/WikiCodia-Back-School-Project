@@ -8,7 +8,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
+
 import com.example.WikiCodia.model.Utilisateur;
+import com.example.WikiCodia.repository.EtatRepository;
 import com.example.WikiCodia.repository.UtilisateurRepository;
 
 @RestController
@@ -17,11 +20,14 @@ public class UtilisateurController {
 	
 	@Autowired
 	private UtilisateurRepository utilisateurRepository;
+	@Autowired
+	private EtatRepository etatRepository;
 
 	@RequestMapping(value = "/creation", method = RequestMethod.POST)
 	@ResponseBody
 	public Utilisateur cree(Utilisateur u) {
-		System.out.println(u);
+		u.setDateInscription(LocalDate.now());
+		u.setEtat(this.etatRepository.findById((long) 1).get());
 		utilisateurRepository.save(u);
 		return u;
 	}
@@ -67,32 +73,4 @@ public class UtilisateurController {
 		return utilisateurRepository.findById(id).get();
 
 	}
-
-	/*
-	@RequestMapping(value = "", method = RequestMethod.POST)
-	@ResponseBody
-	public void nouvelUtilisateur(
-			@RequestHeader ("prenom") String prenom, 
-			@RequestHeader("nom") String nom, 
-			@RequestHeader("pseudo") String pseudo, 
-			@RequestHeader("mail") String mail,
-			@RequestHeader("lienLinkedin") String lienLinkedin, 
-			@RequestHeader("statut") String statut) {
-		LocalDate dateIncription = LocalDate.now();	
-		Utilisateur nouvelUtilisateur = new Utilisateur(prenom,nom,pseudo,mail,lienLinkedin,statut,dateIncription);
-		utilisateurRepository.save(nouvelUtilisateur);
-	} */
-	
-	
-	/*
-	@RequestMapping("/connexion")
-    @ResponseBody
-    public Utilisateur connexion(@RequestHeader("mail") String mail, @RequestHeader("motDePasse") String motDePasse){
-        Utilisateur utilisateur = utilisateurRepository.findByMail(mail);
-        if(utilisateur.getMotDePasse().equals(motDePasse)){
-            return utilisateur;
-        }
-        return null;
-    }
-	*/
 }
