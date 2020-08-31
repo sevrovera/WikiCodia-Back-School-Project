@@ -141,10 +141,13 @@ public class ArticleController {
 	
 	
 
-	@PostMapping("/creation/{idUser}")
+//	@PostMapping("/creation/{idUser}")
+	@PostMapping("/creation")
+
 //	@ResponseBody
-	public ResponseEntity<Article> createArticle(@PathVariable("idUser") Long idUser, @RequestBody Article article) {
-		
+//	public ResponseEntity<Article> createArticle(@PathVariable("idUser") Long idUser, @RequestBody Article article) {
+		public ResponseEntity<Article> createArticle(@RequestBody Article article) {
+
 		try {
 			Article a = new Article();
 			
@@ -197,7 +200,7 @@ public class ArticleController {
 			a.setType(typeRepository.findByLibTypeEquals(article.getType().getLibType()));
 			
 //			a.setAuteur(utilisateurRepository.findByMailAndPseudoEquals(article.getAuteur().getMail(), article.getAuteur().getPseudo()));
-			a.setAuteur(utilisateurRepository.findByIdUtilisateurEquals(idUser));
+			a.setAuteur(utilisateurRepository.findByIdUtilisateurEquals((long) 1));
 
 			
 			articleRepository.save(a);
