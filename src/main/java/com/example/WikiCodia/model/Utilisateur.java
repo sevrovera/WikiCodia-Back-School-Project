@@ -5,8 +5,10 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,8 +20,6 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name="utilisateur")
@@ -42,8 +42,6 @@ public class Utilisateur implements Serializable , UserDetails {
 	@Column(name="mail", unique = true, nullable = false)
 	private String mail;
 	
-	//	@JsonIgnore permet de ne pas afficher le mdp dans les resultats json de requetes 
-	@JsonIgnore
 	@Column(name="mot_de_passe")
 	private String motDePasse;
 	
@@ -82,7 +80,7 @@ public class Utilisateur implements Serializable , UserDetails {
 	private List<Type> type;
 
 	@LazyCollection(LazyCollectionOption.FALSE)
-	@ManyToMany
+	@ManyToMany(cascade = CascadeType.ALL, fetch =  FetchType.LAZY)
 	private List<Categorie> categorie;
 	
 	//GETTERS SETTERS

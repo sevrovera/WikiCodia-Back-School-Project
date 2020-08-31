@@ -20,13 +20,14 @@ public class AppAuthProvider extends DaoAuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         UsernamePasswordAuthenticationToken auth = (UsernamePasswordAuthenticationToken) authentication;
         String mail = auth.getName();
-        //String password = auth.getCredentials()
-        //        .toString();
+        String password = auth.getCredentials()
+        .toString();
         UserDetails user = userDetailsService.loadUserByUsername(mail);
+        System.out.println();
         if (user == null) {
             throw new BadCredentialsException("Username/Password does not match for " + auth.getPrincipal());
         }
-        return new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(user, password, user.getAuthorities());
     }
 
     @Override
