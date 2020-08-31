@@ -143,7 +143,7 @@ public class ArticleController {
 
 	@PostMapping("/creation")
 //	@ResponseBody
-	public ResponseEntity<Article> createArticle(@RequestBody Article article) {
+	public ResponseEntity<Article> createArticle( @RequestBody Article article) {
 		
 		try {
 			Article a = new Article();
@@ -159,32 +159,70 @@ public class ArticleController {
 			//suppose qu'on ne peut pas voter pour son propre article 
 			a.setVote(null);
 
-			//suppose que seuls les types, catégories, languages, framework, versions ... enregistrés préalablements sont valides et disponibles pour la création d'un article
 			List<Framework> listFram = new ArrayList<Framework>();
 			for (Framework frameworkItere : article.getFramework()) {
-				listFram.add(frameworkRepository.findByFrameworkEquals(frameworkItere.getFramework()));
-				// listFram.add(frameworkRepository.findByFrameworkAndVersionEquals(frameworkItere.getFramework(), frameworkItere.getVersion()));
+				if (frameworkRepository.findByFrameworkAndVersionEquals(frameworkItere.getFramework(), frameworkItere.getVersion()) != null) {
+					listFram.add(frameworkRepository.findByFrameworkAndVersionEquals(frameworkItere.getFramework(), frameworkItere.getVersion()));
+				}
+				else {
+					Framework newFram = new Framework();
+					newFram.setFramework(frameworkItere.getFramework());
+					newFram.setVersion(frameworkItere.getVersion());
+					frameworkRepository.save(newFram);
+					listFram.add(frameworkRepository.findByFrameworkAndVersionEquals(frameworkItere.getFramework(), frameworkItere.getVersion()));
+				}
 			}
 			a.setFramework(listFram);
 			
+
 			List<Langage> listLang = new ArrayList<Langage>();
 			for (Langage langageItere : article.getLangage()) {
-				listLang.add(langageRepository.findByLangEquals(langageItere.getLang()));
-				// listLang.add(langageRepository.findByLangAndVersionEquals(langageItere.getLang(), langageItere.getVersion()));
+				
+				if (langageRepository.findByLangAndVersionEquals(langageItere.getLang(), langageItere.getVersion()) != null) {
+					listLang.add(langageRepository.findByLangAndVersionEquals(langageItere.getLang(), langageItere.getVersion()));
+				}
+				else {
+					Langage newLang = new Langage();
+					newLang.setLang(langageItere.getLang());
+					newLang.setVersion(langageItere.getVersion());
+					langageRepository.save(newLang);
+					listLang.add(langageRepository.findByLangAndVersionEquals(langageItere.getLang(), langageItere.getVersion()));
+				}				
 			}
 			a.setLangage(listLang);
 			
-			a.setCategorie(categorieRepository.findByLibCategorieEquals(article.getCategorie().getLibCategorie()));
 			
-			a.setType(typeRepository.findByLibTypeEquals(article.getType().getLibType()));
+//			a.setCategorie(categorieRepository.findByLibCategorieEquals(article.getCategorie().getLibCategorie()));
+			if (categorieRepository.findByLibCategorieEquals(article.getCategorie().getLibCategorie()) != null) {
+				a.setCategorie(categorieRepository.findByLibCategorieEquals(article.getCategorie().getLibCategorie()));			}
+			else {
+				Categorie newCat = new Categorie();
+				newCat.setLibCategorie(article.getCategorie().getLibCategorie());
+				categorieRepository.save(newCat);
+				a.setCategorie(categorieRepository.findByLibCategorieEquals(article.getCategorie().getLibCategorie()));
+			}		
+//			
+//			a.setType(typeRepository.findByLibTypeEquals(article.getType().getLibType()));
+			if (typeRepository.findByLibTypeEquals(article.getType().getLibType()) != null) {
+				a.setType(typeRepository.findByLibTypeEquals(article.getType().getLibType()));			}
+			else {
+				Type newTyp = new Type();
+				newTyp.setLibType(article.getType().getLibType());
+				typeRepository.save(newTyp);
+				a.setType(typeRepository.findByLibTypeEquals(article.getType().getLibType()));
+			}	
+
 			
-			// a.setAuteur(utilisateurRepository.findByPseudoEquals(article.getAuteur().getPseudo()));
-			// a.setAuteur(utilisateurRepository.findByMailAndPseudoEquals(article.getAuteur().getMail(), article.getAuteur().getPseudo()));
+			
+			
+			a.setAuteur(utilisateurRepository.getOne(article.getAuteur().getIdUtilisateur()));
+
 			
 			articleRepository.save(a);
 			
 			return new ResponseEntity<>(a, HttpStatus.OK);
 		} catch (Exception e) {
+			System.out.println(e);
 			return new ResponseEntity<>(null, HttpStatus.EXPECTATION_FAILED);
 		}
 	}

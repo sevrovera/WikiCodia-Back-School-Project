@@ -36,7 +36,7 @@ public class Utilisateur implements Serializable , UserDetails {
 	@Column(name="nom")
 	private String nom;
 	
-	@Column(name="pseudo", unique = true, nullable = false)
+	@Column(name="pseudo", unique = true)
 	private String pseudo;
 	
 	@Column(name="mail", unique = true, nullable = false)
