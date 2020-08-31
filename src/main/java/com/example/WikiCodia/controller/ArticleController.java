@@ -141,13 +141,10 @@ public class ArticleController {
 	
 	
 
-//	@PostMapping("/creation/{idUser}")
 	@PostMapping("/creation")
-
 //	@ResponseBody
-//	public ResponseEntity<Article> createArticle(@PathVariable("idUser") Long idUser, @RequestBody Article article) {
-		public ResponseEntity<Article> createArticle(@RequestBody Article article) {
-
+	public ResponseEntity<Article> createArticle(@RequestBody Article article) {
+		
 		try {
 			Article a = new Article();
 			
@@ -162,46 +159,27 @@ public class ArticleController {
 			//suppose qu'on ne peut pas voter pour son propre article 
 			a.setVote(null);
 
+			//suppose que seuls les types, catégories, languages, framework, versions ... enregistrés préalablements sont valides et disponibles pour la création d'un article
 			List<Framework> listFram = new ArrayList<Framework>();
 			for (Framework frameworkItere : article.getFramework()) {
-				if (frameworkRepository.findByFrameworkAndVerstionEquals(frameworkItere.getFramework(), frameworkItere.getVerstion()) != null) {
-					listFram.add(frameworkRepository.findByFrameworkAndVerstionEquals(frameworkItere.getFramework(), frameworkItere.getVerstion()));
-				}
-				else {
-					Framework newFram = new Framework();
-					newFram.setFramework(frameworkItere.getFramework());
-					newFram.setVerstion(frameworkItere.getVerstion());
-					frameworkRepository.save(newFram);
-					listFram.add(frameworkRepository.findByFrameworkAndVerstionEquals(frameworkItere.getFramework(), frameworkItere.getVerstion()));
-				}
+				listFram.add(frameworkRepository.findByFrameworkEquals(frameworkItere.getFramework()));
+				// listFram.add(frameworkRepository.findByFrameworkAndVersionEquals(frameworkItere.getFramework(), frameworkItere.getVersion()));
 			}
 			a.setFramework(listFram);
 			
-
 			List<Langage> listLang = new ArrayList<Langage>();
 			for (Langage langageItere : article.getLangage()) {
-				
-				if (langageRepository.findByLangAndVersionEquals(langageItere.getLang(), langageItere.getVersion()) != null) {
-					listLang.add(langageRepository.findByLangAndVersionEquals(langageItere.getLang(), langageItere.getVersion()));
-				}
-				else {
-					Langage newLang = new Langage();
-					newLang.setLang(langageItere.getLang());
-					newLang.setVersion(langageItere.getVersion());
-					langageRepository.save(newLang);
-					listLang.add(langageRepository.findByLangAndVersionEquals(langageItere.getLang(), langageItere.getVersion()));
-				}				
+				listLang.add(langageRepository.findByLangEquals(langageItere.getLang()));
+				// listLang.add(langageRepository.findByLangAndVersionEquals(langageItere.getLang(), langageItere.getVersion()));
 			}
 			a.setLangage(listLang);
-			
 			
 			a.setCategorie(categorieRepository.findByLibCategorieEquals(article.getCategorie().getLibCategorie()));
 			
 			a.setType(typeRepository.findByLibTypeEquals(article.getType().getLibType()));
 			
-//			a.setAuteur(utilisateurRepository.findByMailAndPseudoEquals(article.getAuteur().getMail(), article.getAuteur().getPseudo()));
-			a.setAuteur(utilisateurRepository.findByIdUtilisateurEquals((long) 1));
-
+			// a.setAuteur(utilisateurRepository.findByPseudoEquals(article.getAuteur().getPseudo()));
+			// a.setAuteur(utilisateurRepository.findByMailAndPseudoEquals(article.getAuteur().getMail(), article.getAuteur().getPseudo()));
 			
 			articleRepository.save(a);
 			
@@ -245,7 +223,7 @@ public class ArticleController {
 //		
 //		Framework framework = new Framework();
 //		framework.setFramework("framework");
-//		framework.setVerstion("verstion framework");
+//		framework.setVersion("version framework");
 //		frameworkRepository.save(framework);
 //		List<Framework> frameworks = new ArrayList<Framework>();
 //		frameworks.add(framework);

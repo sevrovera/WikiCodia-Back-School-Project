@@ -32,7 +32,7 @@ public class FrameworkController {
 		Framework modifFramework = frameworkRepository.findById(f.getIdFramework()).get();
 
 		modifFramework.setFramework(f.getFramework());
-		modifFramework.setVerstion(f.getVerstion());
+		modifFramework.setVersion(f.getVersion());
 
 		frameworkRepository.save(modifFramework);
 
