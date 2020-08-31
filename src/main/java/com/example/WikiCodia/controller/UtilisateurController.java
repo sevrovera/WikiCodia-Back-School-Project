@@ -53,6 +53,7 @@ public class UtilisateurController {
 		modifUtilisateur.setLangage(u.getLangage());
 		modifUtilisateur.setType(u.getType());
 		modifUtilisateur.setCategorie(u.getCategorie());
+		modifUtilisateur.setDateDerniereConnexion(u.getDateDerniereConnexion());
 
 		utilisateurRepository.save(modifUtilisateur);
 
