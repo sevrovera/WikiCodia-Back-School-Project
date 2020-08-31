@@ -18,6 +18,8 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 
 @Entity
 @Table(name = "article")
@@ -55,10 +57,12 @@ public class Article {
 	
 	// En partant du principe qu'un article peut être associé à plusieurs langages ou framework (par ex un article comparatif) :
 	
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@ManyToMany
 	private List<Langage> langage;
 	
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@ManyToMany
 	private List<Framework> framework;
