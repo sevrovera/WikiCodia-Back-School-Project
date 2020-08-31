@@ -26,8 +26,6 @@ public class UtilisateurController {
 	@RequestMapping(value = "/creation", method = RequestMethod.POST)
 	@ResponseBody
 	public Utilisateur cree(Utilisateur u) {
-		u.setDateInscription(LocalDate.now());
-		u.setEtat(this.etatRepository.findById((long) 1).get());
 		utilisateurRepository.save(u);
 		return u;
 	}

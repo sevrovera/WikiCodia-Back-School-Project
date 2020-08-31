@@ -16,13 +16,10 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name="utilisateur")
@@ -45,8 +42,6 @@ public class Utilisateur implements Serializable , UserDetails {
 	@Column(name="mail", unique = true, nullable = false)
 	private String mail;
 	
-	//	@JsonIgnore permet de ne pas afficher le mdp dans les resultats json de requetes 
-	@JsonIgnore
 	@Column(name="mot_de_passe")
 	private String motDePasse;
 	
