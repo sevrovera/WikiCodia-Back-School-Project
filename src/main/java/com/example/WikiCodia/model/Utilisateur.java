@@ -227,7 +227,7 @@ public class Utilisateur implements Serializable , UserDetails {
 	
 	// SPRING SECURITY
 	public String getUsername() {
-        return pseudo;
+        return mail;
     }
     @Override
     public boolean isAccountNonExpired() {
@@ -246,7 +246,7 @@ public class Utilisateur implements Serializable , UserDetails {
         return false;
     }
     public void setUsername(String username) {
-        this.pseudo = username;
+        this.mail = username;
     }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
