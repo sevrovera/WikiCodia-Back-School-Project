@@ -9,9 +9,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+
 import java.time.LocalDate;
 
 import com.example.WikiCodia.model.Role;
+
 import com.example.WikiCodia.model.Utilisateur;
 import com.example.WikiCodia.repository.EtatRepository;
 import com.example.WikiCodia.repository.RoleRepository;
@@ -23,6 +25,7 @@ public class UtilisateurController {
 	
 	@Autowired
 	private UtilisateurRepository utilisateurRepository;
+
 	@Autowired
 	private EtatRepository etatRepository;
 	@Autowired
@@ -33,6 +36,8 @@ public class UtilisateurController {
 	@RequestMapping(value = "/creation", method = RequestMethod.POST)
 	@ResponseBody
 	public Utilisateur cree(Utilisateur u) {
+		//mise ne place de l etat actif
+		u.setEtat(etatRepository.findById((long) 1).get());
 		u.setMotDePasse(passwordEncoder.encode(u.getMotDePasse()));
 		Role role = roleRepository.save(new Role("normal"));
 		u.setRole(role);
@@ -61,6 +66,7 @@ public class UtilisateurController {
 		modifUtilisateur.setLangage(u.getLangage());
 		modifUtilisateur.setType(u.getType());
 		modifUtilisateur.setCategorie(u.getCategorie());
+		modifUtilisateur.setDateInscription(u.getDateInscription());
 		modifUtilisateur.setDateDerniereConnexion(u.getDateDerniereConnexion());
 
 		utilisateurRepository.save(modifUtilisateur);
