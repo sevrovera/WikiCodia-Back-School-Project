@@ -1,6 +1,7 @@
 package com.example.WikiCodia.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,12 +22,15 @@ public class UtilisateurController {
 
 	@Autowired
 	private EtatRepository etatRepository;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	@RequestMapping(value = "/creation", method = RequestMethod.POST)
 	@ResponseBody
 	public Utilisateur cree(Utilisateur u) {
 		//mise ne place de l etat actif
 		u.setEtat(etatRepository.findById((long) 1).get());
+		u.setMotDePasse(passwordEncoder.encode(u.getMotDePasse()));
 		utilisateurRepository.save(u);
 		return u;
 	}
