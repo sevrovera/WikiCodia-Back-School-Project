@@ -16,7 +16,7 @@ public class Role {
 	@Column(name="id_role", unique = true, nullable = false)
     private long idRole;
 
-    @Column(name="role", unique = true, nullable = false)
+    @Column(name="role", unique = false, nullable = false)
     private String role;
 
     //GETTERS SETTERS
