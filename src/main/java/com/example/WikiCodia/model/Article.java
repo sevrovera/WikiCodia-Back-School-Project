@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -31,13 +32,15 @@ public class Article {
 	private Long idArticle;
 
 	@NotNull
-	@Column(name = "titre")
+	@Column(name = "titre") 
 	private String titre;
 	
 	@Column(name = "description")
+    @Size(max = 999999)
 	private String description;
 	
 	@Column(name = "contenu")
+    @Size(max = 999999)
 	private String contenu;
 	
 	@Column(name = "date_creation")
