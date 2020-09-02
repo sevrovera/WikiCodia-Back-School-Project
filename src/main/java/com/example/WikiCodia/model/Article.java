@@ -3,8 +3,11 @@ package com.example.WikiCodia.model;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -14,6 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -31,13 +35,15 @@ public class Article {
 	private Long idArticle;
 
 	@NotNull
-	@Column(name = "titre")
+	@Column(name = "titre") 
 	private String titre;
 	
 	@Column(name = "description")
+    @Size(max = 999999)
 	private String description;
 	
 	@Column(name = "contenu")
+    @Size(max = 999999)
 	private String contenu;
 	
 	@Column(name = "date_creation")
@@ -55,7 +61,7 @@ public class Article {
 	@Column(name = "est_valide", columnDefinition = "boolean default false")
 	private Boolean estValide;
 
-	@OneToMany
+	@ElementCollection(fetch = FetchType.EAGER)
 	private List<Vote> vote;
 	
 	// En partant du principe qu'un article peut être associé à plusieurs langages ou framework (par ex un article comparatif) :

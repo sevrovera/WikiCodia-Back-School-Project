@@ -28,11 +28,11 @@ public class RoleController {
 	@RequestMapping(value = "/promossion", method = RequestMethod.PUT)
 	@ResponseBody
 	public Role promossion(@RequestBody Role r) {
-
 		Role modifRole = roleRepository.findById(r.getIdRole()).get();
 		modifRole.setRole("admin");
 		roleRepository.save(modifRole);
 		return modifRole;
+		
 	}
 	
 	@RequestMapping(value = "/destitution" , method = RequestMethod.PUT)
