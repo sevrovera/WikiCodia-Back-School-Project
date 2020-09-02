@@ -29,50 +29,65 @@ public class Vote {
 
     @Column(name="commentaire")
     private String commentaire;
-
+    
     
     public Vote() {
     	
     }
-    
-    public Vote(Long idVote, Boolean liked, @NotNull Utilisateur utilisateur, String commentaire) {
+
+
+	public Vote(Long idVote, Boolean liked, @NotNull Utilisateur utilisateur, String commentaire) {
 		super();
 		this.idVote = idVote;
 		this.liked = liked;
 		this.utilisateur = utilisateur;
 		this.commentaire = commentaire;
 	}
-	
+
+
 	public Long getIdVote() {
-        return idVote;
-    }
-    
+		return idVote;
+	}
+
+
 	public void setIdVote(Long idVote) {
-        this.idVote = idVote;
-    }
+		this.idVote = idVote;
+	}
+
+
+	public Boolean getLiked() {
+		return liked;
+	}
+
+
+	public void setLiked(Boolean liked) {
+		this.liked = liked;
+	}
+
+
+	public Utilisateur getUtilisateur() {
+		return utilisateur;
+	}
+
+
+	public void setUtilisateur(Utilisateur utilisateur) {
+		this.utilisateur = utilisateur;
+	}
+
+
+	public String getCommentaire() {
+		return commentaire;
+	}
+
+
+	public void setCommentaire(String commentaire) {
+		this.commentaire = commentaire;
+	}
+
+
+
 	
-    public Boolean getLiked() {
-        return liked;
-    }
-
-    public void setLiked(Boolean liked) {
-        this.liked = liked;
-    }
+	
     
-    public Utilisateur getUtilisateur() {
-        return utilisateur;
-    }
-
-    public void setUtilisateur(Utilisateur utilisateur) {
-        this.utilisateur = utilisateur;
-    }
-    
-    public String getCommentaire() {
-        return commentaire;
-    }
-
-    public void setCommentaire(String commentaire) {
-        this.commentaire = commentaire;
-    }
 
 }

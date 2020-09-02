@@ -3,6 +3,7 @@ package com.example.WikiCodia.model;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -52,7 +53,7 @@ public class Article {
 	@Column(name = "est_promu", columnDefinition = "boolean default false")
 	private Boolean estPromu;
 
-	@OneToMany
+	@OneToMany (cascade={CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval=true)
 	private List<Vote> vote;
 	
 	// En partant du principe qu'un article peut être associé à plusieurs langages ou framework (par ex un article comparatif) :
