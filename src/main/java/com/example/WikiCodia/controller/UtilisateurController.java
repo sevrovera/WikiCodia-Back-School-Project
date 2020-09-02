@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import com.example.WikiCodia.model.Role;
 
@@ -87,5 +89,11 @@ public class UtilisateurController {
 
 		return utilisateurRepository.findById(id).get();
 
+	}
+	
+	@RequestMapping("/trouverUnUtilisateur")
+	@ResponseBody
+	public Optional<Utilisateur> findByMail(@RequestHeader("mail") String mail) {
+		return utilisateurRepository.findUserWithMail(mail);
 	}
 }
