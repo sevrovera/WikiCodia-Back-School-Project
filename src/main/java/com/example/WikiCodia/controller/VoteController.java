@@ -1,10 +1,25 @@
 package com.example.WikiCodia.controller;
 
+import com.example.WikiCodia.model.Article;
 import com.example.WikiCodia.model.Vote;
+import com.example.WikiCodia.repository.ArticleRepository;
+import com.example.WikiCodia.repository.CategorieRepository;
+import com.example.WikiCodia.repository.EtatRepository;
+import com.example.WikiCodia.repository.FrameworkRepository;
+import com.example.WikiCodia.repository.GuildeRepository;
+import com.example.WikiCodia.repository.LangageRepository;
+import com.example.WikiCodia.repository.RoleRepository;
+import com.example.WikiCodia.repository.TypeRepository;
+import com.example.WikiCodia.repository.UtilisateurRepository;
 import com.example.WikiCodia.repository.VoteRepository;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +32,38 @@ public class VoteController {
 	
     @Autowired
 	private VoteRepository voteRepository;
+    
+	@Autowired
+	ArticleRepository articleRepository;
+	
+	@Autowired
+	GuildeRepository guildeRepository;
+	
+	@Autowired
+	RoleRepository roleRepository;
+	
+	@Autowired
+	TypeRepository typeRepository;
+	
+	@Autowired
+	UtilisateurRepository utilisateurRepository;
+	
+	
+	@Autowired
+	LangageRepository langageRepository;
+	
+	
+	@Autowired
+	FrameworkRepository frameworkRepository;
+	
+	
+	@Autowired
+	CategorieRepository categorieRepository;
+	
+	
+	@Autowired
+	EtatRepository etatRepository;
+	
 
 	@RequestMapping(value = "/creation", method = RequestMethod.POST)
 	@ResponseBody
@@ -32,7 +79,7 @@ public class VoteController {
 		Vote modifVote = voteRepository.findById(v.getIdVote()).get();
 
 		modifVote.setLiked(v.getLiked());
-		modifVote.setUtilisateur(v.getUtilisateur());
+//		modifVote.setUtilisateur(v.getUtilisateur());
 		modifVote.setCommentaire(v.getCommentaire());
 
 		voteRepository.save(modifVote);
@@ -62,5 +109,6 @@ public class VoteController {
         return voteRepository.findAll();
         
     }
+        
 
 }

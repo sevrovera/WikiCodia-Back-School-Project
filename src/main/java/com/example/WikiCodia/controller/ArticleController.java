@@ -209,95 +209,7 @@ public class ArticleController {
 			System.out.println(e);
 			return new ResponseEntity<>(null, HttpStatus.EXPECTATION_FAILED);
 		}
-	}
-
-
-// METHODE POUR IMPLEMENTER LA BDD SI ELLE EST VIDE
-	
-//	@PostMapping("/creation")
-//	@ResponseBody
-//	public Article createArticle() {
-//		
-//		Guilde guilde = new Guilde();
-//		guilde.setGuilde("nom de la guilde");
-//		guildeRepository.save(guilde);
-//		
-//		Role role = new Role();
-//		role.setRole("role");
-//		roleRepository.save(role);
-//		
-//		Type type = new Type();
-//		type.setLibType("libType");
-//		typeRepository.save(type);
-//		List<Type> types = new ArrayList<Type>();
-//		types.add(type);
-//		
-//		Etat etat = new Etat();
-//		etat.setEtat("etat");
-//		etatRepository.save(etat);
-//		
-//		Langage langage = new Langage();
-//		langage.setLang("langage");
-//		langage.setVersion("version langage");
-//		langageRepository.save(langage);
-//		List<Langage> langages = new ArrayList<Langage>();
-//		langages.add(langage);
-//		
-//		Framework framework = new Framework();
-//		framework.setFramework("framework");
-//		framework.setVersion("version framework");
-//		frameworkRepository.save(framework);
-//		List<Framework> frameworks = new ArrayList<Framework>();
-//		frameworks.add(framework);
-//		
-//		Categorie categorie = new Categorie();
-//		categorie.setLibCategorie("libCategorie");
-//		categorieRepository.save(categorie);
-//		
-//		Utilisateur utilisateur = new Utilisateur();
-//		utilisateur.setCategorie(new ArrayList<Categorie>());
-//		utilisateur.setDateDerniereConnexion(LocalDate.now());
-//		utilisateur.setDateInscription(LocalDate.now());
-//		utilisateur.setEtat(etat);
-//		utilisateur.setFramework(new ArrayList<Framework>());
-//		utilisateur.setGuilde(new ArrayList<Guilde>());
-//		utilisateur.setLangage(new ArrayList<Langage>());
-//		utilisateur.setLienLinkedin("lienLinkedin");
-//		utilisateur.setMail("mail@test.fr");
-//		utilisateur.setMotDePasse("motDePasse");
-//		utilisateur.setNom("nom utilisateur");
-//		utilisateur.setPrenom("prenom");
-//		utilisateur.setPseudo("pseudo");
-//		utilisateur.setRole(role);
-//		utilisateur.setStatut("statut");
-//		utilisateur.setType(types);
-//		utilisateurRepository.save(utilisateur);
-//				
-//		Vote vote = new Vote();
-//		vote.setCommentaire("commentaire de test");
-//		vote.setUtilisateur(utilisateur);
-//		voteRepository.save(vote);
-//		List<Vote> votes = new ArrayList<Vote>();
-//		votes.add(vote);
-//		
-//		
-//		Article article = new Article();
-//		article.setAuteur(utilisateur);
-//		article.setCategorie(categorie);
-//		article.setContenu("contenu texte de l'article");
-//		article.setDateCreation(LocalDate.now());
-//		article.setDateDerniereModif(LocalDate.now());
-//		article.setDescription("texte de description de l'article");
-//		article.setFramework(frameworks);
-//		article.setLangage(langages);
-//		article.setTitre("titre");
-//		article.setType(type);
-//		article.setVote(null);
-//		
-//		articleRepository.save(article);
-//		return article;
-//	}
-	
+	}	
 
 	
 	
@@ -337,21 +249,81 @@ public class ArticleController {
 				_article.setEstValide(false);
 			}
 			if (articleUpdated.getVote() != null) {
-				_article.setVote(articleUpdated.getVote());
+				List<Vote> listVote = new ArrayList<Vote>();
+				for (Vote voteItere : articleUpdated.getVote()) {
+					
+					if (voteItere.getIdVote() != null) {
+						voteRepository.save(voteItere);
+						listVote.add(voteRepository.findByLikedAndCommentaireAndUtilisateurEquals(voteItere.getLiked(), voteItere.getCommentaire(), voteItere.getUtilisateur()));
+					}
+					else {
+						Vote newVote = new Vote();
+						newVote.setCommentaire(voteItere.getCommentaire());
+						newVote.setLiked(voteItere.getLiked());
+						newVote.setUtilisateur(voteItere.getUtilisateur());
+						voteRepository.save(newVote);
+						listVote.add(voteRepository.findByLikedAndCommentaireAndUtilisateurEquals(voteItere.getLiked(), voteItere.getCommentaire(), voteItere.getUtilisateur()));
+					}				
+				}
+				_article.setVote(listVote);				
 			}
 			if (articleUpdated.getLangage() != null) {
-				_article.setLangage(articleUpdated.getLangage());
+				List<Langage> listLang = new ArrayList<Langage>();
+				for (Langage langageItere : articleUpdated.getLangage()) {
+					
+					if (langageRepository.findByLangAndVersionEquals(langageItere.getLang(), langageItere.getVersion()) != null) {
+						listLang.add(langageRepository.findByLangAndVersionEquals(langageItere.getLang(), langageItere.getVersion()));
+					}
+					else {
+						Langage newLang = new Langage();
+						newLang.setLang(langageItere.getLang());
+						newLang.setVersion(langageItere.getVersion());
+						langageRepository.save(newLang);
+						listLang.add(langageRepository.findByLangAndVersionEquals(langageItere.getLang(), langageItere.getVersion()));
+					}				
+				}
+				_article.setLangage(listLang);
+				
 			}
 			if (articleUpdated.getFramework() != null) {
-				_article.setFramework(articleUpdated.getFramework());
+				
+				List<Framework> listFram = new ArrayList<Framework>();
+				for (Framework frameworkItere : articleUpdated.getFramework()) {
+					if (frameworkRepository.findByFrameworkAndVersionEquals(frameworkItere.getFramework(), frameworkItere.getVersion()) != null) {
+						listFram.add(frameworkRepository.findByFrameworkAndVersionEquals(frameworkItere.getFramework(), frameworkItere.getVersion()));
+					}
+					else {
+						Framework newFram = new Framework();
+						newFram.setFramework(frameworkItere.getFramework());
+						newFram.setVersion(frameworkItere.getVersion());
+						frameworkRepository.save(newFram);
+						listFram.add(frameworkRepository.findByFrameworkAndVersionEquals(frameworkItere.getFramework(), frameworkItere.getVersion()));
+					}
+				}
+				_article.setFramework(listFram);				
 			}
 			if (articleUpdated.getType() != null) {
-				_article.setType(articleUpdated.getType());
+				if (typeRepository.findByLibTypeEquals(articleUpdated.getType().getLibType()) != null) {
+					_article.setType(typeRepository.findByLibTypeEquals(articleUpdated.getType().getLibType()));			}
+				else {
+					Type newTyp = new Type();
+					newTyp.setLibType(articleUpdated.getType().getLibType());
+					typeRepository.save(newTyp);
+					_article.setType(typeRepository.findByLibTypeEquals(articleUpdated.getType().getLibType()));
+				}	
+								
 			}
 			if (articleUpdated.getCategorie() != null) {
-				_article.setCategorie(articleUpdated.getCategorie());
+				if (categorieRepository.findByLibCategorieEquals(articleUpdated.getCategorie().getLibCategorie()) != null) {
+					_article.setCategorie(categorieRepository.findByLibCategorieEquals(articleUpdated.getCategorie().getLibCategorie()));			}
+				else {
+					Categorie newCat = new Categorie();
+					newCat.setLibCategorie(articleUpdated.getCategorie().getLibCategorie());
+					categorieRepository.save(newCat);
+					_article.setCategorie(categorieRepository.findByLibCategorieEquals(articleUpdated.getCategorie().getLibCategorie()));
+				}					
 			}
-
+			
 			return new ResponseEntity<>(articleRepository.save(_article), HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
