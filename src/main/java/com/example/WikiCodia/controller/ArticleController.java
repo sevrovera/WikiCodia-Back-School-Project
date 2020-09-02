@@ -24,6 +24,7 @@ import com.example.WikiCodia.model.Categorie;
 import com.example.WikiCodia.model.Framework;
 import com.example.WikiCodia.model.Langage;
 import com.example.WikiCodia.model.Type;
+import com.example.WikiCodia.model.Vote;
 import com.example.WikiCodia.repository.ArticleRepository;
 import com.example.WikiCodia.repository.CategorieRepository;
 import com.example.WikiCodia.repository.EtatRepository;
@@ -33,9 +34,9 @@ import com.example.WikiCodia.repository.LangageRepository;
 import com.example.WikiCodia.repository.RoleRepository;
 import com.example.WikiCodia.repository.TypeRepository;
 import com.example.WikiCodia.repository.UtilisateurRepository;
-import com.example.WikiCodia.repository.VoteRepository;
+//import com.example.WikiCodia.repository.VoteRepository;
 
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
 //@CrossOrigin(origins = "*", allowedHeaders = "*")
 
 @RestController
@@ -58,8 +59,8 @@ public class ArticleController {
 	UtilisateurRepository utilisateurRepository;
 	
 	
-	@Autowired
-	VoteRepository voteRepository;
+//	@Autowired
+//	VoteRepository voteRepository;
 	
 	@Autowired
 	LangageRepository langageRepository;
@@ -249,23 +250,23 @@ public class ArticleController {
 				_article.setEstValide(false);
 			}
 			if (articleUpdated.getVote() != null) {
-				List<Vote> listVote = new ArrayList<Vote>();
-				for (Vote voteItere : articleUpdated.getVote()) {
-					
-					if (voteItere.getIdVote() != null) {
-						voteRepository.save(voteItere);
-						listVote.add(voteRepository.findByLikedAndCommentaireAndUtilisateurEquals(voteItere.getLiked(), voteItere.getCommentaire(), voteItere.getUtilisateur()));
-					}
-					else {
-						Vote newVote = new Vote();
-						newVote.setCommentaire(voteItere.getCommentaire());
-						newVote.setLiked(voteItere.getLiked());
-						newVote.setUtilisateur(voteItere.getUtilisateur());
-						voteRepository.save(newVote);
-						listVote.add(voteRepository.findByLikedAndCommentaireAndUtilisateurEquals(voteItere.getLiked(), voteItere.getCommentaire(), voteItere.getUtilisateur()));
-					}				
-				}
-				_article.setVote(listVote);				
+//				List<Vote> listVote = new ArrayList<Vote>();
+//				for (Vote voteItere : articleUpdated.getVote()) {
+//					
+//					if (voteItere.getIdVote() != null) {
+//						voteRepository.save(voteItere);
+//						listVote.add(voteRepository.findByLikedAndCommentaireAndUtilisateurEquals(voteItere.getLiked(), voteItere.getCommentaire(), voteItere.getUtilisateur()));
+//					}
+//					else {
+//						Vote newVote = new Vote();
+//						newVote.setCommentaire(voteItere.getCommentaire());
+//						newVote.setLiked(voteItere.getLiked());
+//						newVote.setUtilisateur(voteItere.getUtilisateur());
+//						voteRepository.save(newVote);
+//						listVote.add(voteRepository.findByLikedAndCommentaireAndUtilisateurEquals(voteItere.getLiked(), voteItere.getCommentaire(), voteItere.getUtilisateur()));
+//					}				
+//				}
+				_article.setVote(articleUpdated.getVote());				
 			}
 			if (articleUpdated.getLangage() != null) {
 				List<Langage> listLang = new ArrayList<Langage>();
