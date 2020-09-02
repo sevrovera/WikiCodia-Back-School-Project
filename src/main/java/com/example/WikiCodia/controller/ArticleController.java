@@ -95,6 +95,22 @@ public class ArticleController {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	@GetMapping("/pending")
+	public ResponseEntity<List<Article>> getArticlesPublishedAndNotValidated(@RequestParam(required = false) String titre) {
+		try {
+			List<Article> articles = new ArrayList<Article>();
+			articleRepository.findByIsPublishedAndNotValidated().forEach(articles::add);
+
+			if (articles.isEmpty()) {
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			}
+
+			return new ResponseEntity<>(articles, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Article> getArticleById(@PathVariable("id") long id) {
