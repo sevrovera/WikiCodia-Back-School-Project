@@ -25,16 +25,22 @@ public class RoleController {
 		return r;
 	}
 
-	@RequestMapping(value = "/modification", method = RequestMethod.PUT)
+	@RequestMapping(value = "/promossion", method = RequestMethod.PUT)
 	@ResponseBody
-	public Role modification(@RequestBody Role r) {
-
+	public Role promossion(@RequestBody Role r) {
 		Role modifRole = roleRepository.findById(r.getIdRole()).get();
-
-		modifRole.setRole(r.getRole());
-
+		modifRole.setRole("admin");
 		roleRepository.save(modifRole);
-
+		return modifRole;
+		
+	}
+	
+	@RequestMapping(value = "/destitution" , method = RequestMethod.PUT)
+	@ResponseBody
+	public Role destitution(@RequestBody Role r) {
+		Role modifRole = roleRepository.findById(r.getIdRole()).get();
+		modifRole.setRole("normal");
+		roleRepository.save(modifRole);
 		return modifRole;
 	}
 

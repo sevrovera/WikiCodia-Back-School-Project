@@ -1,17 +1,24 @@
 package com.example.WikiCodia.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+
 import java.time.LocalDate;
+import java.util.Optional;
+
+import com.example.WikiCodia.model.Role;
 
 import com.example.WikiCodia.model.Utilisateur;
 import com.example.WikiCodia.repository.EtatRepository;
+import com.example.WikiCodia.repository.RoleRepository;
 import com.example.WikiCodia.repository.UtilisateurRepository;
 
 @RestController
@@ -20,12 +27,22 @@ public class UtilisateurController {
 	
 	@Autowired
 	private UtilisateurRepository utilisateurRepository;
+
 	@Autowired
 	private EtatRepository etatRepository;
+	@Autowired
+	private RoleRepository roleRepository;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	@RequestMapping(value = "/creation", method = RequestMethod.POST)
 	@ResponseBody
 	public Utilisateur cree(Utilisateur u) {
+		//mise ne place de l etat actif
+		u.setEtat(etatRepository.findById((long) 1).get());
+		u.setMotDePasse(passwordEncoder.encode(u.getMotDePasse()));
+		Role role = roleRepository.save(new Role("normal"));
+		u.setRole(role);
 		utilisateurRepository.save(u);
 		return u;
 	}
@@ -51,6 +68,7 @@ public class UtilisateurController {
 		modifUtilisateur.setLangage(u.getLangage());
 		modifUtilisateur.setType(u.getType());
 		modifUtilisateur.setCategorie(u.getCategorie());
+		modifUtilisateur.setDateInscription(u.getDateInscription());
 		modifUtilisateur.setDateDerniereConnexion(u.getDateDerniereConnexion());
 
 		utilisateurRepository.save(modifUtilisateur);
@@ -71,5 +89,11 @@ public class UtilisateurController {
 
 		return utilisateurRepository.findById(id).get();
 
+	}
+	
+	@RequestMapping("/trouverUnUtilisateur")
+	@ResponseBody
+	public Optional<Utilisateur> findByMail(@RequestHeader("mail") String mail) {
+		return utilisateurRepository.findUserWithMail(mail);
 	}
 }

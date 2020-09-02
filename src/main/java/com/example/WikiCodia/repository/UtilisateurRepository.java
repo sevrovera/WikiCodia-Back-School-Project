@@ -11,9 +11,11 @@ public interface UtilisateurRepository extends JpaRepository<Utilisateur , Long>
 
     // Concerne Spring Security
     @Query(" select u from Utilisateur u " +
-    " where u.mail = ?1")
+    " where u.mail = ?1 ")
     Optional<Utilisateur> findUserWithMail(String mail);
     
     Utilisateur findByPseudoEquals (String pseudo);
     Utilisateur findByMailAndPseudoEquals (String mail, String pseudo);
+    Utilisateur findByIdUtilisateurEquals (Long idUtilisateur);
+
 }

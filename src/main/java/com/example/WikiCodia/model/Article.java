@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -32,13 +33,15 @@ public class Article {
 	private Long idArticle;
 
 	@NotNull
-	@Column(name = "titre")
+	@Column(name = "titre") 
 	private String titre;
 	
 	@Column(name = "description")
+    @Size(max = 999999)
 	private String description;
 	
 	@Column(name = "contenu")
+    @Size(max = 999999)
 	private String contenu;
 	
 	@Column(name = "date_creation")
@@ -52,6 +55,9 @@ public class Article {
 
 	@Column(name = "est_promu", columnDefinition = "boolean default false")
 	private Boolean estPromu;
+	
+	@Column(name = "est_valide", columnDefinition = "boolean default false")
+	private Boolean estValide;
 
 	@OneToMany (cascade={CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval=true)
 	private List<Vote> vote;
@@ -85,7 +91,7 @@ public class Article {
 	}
 	
 	public Article(Long idArticle, @NotNull String titre, String description, String contenu, LocalDate dateCreation,
-			LocalDate dateDerniereModif, Boolean estPublie, Boolean estPromu, List<Vote> vote, List<Langage> langage,
+			LocalDate dateDerniereModif, Boolean estPublie, Boolean estPromu, Boolean estValide, List<Vote> vote, List<Langage> langage,
 			List<Framework> framework, Utilisateur auteur, Type type, Categorie categorie) {
 		super();
 		this.idArticle = idArticle;
@@ -96,6 +102,7 @@ public class Article {
 		this.dateDerniereModif = dateDerniereModif;
 		this.estPublie = estPublie;
 		this.estPromu = estPromu;
+		this.estValide = estValide;
 		this.vote = vote;
 		this.langage = langage;
 		this.framework = framework;
@@ -168,6 +175,14 @@ public class Article {
 
 	public void setEstPromu(Boolean estPromu) {
 		this.estPromu = estPromu;
+	}
+	
+	public Boolean getEstValide() {
+		return estValide;
+	}
+
+	public void setEstValide(Boolean estValide) {
+		this.estValide = estValide;
 	}
 
 	public List<Vote> getVote() {

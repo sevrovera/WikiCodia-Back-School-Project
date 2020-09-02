@@ -1,4 +1,4 @@
-package com.example.WikiCodia.model;
+	package com.example.WikiCodia.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
