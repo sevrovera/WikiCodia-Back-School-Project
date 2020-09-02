@@ -5,15 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.validation.constraints.NotNull;
-
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,19 +17,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.WikiCodia.model.Article;
 import com.example.WikiCodia.model.Categorie;
-import com.example.WikiCodia.model.Etat;
 import com.example.WikiCodia.model.Framework;
-import com.example.WikiCodia.model.Guilde;
 import com.example.WikiCodia.model.Langage;
-import com.example.WikiCodia.model.Role;
 import com.example.WikiCodia.model.Type;
-import com.example.WikiCodia.model.Utilisateur;
-import com.example.WikiCodia.model.Vote;
 import com.example.WikiCodia.repository.ArticleRepository;
 import com.example.WikiCodia.repository.CategorieRepository;
 import com.example.WikiCodia.repository.EtatRepository;
@@ -49,7 +34,6 @@ import com.example.WikiCodia.repository.RoleRepository;
 import com.example.WikiCodia.repository.TypeRepository;
 import com.example.WikiCodia.repository.UtilisateurRepository;
 import com.example.WikiCodia.repository.VoteRepository;
-import com.example.WikiCodia.service.ArticleService;
 
 @CrossOrigin(origins = "http://localhost:4200")
 //@CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -111,6 +95,22 @@ public class ArticleController {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	@GetMapping("/pending")
+	public ResponseEntity<List<Article>> getArticlesPublishedAndNotValidated(@RequestParam(required = false) String titre) {
+		try {
+			List<Article> articles = new ArrayList<Article>();
+			articleRepository.findByIsPublishedAndNotValidated().forEach(articles::add);
+
+			if (articles.isEmpty()) {
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			}
+
+			return new ResponseEntity<>(articles, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Article> getArticleById(@PathVariable("id") long id) {
@@ -122,23 +122,6 @@ public class ArticleController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
-	/*
-	@PostMapping("/creation")
-	public ResponseEntity<Article> createArticle(@RequestBody Article article) {
-		try {
-			Article _article = articleRepository.save(new Article(article.getTitre(), article.getDescription(),
-					article.getContenu(), LocalDate.now(), article.getDateDerniereModif(), article.getEstPublie(),
-					article.getEstPromu(), null, article.getLangage(), article.getFramework(), article.getAuteur(),
-					article.getType(), article.getCategorie()));
-			return new ResponseEntity<>(_article, HttpStatus.CREATED);
-		} catch (Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.EXPECTATION_FAILED);
-		}
-	}
-	*/
-	
-	
-	
 	
 
 	@PostMapping("/creation")
@@ -154,6 +137,7 @@ public class ArticleController {
 			a.setDescription(article.getDescription());
 			a.setEstPromu(false);
 			a.setEstPublie(article.getEstPublie());
+			a.setEstValide(false);
 			a.setTitre(article.getTitre());
 			
 			//suppose qu'on ne peut pas voter pour son propre article 
@@ -346,6 +330,11 @@ public class ArticleController {
 				_article.setEstPromu(articleUpdated.getEstPromu());
 			} else {
 				_article.setEstPromu(false);
+			}
+			if (articleUpdated.getEstValide()) {
+				_article.setEstValide(articleUpdated.getEstValide());
+			} else {
+				_article.setEstValide(false);
 			}
 			if (articleUpdated.getVote() != null) {
 				_article.setVote(articleUpdated.getVote());
