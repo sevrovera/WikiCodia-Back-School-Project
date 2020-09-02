@@ -2,7 +2,9 @@ package com.example.WikiCodia.controller;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,6 +78,8 @@ public class ArticleController {
 	
 	@Autowired
 	EtatRepository etatRepository;
+	
+	Map<Long, Article> articles;
 
 	@GetMapping("/all")
 	public ResponseEntity<List<Article>> getAllArticles(@RequestParam(required = false) String titre) {
@@ -112,6 +116,30 @@ public class ArticleController {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	@PutMapping("/reject/{id}")
+    public ResponseEntity<Article> rejectArticle(@PathVariable("id") long id, @RequestBody Article article)    {
+		if (articles == null) {
+			articles = new HashMap<>();
+		}
+		Article rejectedArticle = articleRepository.findById(id).get();
+		rejectedArticle.setEstPublie(false);
+		articleRepository.save(rejectedArticle);
+
+        return new ResponseEntity<>(rejectedArticle, HttpStatus.OK);  
+    }
+	
+	@PutMapping("/validate/{id}")
+    public ResponseEntity<Article>validateArticle(@PathVariable("id") long id, @RequestBody Article article)    {
+		if (articles == null) {
+			articles = new HashMap<>();
+		}
+		Article validatedArticle = articleRepository.findById(id).get();
+		validatedArticle.setEstValide(true);
+		articleRepository.save(validatedArticle);
+
+        return new ResponseEntity<>(validatedArticle, HttpStatus.OK);  
+    }
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Article> getArticleById(@PathVariable("id") long id) {
