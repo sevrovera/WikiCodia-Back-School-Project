@@ -87,19 +87,43 @@ public class ArticleController {
 		try {
 			List<Article> articles = new ArrayList<Article>();
 
-			if (titre == null)
+			if (titre == null) {
 				articleRepository.findAll().forEach(articles::add);
-			else
+			}
+			else {
 				articleRepository.findByTitreContaining(titre).forEach(articles::add);
+			}
 
 			if (articles.isEmpty()) {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 			}
 
+			
+			Optional<Utilisateur> util = utilisateurRepository.findById((long)2);
+			Utilisateur u = util.get();
+			u.setArticlesFavoris(articles);
+			utilisateurRepository.save(u);
+			
 			return new ResponseEntity<>(articles, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+	
+	//methode useless en vrai qui sert juste a ajouter tous les article en favoris à l'utilisateur 2
+	@GetMapping("/alltofav")
+	public void getAllArticlestofavorite() {
+			List<Article> articles = new ArrayList<Article>();
+
+				for (Article ar : articleRepository.findAll()) {
+					articles.add(ar);
+				}
+
+			
+			Optional<Utilisateur> util = utilisateurRepository.findById((long)2);
+			Utilisateur u = util.get();
+			u.setArticlesFavoris(articles);
+			utilisateurRepository.save(u);
 	}
 	
 	@GetMapping("/pending")

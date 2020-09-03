@@ -21,6 +21,8 @@ import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name="utilisateur")
 public class Utilisateur implements Serializable , UserDetails {
@@ -189,51 +191,56 @@ public class Utilisateur implements Serializable , UserDetails {
 	public void setRole(Role role) {
 		this.role = role;
 	}
-
+	@JsonIgnore
 	public List<Guilde> getGuilde() {
 		return guilde;
 	}
-
+	
+	@JsonIgnore
 	public void setGuilde(List<Guilde> guilde) {
 		this.guilde = guilde;
 	}
 
+	@JsonIgnore
 	public List<Framework> getFramework() {
 		return framework;
 	}
 
+	@JsonIgnore
 	public void setFramework(List<Framework> framework) {
 		this.framework = framework;
 	}
 
+	@JsonIgnore
 	public List<Langage> getLangage() {
 		return langage;
 	}
-
+	
+	@JsonIgnore
 	public void setLangage(List<Langage> langage) {
 		this.langage = langage;
 	}
-
+	@JsonIgnore
 	public List<Type> getType() {
 		return type;
 	}
-
+	@JsonIgnore
 	public void setType(List<Type> type) {
 		this.type = type;
 	}
-
+	@JsonIgnore
 	public List<Categorie> getCategorie() {
 		return categorie;
 	}
-
+	@JsonIgnore
 	public void setCategorie(List<Categorie> categorie) {
 		this.categorie = categorie;
 	}
-	
+	@JsonIgnore
 	public List<Article> getArticlesFavoris() {
 		return articlesFavoris;
 	}
-
+	@JsonIgnore
 	public void setArticlesFavoris(List<Article> articlesFavoris) {
 		this.articlesFavoris = articlesFavoris;
 	}
