@@ -227,10 +227,11 @@ public class ArticleController {
 			}	
 
 
-			
-			a.setAuteur(utilisateurRepository.getOne(article.getAuteur().getIdUtilisateur()));
+			Optional<Utilisateur> util = utilisateurRepository.findById(article.getAuteur().getIdUtilisateur());
+			Utilisateur auteur = util.get();
+			a.setAuteur(auteur);
 //			a.setAuteur(utilisateurRepository.getOne((long)1));
-			System.out.println("TEEEEEESSSSSSSTTTTTTTT REEEEESSSSSUUUULLLLLTTTTT");
+//			System.out.println("TEEEEEESSSSSSSTTTTTTTT REEEEESSSSSUUUULLLLLTTTTT");
 //			System.out.println(article.auteur);
 
 			
