@@ -83,6 +83,11 @@ public class Utilisateur implements Serializable , UserDetails {
 	@ManyToMany(cascade = CascadeType.ALL, fetch =  FetchType.LAZY)
 	private List<Categorie> categorie;
 	
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@ManyToMany(cascade = CascadeType.ALL)
+	private List<Article> articlesFavoris;
+	
+
 	//GETTERS SETTERS
 	public Long getIdUtilisateur() {
 		return idUtilisateur;
@@ -223,7 +228,15 @@ public class Utilisateur implements Serializable , UserDetails {
 
 	public void setCategorie(List<Categorie> categorie) {
 		this.categorie = categorie;
-	}		
+	}
+	
+	public List<Article> getArticlesFavoris() {
+		return articlesFavoris;
+	}
+
+	public void setArticlesFavoris(List<Article> articlesFavoris) {
+		this.articlesFavoris = articlesFavoris;
+	}
 	
 	// SPRING SECURITY
 	public String getUsername() {
@@ -267,7 +280,7 @@ public class Utilisateur implements Serializable , UserDetails {
 	public Utilisateur(String prenom, String nom, String pseudo, String mail, String motDePasse, String lienLinkedin,
 			String statut, LocalDate dateInscription, LocalDate dateDerniereConnexion, Etat etat, Role role,
 			List<Guilde> guilde, List<Framework> framework, List<Langage> langage, List<Type> type,
-			List<Categorie> categorie) {
+			List<Categorie> categorie, List<Article> articlesFavoris) {
 		super();
 		this.prenom = prenom;
 		this.nom = nom;
@@ -285,5 +298,6 @@ public class Utilisateur implements Serializable , UserDetails {
 		this.langage = langage;
 		this.type = type;
 		this.categorie = categorie;
+		this.articlesFavoris = articlesFavoris;
 	}
 }

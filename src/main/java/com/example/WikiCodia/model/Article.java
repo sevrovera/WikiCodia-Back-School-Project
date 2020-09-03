@@ -1,5 +1,6 @@
 package com.example.WikiCodia.model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -22,12 +23,15 @@ import javax.validation.constraints.Size;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 
 @Entity
 @Table(name = "article")
-public class Article {
+public class Article implements Serializable{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -76,6 +80,8 @@ public class Article {
 	@ManyToMany
 	private List<Framework> framework;
 	
+	@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "idUtilisateur")
+	@JsonIdentityReference(alwaysAsId = true)
 	@ManyToOne
     @JoinColumn(name ="id_utilisateur")
 	private Utilisateur auteur;
