@@ -26,7 +26,6 @@ import com.example.WikiCodia.model.Categorie;
 import com.example.WikiCodia.model.Framework;
 import com.example.WikiCodia.model.Langage;
 import com.example.WikiCodia.model.Type;
-import com.example.WikiCodia.model.Vote;
 import com.example.WikiCodia.repository.ArticleRepository;
 import com.example.WikiCodia.repository.CategorieRepository;
 import com.example.WikiCodia.repository.EtatRepository;
@@ -168,7 +167,7 @@ public class ArticleController {
 			a.setEstPublie(article.getEstPublie());
 			a.setEstValide(false);
 			a.setTitre(article.getTitre());
-			
+			a.setComAdmin(null);
 			//suppose qu'on ne peut pas voter pour son propre article 
 			a.setVote(null);
 
@@ -225,11 +224,7 @@ public class ArticleController {
 				a.setType(typeRepository.findByLibTypeEquals(article.getType().getLibType()));
 			}	
 
-			
-			
-			
 			a.setAuteur(utilisateurRepository.getOne(article.getAuteur().getIdUtilisateur()));
-
 			
 			articleRepository.save(a);
 			
@@ -276,6 +271,9 @@ public class ArticleController {
 				_article.setEstValide(articleUpdated.getEstValide());
 			} else {
 				_article.setEstValide(false);
+			}
+			if (articleUpdated.getComAdmin() != null) {
+				_article.setComAdmin(articleUpdated.getComAdmin());
 			}
 			if (articleUpdated.getVote() != null) {
 //				List<Vote> listVote = new ArrayList<Vote>();
