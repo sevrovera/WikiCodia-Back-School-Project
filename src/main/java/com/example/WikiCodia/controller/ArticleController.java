@@ -226,10 +226,12 @@ public class ArticleController {
 				a.setType(typeRepository.findByLibTypeEquals(article.getType().getLibType()));
 			}	
 
-			
-			
+
 			
 			a.setAuteur(utilisateurRepository.getOne(article.getAuteur().getIdUtilisateur()));
+//			a.setAuteur(utilisateurRepository.getOne((long)1));
+			System.out.println("TEEEEEESSSSSSSTTTTTTTT REEEEESSSSSUUUULLLLLTTTTT");
+//			System.out.println(article.auteur);
 
 			
 			articleRepository.save(a);
@@ -382,16 +384,16 @@ public class ArticleController {
 	}
 	
 	
-	@GetMapping("/mesarticles")
-	public ResponseEntity<List<Article>> getAllArticlesOfUser(@PathVariable("userid") long id) {
+	@GetMapping("/mesarticles/{userid}")
+	public ResponseEntity<List<Article>> getAllArticlesOfUser(@PathVariable("userid") long userid) {
 		
-		Optional<Utilisateur> user = utilisateurRepository.findById(id);
+		Optional<Utilisateur> user = utilisateurRepository.findById(userid);
 		List<Article> tousMesArticles = new ArrayList<Article>();
 		
 		if (user.isPresent()) {
 			List<Article> tous = articleRepository.findAll();
 			for (Article article : tous) {
-				if(article.getAuteur().getIdUtilisateur() == id) {
+				if(article.getAuteur().getIdUtilisateur() == userid) {
 					tousMesArticles.add(article);
 				}
 			}
