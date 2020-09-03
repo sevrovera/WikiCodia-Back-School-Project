@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -27,6 +28,8 @@ public class Vote implements Serializable {
     private Boolean liked = false;
     
     @NotNull
+	@OneToOne
+    @JoinColumn(name ="id_utilisateur")
     private Utilisateur utilisateur;
 
     private String commentaire;
