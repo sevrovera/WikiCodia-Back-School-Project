@@ -26,6 +26,7 @@ import com.example.WikiCodia.model.Categorie;
 import com.example.WikiCodia.model.Framework;
 import com.example.WikiCodia.model.Langage;
 import com.example.WikiCodia.model.Type;
+import com.example.WikiCodia.model.Utilisateur;
 import com.example.WikiCodia.model.Vote;
 import com.example.WikiCodia.repository.ArticleRepository;
 import com.example.WikiCodia.repository.CategorieRepository;
@@ -378,6 +379,27 @@ public class ArticleController {
 			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
 		}
 
+	}
+	
+	
+	@GetMapping("/mesarticles")
+	public ResponseEntity<List<Article>> getAllArticlesOfUser(@PathVariable("userid") long id) {
+		
+		Optional<Utilisateur> user = utilisateurRepository.findById(id);
+		List<Article> tousMesArticles = new ArrayList<Article>();
+		
+		if (user.isPresent()) {
+			List<Article> tous = articleRepository.findAll();
+			for (Article article : tous) {
+				if(article.getAuteur().getIdUtilisateur() == id) {
+					tousMesArticles.add(article);
+				}
+			}
+			
+			return new ResponseEntity<>(tousMesArticles, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
 	}
 
 }
