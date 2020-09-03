@@ -428,5 +428,20 @@ public class ArticleController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
+	
+	@GetMapping("/articlesFavoris/{userId}")
+	public ResponseEntity<List<Article>> getArticlesFavorisByUserId(@PathVariable("userId") long userId) {
+		
+		Optional<Utilisateur> user = utilisateurRepository.findById(userId);
+		Utilisateur utilisateur = user.get();
+		
+		List<Article> articlesFavoris = utilisateur.getArticlesFavoris();
+		if (articlesFavoris == null || articlesFavoris.size() == 0) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		} else {
+			return new ResponseEntity<>(articlesFavoris, HttpStatus.OK);
+		}
+		
+	}
 
 }
