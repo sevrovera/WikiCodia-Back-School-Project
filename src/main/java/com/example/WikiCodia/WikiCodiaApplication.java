@@ -7,7 +7,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class WikiCodiaApplication {
 
 	public static void main(String[] args) {
+
 		SpringApplication.run(WikiCodiaApplication.class, args);
+
 	}
 
 }

@@ -2,7 +2,6 @@ package com.example.WikiCodia.controller;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -46,38 +45,34 @@ public class ArticleController {
 
 	@Autowired
 	ArticleRepository articleRepository;
-	
+
 	@Autowired
 	GuildeRepository guildeRepository;
-	
+
 	@Autowired
 	RoleRepository roleRepository;
-	
+
 	@Autowired
 	TypeRepository typeRepository;
-	
+
 	@Autowired
 	UtilisateurRepository utilisateurRepository;
-	
-	
+
 //	@Autowired
 //	VoteRepository voteRepository;
-	
+
 	@Autowired
 	LangageRepository langageRepository;
-	
-	
+
 	@Autowired
 	FrameworkRepository frameworkRepository;
-	
-	
+
 	@Autowired
 	CategorieRepository categorieRepository;
-	
-	
+
 	@Autowired
 	EtatRepository etatRepository;
-	
+
 	Map<Long, Article> articles;
 
 	@GetMapping("/all")
@@ -99,9 +94,15 @@ public class ArticleController {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
+	/**
+	 * Affiche l'ensemble des articles en attente de validation pour être publiés.
+	 * 
+	 * @return liste des articles
+	 */
 	@GetMapping("/pending")
-	public ResponseEntity<List<Article>> getArticlesPublishedAndNotValidated(@RequestParam(required = false) String titre) {
+	public ResponseEntity<List<Article>> getArticlesPublishedAndNotValidated(
+			@RequestParam(required = false) String titre) {
 		try {
 			List<Article> articles = new ArrayList<Article>();
 			articleRepository.findByIsPublishedAndNotValidated().forEach(articles::add);
@@ -115,30 +116,64 @@ public class ArticleController {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	@PutMapping("/reject/{id}")
-    public ResponseEntity<Article> rejectArticle(@PathVariable("id") long id, @RequestBody Article article)    {
-		if (articles == null) {
-			articles = new HashMap<>();
-		}
-		Article rejectedArticle = articleRepository.findById(id).get();
-		rejectedArticle.setEstPublie(false);
-		articleRepository.save(rejectedArticle);
 
-        return new ResponseEntity<>(rejectedArticle, HttpStatus.OK);  
-    }
-	
-	@PutMapping("/validate/{id}")
-    public ResponseEntity<Article>validateArticle(@PathVariable("id") long id, @RequestBody Article article)    {
-		if (articles == null) {
-			articles = new HashMap<>();
+	/**
+	 * Méthode appelée lorsque l'admin justifie par un commentaire sa décision de
+	 * valider ou rejeter un article.
+	 * 
+	 * @param id       de l'article commenté
+	 * @param ensemble des données sur l'article
+	 * @return article modifié avec le nouveau commentaire
+	 */
+	@PutMapping("/comment-decision/{id}/{com}")
+	public ResponseEntity<Article> commentDecision(@PathVariable("id") long id, @PathVariable("com") String com
+			// ,@RequestBody Article article
+			) {
+
+		Article commentedArticle = articleRepository.findById(id).get();
+		commentedArticle.setComAdmin(com);
+		articleRepository.save(commentedArticle);
+
+		return new ResponseEntity<>(commentedArticle, HttpStatus.OK);
+	}
+
+	/**
+	 * Méthode appelée lorsque l'admin refuse la publication d'un article.
+	 * 
+	 * @param id       de l'article à rejeter
+	 * @param ensemble des données sur l'article
+	 * @return article modifié avec statut "estPublié" remis à false
+	 */
+	@PutMapping("/reject/{id}")
+	public ResponseEntity<Article> rejectArticle(@PathVariable("id") long id, @RequestBody Article article) throws Exception {
+
+		Article rejectedArticle = articleRepository.findById(id).get();
+
+		if (rejectedArticle.getComAdmin() != null && !rejectedArticle.getComAdmin().trim().isEmpty()) {
+			rejectedArticle.setEstPublie(false);
+			articleRepository.save(rejectedArticle);
+		} else {
+			return new ResponseEntity<>(rejectedArticle, HttpStatus.EXPECTATION_FAILED);
 		}
+		return new ResponseEntity<>(rejectedArticle, HttpStatus.OK);
+	}
+
+	/**
+	 * Méthode appelée lorsque l'admin valide la publication d'un article.
+	 * 
+	 * @param id       de l'article à valider
+	 * @param ensemble des données sur l'article
+	 * @return article modifié avec statut "estValide" basculé à true
+	 */
+	@PutMapping("/validate/{id}")
+	public ResponseEntity<Article> validateArticle(@PathVariable("id") long id, @RequestBody Article article) {
+
 		Article validatedArticle = articleRepository.findById(id).get();
 		validatedArticle.setEstValide(true);
 		articleRepository.save(validatedArticle);
 
-        return new ResponseEntity<>(validatedArticle, HttpStatus.OK);  
-    }
+		return new ResponseEntity<>(validatedArticle, HttpStatus.OK);
+	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Article> getArticleById(@PathVariable("id") long id) {
@@ -150,15 +185,14 @@ public class ArticleController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
-	
 
 	@PostMapping("/creation")
 //	@ResponseBody
-	public ResponseEntity<Article> createArticle( @RequestBody Article article) {
-		
+	public ResponseEntity<Article> createArticle(@RequestBody Article article) {
+
 		try {
 			Article a = new Article();
-			
+
 			a.setContenu(article.getContenu());
 			a.setDateCreation(LocalDate.now());
 			a.setDateDerniereModif(LocalDate.now());
@@ -168,75 +202,75 @@ public class ArticleController {
 			a.setEstValide(false);
 			a.setTitre(article.getTitre());
 			a.setComAdmin(null);
-			//suppose qu'on ne peut pas voter pour son propre article 
+			// suppose qu'on ne peut pas voter pour son propre article
 			a.setVote(null);
 
 			List<Framework> listFram = new ArrayList<Framework>();
 			for (Framework frameworkItere : article.getFramework()) {
-				if (frameworkRepository.findByFrameworkAndVersionEquals(frameworkItere.getFramework(), frameworkItere.getVersion()) != null) {
-					listFram.add(frameworkRepository.findByFrameworkAndVersionEquals(frameworkItere.getFramework(), frameworkItere.getVersion()));
-				}
-				else {
+				if (frameworkRepository.findByFrameworkAndVersionEquals(frameworkItere.getFramework(),
+						frameworkItere.getVersion()) != null) {
+					listFram.add(frameworkRepository.findByFrameworkAndVersionEquals(frameworkItere.getFramework(),
+							frameworkItere.getVersion()));
+				} else {
 					Framework newFram = new Framework();
 					newFram.setFramework(frameworkItere.getFramework());
 					newFram.setVersion(frameworkItere.getVersion());
 					frameworkRepository.save(newFram);
-					listFram.add(frameworkRepository.findByFrameworkAndVersionEquals(frameworkItere.getFramework(), frameworkItere.getVersion()));
+					listFram.add(frameworkRepository.findByFrameworkAndVersionEquals(frameworkItere.getFramework(),
+							frameworkItere.getVersion()));
 				}
 			}
 			a.setFramework(listFram);
-			
 
 			List<Langage> listLang = new ArrayList<Langage>();
 			for (Langage langageItere : article.getLangage()) {
-				
-				if (langageRepository.findByLangAndVersionEquals(langageItere.getLang(), langageItere.getVersion()) != null) {
-					listLang.add(langageRepository.findByLangAndVersionEquals(langageItere.getLang(), langageItere.getVersion()));
-				}
-				else {
+
+				if (langageRepository.findByLangAndVersionEquals(langageItere.getLang(),
+						langageItere.getVersion()) != null) {
+					listLang.add(langageRepository.findByLangAndVersionEquals(langageItere.getLang(),
+							langageItere.getVersion()));
+				} else {
 					Langage newLang = new Langage();
 					newLang.setLang(langageItere.getLang());
 					newLang.setVersion(langageItere.getVersion());
 					langageRepository.save(newLang);
-					listLang.add(langageRepository.findByLangAndVersionEquals(langageItere.getLang(), langageItere.getVersion()));
-				}				
+					listLang.add(langageRepository.findByLangAndVersionEquals(langageItere.getLang(),
+							langageItere.getVersion()));
+				}
 			}
 			a.setLangage(listLang);
-			
-			
+
 //			a.setCategorie(categorieRepository.findByLibCategorieEquals(article.getCategorie().getLibCategorie()));
 			if (categorieRepository.findByLibCategorieEquals(article.getCategorie().getLibCategorie()) != null) {
-				a.setCategorie(categorieRepository.findByLibCategorieEquals(article.getCategorie().getLibCategorie()));			}
-			else {
+				a.setCategorie(categorieRepository.findByLibCategorieEquals(article.getCategorie().getLibCategorie()));
+			} else {
 				Categorie newCat = new Categorie();
 				newCat.setLibCategorie(article.getCategorie().getLibCategorie());
 				categorieRepository.save(newCat);
 				a.setCategorie(categorieRepository.findByLibCategorieEquals(article.getCategorie().getLibCategorie()));
-			}		
+			}
 //			
 //			a.setType(typeRepository.findByLibTypeEquals(article.getType().getLibType()));
 			if (typeRepository.findByLibTypeEquals(article.getType().getLibType()) != null) {
-				a.setType(typeRepository.findByLibTypeEquals(article.getType().getLibType()));			}
-			else {
+				a.setType(typeRepository.findByLibTypeEquals(article.getType().getLibType()));
+			} else {
 				Type newTyp = new Type();
 				newTyp.setLibType(article.getType().getLibType());
 				typeRepository.save(newTyp);
 				a.setType(typeRepository.findByLibTypeEquals(article.getType().getLibType()));
-			}	
+			}
 
 			a.setAuteur(utilisateurRepository.getOne(article.getAuteur().getIdUtilisateur()));
-			
+
 			articleRepository.save(a);
-			
+
 			return new ResponseEntity<>(a, HttpStatus.OK);
 		} catch (Exception e) {
 			System.out.println(e);
 			return new ResponseEntity<>(null, HttpStatus.EXPECTATION_FAILED);
 		}
-	}	
+	}
 
-	
-	
 	@PutMapping("/modification/{id}")
 	public ResponseEntity<Article> updateArticle(@PathVariable("id") long id, @RequestBody Article articleUpdated) {
 		Optional<Article> articleData = articleRepository.findById(id);
@@ -292,65 +326,72 @@ public class ArticleController {
 //						listVote.add(voteRepository.findByLikedAndCommentaireAndUtilisateurEquals(voteItere.getLiked(), voteItere.getCommentaire(), voteItere.getUtilisateur()));
 //					}				
 //				}
-				_article.setVote(articleUpdated.getVote());				
+				_article.setVote(articleUpdated.getVote());
 			}
 			if (articleUpdated.getLangage() != null) {
 				List<Langage> listLang = new ArrayList<Langage>();
 				for (Langage langageItere : articleUpdated.getLangage()) {
-					
-					if (langageRepository.findByLangAndVersionEquals(langageItere.getLang(), langageItere.getVersion()) != null) {
-						listLang.add(langageRepository.findByLangAndVersionEquals(langageItere.getLang(), langageItere.getVersion()));
-					}
-					else {
+
+					if (langageRepository.findByLangAndVersionEquals(langageItere.getLang(),
+							langageItere.getVersion()) != null) {
+						listLang.add(langageRepository.findByLangAndVersionEquals(langageItere.getLang(),
+								langageItere.getVersion()));
+					} else {
 						Langage newLang = new Langage();
 						newLang.setLang(langageItere.getLang());
 						newLang.setVersion(langageItere.getVersion());
 						langageRepository.save(newLang);
-						listLang.add(langageRepository.findByLangAndVersionEquals(langageItere.getLang(), langageItere.getVersion()));
-					}				
+						listLang.add(langageRepository.findByLangAndVersionEquals(langageItere.getLang(),
+								langageItere.getVersion()));
+					}
 				}
 				_article.setLangage(listLang);
-				
+
 			}
 			if (articleUpdated.getFramework() != null) {
-				
+
 				List<Framework> listFram = new ArrayList<Framework>();
 				for (Framework frameworkItere : articleUpdated.getFramework()) {
-					if (frameworkRepository.findByFrameworkAndVersionEquals(frameworkItere.getFramework(), frameworkItere.getVersion()) != null) {
-						listFram.add(frameworkRepository.findByFrameworkAndVersionEquals(frameworkItere.getFramework(), frameworkItere.getVersion()));
-					}
-					else {
+					if (frameworkRepository.findByFrameworkAndVersionEquals(frameworkItere.getFramework(),
+							frameworkItere.getVersion()) != null) {
+						listFram.add(frameworkRepository.findByFrameworkAndVersionEquals(frameworkItere.getFramework(),
+								frameworkItere.getVersion()));
+					} else {
 						Framework newFram = new Framework();
 						newFram.setFramework(frameworkItere.getFramework());
 						newFram.setVersion(frameworkItere.getVersion());
 						frameworkRepository.save(newFram);
-						listFram.add(frameworkRepository.findByFrameworkAndVersionEquals(frameworkItere.getFramework(), frameworkItere.getVersion()));
+						listFram.add(frameworkRepository.findByFrameworkAndVersionEquals(frameworkItere.getFramework(),
+								frameworkItere.getVersion()));
 					}
 				}
-				_article.setFramework(listFram);				
+				_article.setFramework(listFram);
 			}
 			if (articleUpdated.getType() != null) {
 				if (typeRepository.findByLibTypeEquals(articleUpdated.getType().getLibType()) != null) {
-					_article.setType(typeRepository.findByLibTypeEquals(articleUpdated.getType().getLibType()));			}
-				else {
+					_article.setType(typeRepository.findByLibTypeEquals(articleUpdated.getType().getLibType()));
+				} else {
 					Type newTyp = new Type();
 					newTyp.setLibType(articleUpdated.getType().getLibType());
 					typeRepository.save(newTyp);
 					_article.setType(typeRepository.findByLibTypeEquals(articleUpdated.getType().getLibType()));
-				}	
-								
+				}
+
 			}
 			if (articleUpdated.getCategorie() != null) {
-				if (categorieRepository.findByLibCategorieEquals(articleUpdated.getCategorie().getLibCategorie()) != null) {
-					_article.setCategorie(categorieRepository.findByLibCategorieEquals(articleUpdated.getCategorie().getLibCategorie()));			}
-				else {
+				if (categorieRepository
+						.findByLibCategorieEquals(articleUpdated.getCategorie().getLibCategorie()) != null) {
+					_article.setCategorie(categorieRepository
+							.findByLibCategorieEquals(articleUpdated.getCategorie().getLibCategorie()));
+				} else {
 					Categorie newCat = new Categorie();
 					newCat.setLibCategorie(articleUpdated.getCategorie().getLibCategorie());
 					categorieRepository.save(newCat);
-					_article.setCategorie(categorieRepository.findByLibCategorieEquals(articleUpdated.getCategorie().getLibCategorie()));
-				}					
+					_article.setCategorie(categorieRepository
+							.findByLibCategorieEquals(articleUpdated.getCategorie().getLibCategorie()));
+				}
 			}
-			
+
 			return new ResponseEntity<>(articleRepository.save(_article), HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
