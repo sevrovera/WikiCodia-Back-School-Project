@@ -455,11 +455,14 @@ public class ArticleController {
 		}
 	}
 	
-	@PutMapping("/togglePromotion")
-	public ResponseEntity<Article> toggleArticlePromotion(@RequestBody Article article){
-		if(article == null) {
-			return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
-		} else {
+	@PutMapping("/togglePromotion/{articleId}")
+	public ResponseEntity<Article> toggleArticlePromotion(@PathVariable("articleId") Long articleId){
+		
+		Optional<Article> articleOptional = articleRepository.findById(articleId);
+		
+		if(articleOptional.isPresent()) {
+			Article article = articleOptional.get();
+			
 			if (article.getEstPromu().booleanValue() == true) {
 				System.out.println("Article promu ? :" + article.getEstPromu().booleanValue());
 				article.setEstPromu(false);
@@ -471,6 +474,10 @@ public class ArticleController {
 				articleRepository.save(article);
 			}
 			return new ResponseEntity<>(article, HttpStatus.OK);
+			
+		} else {
+			
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		
 	}
