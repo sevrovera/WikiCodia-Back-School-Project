@@ -443,5 +443,36 @@ public class ArticleController {
 		}
 		
 	}
+	
+	@GetMapping("/articlesPromus")
+	public ResponseEntity<List<Article>> getArticlesPromus(){
+		
+		List<Article> articlesPromus = articleRepository.findPomotedArticles();
+		if (articlesPromus == null || articlesPromus.size() == 0) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		} else {
+			return new ResponseEntity<>(articlesPromus, HttpStatus.OK);
+		}
+	}
+	
+	@PutMapping("/togglePromotion")
+	public ResponseEntity<Article> toggleArticlePromotion(@RequestBody Article article){
+		if(article == null) {
+			return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
+		} else {
+			if (article.getEstPromu().booleanValue() == true) {
+				System.out.println("Article promu ? :" + article.getEstPromu().booleanValue());
+				article.setEstPromu(false);
+				articleRepository.save(article);
+				
+			} else {
+				System.out.println("Article promu ? :" + article.getEstPromu().booleanValue());
+				article.setEstPromu(true);
+				articleRepository.save(article);
+			}
+			return new ResponseEntity<>(article, HttpStatus.OK);
+		}
+		
+	}
 
 }
