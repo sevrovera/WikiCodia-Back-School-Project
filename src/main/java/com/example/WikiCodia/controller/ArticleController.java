@@ -25,6 +25,8 @@ import com.example.WikiCodia.model.Categorie;
 import com.example.WikiCodia.model.Framework;
 import com.example.WikiCodia.model.Langage;
 import com.example.WikiCodia.model.Type;
+import com.example.WikiCodia.model.Utilisateur;
+import com.example.WikiCodia.model.Vote;
 import com.example.WikiCodia.repository.ArticleRepository;
 import com.example.WikiCodia.repository.CategorieRepository;
 import com.example.WikiCodia.repository.EtatRepository;
@@ -80,15 +82,23 @@ public class ArticleController {
 		try {
 			List<Article> articles = new ArrayList<Article>();
 
-			if (titre == null)
+			if (titre == null) {
 				articleRepository.findAll().forEach(articles::add);
-			else
+			}
+			else {
 				articleRepository.findByTitreContaining(titre).forEach(articles::add);
+			}
 
 			if (articles.isEmpty()) {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 			}
 
+			
+			Optional<Utilisateur> util = utilisateurRepository.findById((long)2);
+			Utilisateur u = util.get();
+			u.setArticlesFavoris(articles);
+			utilisateurRepository.save(u);
+			
 			return new ResponseEntity<>(articles, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -100,6 +110,22 @@ public class ArticleController {
 	 * 
 	 * @return liste des articles
 	 */
+	//methode useless en vrai qui sert juste a ajouter tous les article en favoris à l'utilisateur 2
+	@GetMapping("/alltofav")
+	public void getAllArticlestofavorite() {
+			List<Article> articles = new ArrayList<Article>();
+
+				for (Article ar : articleRepository.findAll()) {
+					articles.add(ar);
+				}
+
+			
+			Optional<Utilisateur> util = utilisateurRepository.findById((long)2);
+			Utilisateur u = util.get();
+			u.setArticlesFavoris(articles);
+			utilisateurRepository.save(u);
+	}
+	
 	@GetMapping("/pending")
 	public ResponseEntity<List<Article>> getArticlesPublishedAndNotValidated(
 			@RequestParam(required = false) String titre) {
@@ -260,8 +286,15 @@ public class ArticleController {
 				a.setType(typeRepository.findByLibTypeEquals(article.getType().getLibType()));
 			}
 
-			a.setAuteur(utilisateurRepository.getOne(article.getAuteur().getIdUtilisateur()));
 
+			Optional<Utilisateur> util = utilisateurRepository.findById(article.getAuteur().getIdUtilisateur());
+			Utilisateur auteur = util.get();
+			a.setAuteur(auteur);
+//			a.setAuteur(utilisateurRepository.getOne((long)1));
+//			System.out.println("TEEEEEESSSSSSSTTTTTTTT REEEEESSSSSUUUULLLLLTTTTT");
+//			System.out.println(article.auteur);
+
+			
 			articleRepository.save(a);
 
 			return new ResponseEntity<>(a, HttpStatus.OK);
@@ -417,6 +450,42 @@ public class ArticleController {
 			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
 		}
 
+	}
+	
+	
+	@GetMapping("/mesarticles/{userid}")
+	public ResponseEntity<List<Article>> getAllArticlesOfUser(@PathVariable("userid") long userid) {
+		
+		Optional<Utilisateur> user = utilisateurRepository.findById(userid);
+		List<Article> tousMesArticles = new ArrayList<Article>();
+		
+		if (user.isPresent()) {
+			List<Article> tous = articleRepository.findAll();
+			for (Article article : tous) {
+				if(article.getAuteur().getIdUtilisateur() == userid) {
+					tousMesArticles.add(article);
+				}
+			}
+			
+			return new ResponseEntity<>(tousMesArticles, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
+	
+	@GetMapping("/articlesFavoris/{userId}")
+	public ResponseEntity<List<Article>> getArticlesFavorisByUserId(@PathVariable("userId") long userId) {
+		
+		Optional<Utilisateur> user = utilisateurRepository.findById(userId);
+		Utilisateur utilisateur = user.get();
+		
+		List<Article> articlesFavoris = utilisateur.getArticlesFavoris();
+		if (articlesFavoris == null || articlesFavoris.size() == 0) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		} else {
+			return new ResponseEntity<>(articlesFavoris, HttpStatus.OK);
+		}
+		
 	}
 
 }

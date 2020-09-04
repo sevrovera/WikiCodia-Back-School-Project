@@ -21,6 +21,8 @@ import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name="utilisateur")
 public class Utilisateur implements Serializable , UserDetails {
@@ -83,6 +85,11 @@ public class Utilisateur implements Serializable , UserDetails {
 	@ManyToMany(cascade = CascadeType.ALL, fetch =  FetchType.LAZY)
 	private List<Categorie> categorie;
 	
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@ManyToMany(cascade = CascadeType.ALL)
+	private List<Article> articlesFavoris;
+	
+
 	//GETTERS SETTERS
 	public Long getIdUtilisateur() {
 		return idUtilisateur;
@@ -184,46 +191,59 @@ public class Utilisateur implements Serializable , UserDetails {
 	public void setRole(Role role) {
 		this.role = role;
 	}
-
+	@JsonIgnore
 	public List<Guilde> getGuilde() {
 		return guilde;
 	}
-
+	
+	@JsonIgnore
 	public void setGuilde(List<Guilde> guilde) {
 		this.guilde = guilde;
 	}
 
+	@JsonIgnore
 	public List<Framework> getFramework() {
 		return framework;
 	}
 
+	@JsonIgnore
 	public void setFramework(List<Framework> framework) {
 		this.framework = framework;
 	}
 
+	@JsonIgnore
 	public List<Langage> getLangage() {
 		return langage;
 	}
-
+	
+	@JsonIgnore
 	public void setLangage(List<Langage> langage) {
 		this.langage = langage;
 	}
-
+	@JsonIgnore
 	public List<Type> getType() {
 		return type;
 	}
-
+	@JsonIgnore
 	public void setType(List<Type> type) {
 		this.type = type;
 	}
-
+	@JsonIgnore
 	public List<Categorie> getCategorie() {
 		return categorie;
 	}
-
+	@JsonIgnore
 	public void setCategorie(List<Categorie> categorie) {
 		this.categorie = categorie;
-	}		
+	}
+	@JsonIgnore
+	public List<Article> getArticlesFavoris() {
+		return articlesFavoris;
+	}
+	@JsonIgnore
+	public void setArticlesFavoris(List<Article> articlesFavoris) {
+		this.articlesFavoris = articlesFavoris;
+	}
 	
 	// SPRING SECURITY
 	public String getUsername() {
@@ -267,7 +287,7 @@ public class Utilisateur implements Serializable , UserDetails {
 	public Utilisateur(String prenom, String nom, String pseudo, String mail, String motDePasse, String lienLinkedin,
 			String statut, LocalDate dateInscription, LocalDate dateDerniereConnexion, Etat etat, Role role,
 			List<Guilde> guilde, List<Framework> framework, List<Langage> langage, List<Type> type,
-			List<Categorie> categorie) {
+			List<Categorie> categorie, List<Article> articlesFavoris) {
 		super();
 		this.prenom = prenom;
 		this.nom = nom;
@@ -285,5 +305,6 @@ public class Utilisateur implements Serializable , UserDetails {
 		this.langage = langage;
 		this.type = type;
 		this.categorie = categorie;
+		this.articlesFavoris = articlesFavoris;
 	}
 }
