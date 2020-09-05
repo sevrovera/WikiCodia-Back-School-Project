@@ -14,13 +14,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.example.WikiCodia.model.Categorie;
+import com.example.WikiCodia.model.Framework;
+import com.example.WikiCodia.model.Langage;
 import com.example.WikiCodia.model.Role;
+import com.example.WikiCodia.model.Type;
 
 import com.example.WikiCodia.model.Utilisateur;
 import com.example.WikiCodia.repository.EtatRepository;
@@ -110,6 +113,67 @@ public class UtilisateurController {
 
 		return utilisateurRepository.findById(id).get();
 
+	}
+
+	// Utilisé pour recupérer l utilisateur avec ces préférences
+	@GetMapping("/categories/{userId}")
+	public ResponseEntity<List<Categorie>> getCategorieByUserId(@PathVariable("userId") long userId) {
+		
+		Optional<Utilisateur> user = utilisateurRepository.findById(userId);
+		Utilisateur utilisateur = user.get();
+		
+		List<Categorie> categories = utilisateur.getCategorie();
+		if (categories == null || categories.size() == 0) {
+			return new ResponseEntity<>(categories, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(categories, HttpStatus.OK);
+		}
+		
+	}
+
+	@GetMapping("/framework/{userId}")
+	public ResponseEntity<List<Framework>> getFrameworkByUserId(@PathVariable("userId") long userId) {
+		
+		Optional<Utilisateur> user = utilisateurRepository.findById(userId);
+		Utilisateur utilisateur = user.get();
+		
+		List<Framework> framework = utilisateur.getFramework();
+		if (framework == null || framework.size() == 0) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		} else {
+			return new ResponseEntity<>(framework, HttpStatus.OK);
+		}
+		
+	}
+
+	@GetMapping("/type/{userId}")
+	public ResponseEntity<List<Type>> getTypeByUserId(@PathVariable("userId") long userId) {
+		
+		Optional<Utilisateur> user = utilisateurRepository.findById(userId);
+		Utilisateur utilisateur = user.get();
+		
+		List<Type> type = utilisateur.getType();
+		if (type == null || type.size() == 0) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		} else {
+			return new ResponseEntity<>(type, HttpStatus.OK);
+		}
+		
+	}
+
+	@GetMapping("/langage/{userId}")
+	public ResponseEntity<List<Langage>> getLangageByUserId(@PathVariable("userId") long userId) {
+		
+		Optional<Utilisateur> user = utilisateurRepository.findById(userId);
+		Utilisateur utilisateur = user.get();
+		
+		List<Langage> langage = utilisateur.getLangage();
+		if (langage == null || langage.size() == 0) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		} else {
+			return new ResponseEntity<>(langage, HttpStatus.OK);
+		}
+		
 	}
 	
 	@GetMapping("/trouverUnUtilisateur")
