@@ -82,6 +82,21 @@ public class UtilisateurController {
 		return modifUtilisateur;
 	}
 
+	@RequestMapping(value = "/modification-date", method = RequestMethod.PUT)
+	@ResponseBody
+	public Utilisateur modificationDate(@RequestBody Utilisateur u) {
+		System.out.println(u);
+
+		Utilisateur modifUtilisateur = utilisateurRepository.findById(u.getIdUtilisateur()).get();
+
+		modifUtilisateur.setDateDerniereConnexion(u.getDateDerniereConnexion());
+
+		utilisateurRepository.save(modifUtilisateur);
+
+		return modifUtilisateur;
+	}
+
+
 	@RequestMapping(value = "/suppression/{id}", method = RequestMethod.DELETE)
 	@ResponseBody
 	public Boolean suppression(@PathVariable("id") Long id) {
