@@ -15,7 +15,8 @@ public class Langage {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="id_lang",unique = true, nullable = false)
     private long idLang;
-
+    
+    
     @Column(name="lang")
     private String lang;
 
