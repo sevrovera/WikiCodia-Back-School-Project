@@ -176,14 +176,6 @@ public class ArticleController {
 				articleRepository.save(rejectedArticle);
 
 				// Envoi de l'email d'information à l'utilisateur
-				/*
-				 * String recipient = "sev.rovera@gmail.com";
-				 * 
-				 * String subject = "Java send mail example"; String body = "hi ....,!";
-				 * 
-				 * EmailUtils.sendFromGmail(recipient, subject, body);
-				 */
-
 				emailAuthor(rejectedArticle.getAuteur(), rejectedArticle.getEstValide(), rejectedArticle.getTitre(),
 						rejectedArticle.getComAdmin());
 
@@ -202,11 +194,15 @@ public class ArticleController {
 	 */
 	@PutMapping("/validate/{id}")
 	public ResponseEntity<Article> validateArticle(@PathVariable("id") long id) {
-
+		
 		Article validatedArticle = articleRepository.findById(id).get();
-		validatedArticle.setEstValide(true);
-		articleRepository.save(validatedArticle);
-
+		if (validatedArticle != null) {
+			validatedArticle.setEstValide(true);
+			articleRepository.save(validatedArticle);
+			// Envoi de l'email d'information à l'utilisateur
+			emailAuthor(validatedArticle.getAuteur(), validatedArticle.getEstValide(), validatedArticle.getTitre(),
+					validatedArticle.getComAdmin());
+		}
 		return new ResponseEntity<>(validatedArticle, HttpStatus.OK);
 	}
 
@@ -229,16 +225,19 @@ public class ArticleController {
 		// Contenu du mail si l'admin a validé l'article
 		if (estValide) {
 			subject = "Votre article a été validé!";
-			body = "Bonjour " + prenom + ", votre article " + titre
-					+ " vient d'être validé et est désormais accessible à la communauté."
-					+ " Un grand merci pour votre contribution !";
+			body = "Bonjour " + prenom + ", \n Votre article '" + titre
+					+ "' vient d'être validé et est désormais accessible à la communauté. \n"
+					+ " Commentaire de l'admin : '" + comAdmin + "' \n" 
+					+ " Un grand merci pour votre contribution ! \n"
+					+ "L'Equipe Wikicodia";
 			// Contenu du mail si l'admin a refusé l'article
 		} else {
 			subject = "Votre article a été refusé...";
-			body = "Bonjour " + prenom + ", votre article " + titre
-					+ " a malheureusement été refusé pour le motif suivant : '" + comAdmin
-					+ "'. N'hésitez pas à y apporter des modifications et à le soumettre de nouveau."
-					+ " Merci de votre compréhension et à bientôt !";
+			body = "Bonjour " + prenom + ", \n Votre article '" + titre
+					+ "' a malheureusement été refusé pour le motif suivant : '" + comAdmin
+					+ "'. N'hésitez pas à y apporter des modifications et à le soumettre de nouveau. \n"
+					+ " Merci de votre compréhension et à bientôt ! \n"
+					+ "L'Equipe Wikicodia";
 		}
 
 		EmailUtils.sendFromGmail(recipient, subject, body);
