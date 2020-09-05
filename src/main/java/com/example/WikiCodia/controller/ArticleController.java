@@ -26,7 +26,7 @@ import com.example.WikiCodia.model.Framework;
 import com.example.WikiCodia.model.Langage;
 import com.example.WikiCodia.model.Type;
 import com.example.WikiCodia.model.Utilisateur;
-import com.example.WikiCodia.model.Vote;
+import com.example.WikiCodia.model.utils.EmailUtils;
 import com.example.WikiCodia.repository.ArticleRepository;
 import com.example.WikiCodia.repository.CategorieRepository;
 import com.example.WikiCodia.repository.EtatRepository;
@@ -84,8 +84,7 @@ public class ArticleController {
 
 			if (titre == null) {
 				articleRepository.findAll().forEach(articles::add);
-			}
-			else {
+			} else {
 				articleRepository.findByTitreContaining(titre).forEach(articles::add);
 			}
 
@@ -93,42 +92,39 @@ public class ArticleController {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 			}
 
-			
-			Optional<Utilisateur> util = utilisateurRepository.findById((long)2);
+			Optional<Utilisateur> util = utilisateurRepository.findById((long) 2);
 			Utilisateur u = util.get();
 			u.setArticlesFavoris(articles);
 			utilisateurRepository.save(u);
-			
+
 			return new ResponseEntity<>(articles, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
-	/**
-	 * Affiche l'ensemble des articles en attente de validation pour être publiés.
-	 * 
-	 * @return liste des articles
-	 */
-	//methode useless en vrai qui sert juste a ajouter tous les article en favoris à l'utilisateur 2
+	// methode useless en vrai qui sert juste a ajouter tous les article en favoris
+	// à l'utilisateur 2
 	@GetMapping("/alltofav")
 	public void getAllArticlestofavorite() {
-			List<Article> articles = new ArrayList<Article>();
+		List<Article> articles = new ArrayList<Article>();
 
-				for (Article ar : articleRepository.findAll()) {
-					articles.add(ar);
-				}
+		for (Article ar : articleRepository.findAll()) {
+			articles.add(ar);
+		}
 
-			
-			Optional<Utilisateur> util = utilisateurRepository.findById((long)2);
-			Utilisateur u = util.get();
-			u.setArticlesFavoris(articles);
-			utilisateurRepository.save(u);
+		Optional<Utilisateur> util = utilisateurRepository.findById((long) 2);
+		Utilisateur u = util.get();
+		u.setArticlesFavoris(articles);
+		utilisateurRepository.save(u);
 	}
-	
+
+	/**
+	 * Affiche tous les articles en attente de validation dans une section réservée
+	 * aux admins
+	 */
 	@GetMapping("/pending")
-	public ResponseEntity<List<Article>> getArticlesPublishedAndNotValidated(
-			@RequestParam(required = false) String titre) {
+	public ResponseEntity<List<Article>> getArticlesPublishedAndNotValidated() {
 		try {
 			List<Article> articles = new ArrayList<Article>();
 			articleRepository.findByIsPublishedAndNotValidated().forEach(articles::add);
@@ -147,14 +143,12 @@ public class ArticleController {
 	 * Méthode appelée lorsque l'admin justifie par un commentaire sa décision de
 	 * valider ou rejeter un article.
 	 * 
-	 * @param id       de l'article commenté
-	 * @param ensemble des données sur l'article
+	 * @param id          de l'article commenté
+	 * @param commentaire justifiant la décision de l'administateur
 	 * @return article modifié avec le nouveau commentaire
 	 */
 	@PutMapping("/comment-decision/{id}/{com}")
-	public ResponseEntity<Article> commentDecision(@PathVariable("id") long id, @PathVariable("com") String com
-			// ,@RequestBody Article article
-			) {
+	public ResponseEntity<Article> commentDecision(@PathVariable("id") long id, @PathVariable("com") String com) {
 
 		Article commentedArticle = articleRepository.findById(id).get();
 		commentedArticle.setComAdmin(com);
@@ -166,20 +160,36 @@ public class ArticleController {
 	/**
 	 * Méthode appelée lorsque l'admin refuse la publication d'un article.
 	 * 
-	 * @param id       de l'article à rejeter
-	 * @param ensemble des données sur l'article
+	 * @param id de l'article à rejeter
 	 * @return article modifié avec statut "estPublié" remis à false
 	 */
 	@PutMapping("/reject/{id}")
-	public ResponseEntity<Article> rejectArticle(@PathVariable("id") long id, @RequestBody Article article) throws Exception {
+	public ResponseEntity<Article> rejectArticle(@PathVariable("id") long id) {
 
 		Article rejectedArticle = articleRepository.findById(id).get();
+		
+		if (rejectedArticle != null) {
+			
+			if (rejectedArticle.getComAdmin() != null && !rejectedArticle.getComAdmin().trim().isEmpty()) {
+				
+				rejectedArticle.setEstPublie(false);
+				articleRepository.save(rejectedArticle);
 
-		if (rejectedArticle.getComAdmin() != null && !rejectedArticle.getComAdmin().trim().isEmpty()) {
-			rejectedArticle.setEstPublie(false);
-			articleRepository.save(rejectedArticle);
-		} else {
-			return new ResponseEntity<>(rejectedArticle, HttpStatus.EXPECTATION_FAILED);
+				// Envoi de l'email d'information à l'utilisateur
+				/*
+				 * String recipient = "sev.rovera@gmail.com";
+				 * 
+				 * String subject = "Java send mail example"; String body = "hi ....,!";
+				 * 
+				 * EmailUtils.sendFromGmail(recipient, subject, body);
+				 */
+
+				emailAuthor(rejectedArticle.getAuteur(), rejectedArticle.getEstValide(), rejectedArticle.getTitre(),
+						rejectedArticle.getComAdmin());
+
+			} else {
+				return new ResponseEntity<>(rejectedArticle, HttpStatus.EXPECTATION_FAILED);
+			}
 		}
 		return new ResponseEntity<>(rejectedArticle, HttpStatus.OK);
 	}
@@ -187,18 +197,51 @@ public class ArticleController {
 	/**
 	 * Méthode appelée lorsque l'admin valide la publication d'un article.
 	 * 
-	 * @param id       de l'article à valider
-	 * @param ensemble des données sur l'article
+	 * @param id de l'article à valider
 	 * @return article modifié avec statut "estValide" basculé à true
 	 */
 	@PutMapping("/validate/{id}")
-	public ResponseEntity<Article> validateArticle(@PathVariable("id") long id, @RequestBody Article article) {
+	public ResponseEntity<Article> validateArticle(@PathVariable("id") long id) {
 
 		Article validatedArticle = articleRepository.findById(id).get();
 		validatedArticle.setEstValide(true);
 		articleRepository.save(validatedArticle);
 
 		return new ResponseEntity<>(validatedArticle, HttpStatus.OK);
+	}
+
+	/**
+	 * Récupère l'email de l'auteur de l'article et l'éventuel commentaire associé à
+	 * l'article puis envoie un email à l'auteur
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public void emailAuthor(Utilisateur auteur, boolean estValide, String titre, String comAdmin) {
+
+		// Récupération de l'email associé à l'utilisateur auteur de l'article
+		String recipient = auteur.getMail();
+		String prenom = auteur.getPrenom();
+
+		String subject = "";
+		String body = "";
+
+		// Contenu du mail si l'admin a validé l'article
+		if (estValide) {
+			subject = "Votre article a été validé!";
+			body = "Bonjour " + prenom + ", votre article " + titre
+					+ " vient d'être validé et est désormais accessible à la communauté."
+					+ " Un grand merci pour votre contribution !";
+			// Contenu du mail si l'admin a refusé l'article
+		} else {
+			subject = "Votre article a été refusé...";
+			body = "Bonjour " + prenom + ", votre article " + titre
+					+ " a malheureusement été refusé pour le motif suivant : '" + comAdmin
+					+ "'. N'hésitez pas à y apporter des modifications et à le soumettre de nouveau."
+					+ " Merci de votre compréhension et à bientôt !";
+		}
+
+		EmailUtils.sendFromGmail(recipient, subject, body);
 	}
 
 	@GetMapping("/{id}")
@@ -286,7 +329,6 @@ public class ArticleController {
 				a.setType(typeRepository.findByLibTypeEquals(article.getType().getLibType()));
 			}
 
-
 			Optional<Utilisateur> util = utilisateurRepository.findById(article.getAuteur().getIdUtilisateur());
 			Utilisateur auteur = util.get();
 			a.setAuteur(auteur);
@@ -294,7 +336,6 @@ public class ArticleController {
 //			System.out.println("TEEEEEESSSSSSSTTTTTTTT REEEEESSSSSUUUULLLLLTTTTT");
 //			System.out.println(article.auteur);
 
-			
 			articleRepository.save(a);
 
 			return new ResponseEntity<>(a, HttpStatus.OK);
@@ -451,41 +492,40 @@ public class ArticleController {
 		}
 
 	}
-	
-	
+
 	@GetMapping("/mesarticles/{userid}")
 	public ResponseEntity<List<Article>> getAllArticlesOfUser(@PathVariable("userid") long userid) {
-		
+
 		Optional<Utilisateur> user = utilisateurRepository.findById(userid);
 		List<Article> tousMesArticles = new ArrayList<Article>();
-		
+
 		if (user.isPresent()) {
 			List<Article> tous = articleRepository.findAll();
 			for (Article article : tous) {
-				if(article.getAuteur().getIdUtilisateur() == userid) {
+				if (article.getAuteur().getIdUtilisateur() == userid) {
 					tousMesArticles.add(article);
 				}
 			}
-			
+
 			return new ResponseEntity<>(tousMesArticles, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
-	
+
 	@GetMapping("/articlesFavoris/{userId}")
 	public ResponseEntity<List<Article>> getArticlesFavorisByUserId(@PathVariable("userId") long userId) {
-		
+
 		Optional<Utilisateur> user = utilisateurRepository.findById(userId);
 		Utilisateur utilisateur = user.get();
-		
+
 		List<Article> articlesFavoris = utilisateur.getArticlesFavoris();
 		if (articlesFavoris == null || articlesFavoris.size() == 0) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		} else {
 			return new ResponseEntity<>(articlesFavoris, HttpStatus.OK);
 		}
-		
+
 	}
 
 }
