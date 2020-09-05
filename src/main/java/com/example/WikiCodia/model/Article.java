@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -15,7 +14,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -94,13 +92,16 @@ public class Article implements Serializable{
     @JoinColumn(name ="id_categorie")
 	private Categorie categorie;
 	
+	@Column(name = "com_admin")
+    @Size(max = 500)
+	private String comAdmin;
 	
 	public Article() {
 	}
 	
 	public Article(Long idArticle, @NotNull String titre, String description, String contenu, LocalDate dateCreation,
 			LocalDate dateDerniereModif, Boolean estPublie, Boolean estPromu, Boolean estValide, List<Vote> vote, List<Langage> langage,
-			List<Framework> framework, Utilisateur auteur, Type type, Categorie categorie) {
+			List<Framework> framework, Utilisateur auteur, Type type, Categorie categorie, String comAdmin) {
 		super();
 		this.idArticle = idArticle;
 		this.titre = titre;
@@ -117,6 +118,7 @@ public class Article implements Serializable{
 		this.auteur = auteur;
 		this.type = type;
 		this.categorie = categorie;
+		this.comAdmin = comAdmin;
 	}
 
 
@@ -241,5 +243,14 @@ public class Article implements Serializable{
 		this.categorie = categorie;
 	}
 
+	public String getComAdmin() {
+		return comAdmin;
+	}
+
+	public void setComAdmin(String comAdmin) {
+		this.comAdmin = comAdmin;
+	}
+
+	
 	
 }
