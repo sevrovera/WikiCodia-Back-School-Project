@@ -23,10 +23,8 @@ public class ArticleRepositoryCustomImpl implements ArticleRepositoryCustom {
 		
         List<Article> listeGlobale = new ArrayList<Article>();
         
-        //listeGlobale = entityManager.createQuery("Select article from Article article where article.type.libType = 'Java' or article.type.libType = 'Outils utiles'").getResultList();
-        listeGlobale = entityManager.createQuery("Select article from Article article where article.langage.lang = 'Java'").getResultList();
         
-        
+        listeGlobale = entityManager.createQuery(query).getResultList();
 	
 		return listeGlobale;
 	}
