@@ -374,8 +374,8 @@ public class ArticleController {
 			} else {
 				_article.setEstPublie(false);
 			}
-			if (articleUpdated.getEstPromu()) {
-				_article.setEstPromu(articleUpdated.getEstPromu());
+			if (articleUpdated.getEstPromu() && articleUpdated.getEstPublie()) {
+					_article.setEstPromu(articleUpdated.getEstPromu());
 			} else {
 				_article.setEstPromu(false);
 			}
@@ -388,22 +388,6 @@ public class ArticleController {
 				_article.setComAdmin(articleUpdated.getComAdmin());
 			}
 			if (articleUpdated.getVote() != null) {
-//				List<Vote> listVote = new ArrayList<Vote>();
-//				for (Vote voteItere : articleUpdated.getVote()) {
-//					
-//					if (voteItere.getIdVote() != null) {
-//						voteRepository.save(voteItere);
-//						listVote.add(voteRepository.findByLikedAndCommentaireAndUtilisateurEquals(voteItere.getLiked(), voteItere.getCommentaire(), voteItere.getUtilisateur()));
-//					}
-//					else {
-//						Vote newVote = new Vote();
-//						newVote.setCommentaire(voteItere.getCommentaire());
-//						newVote.setLiked(voteItere.getLiked());
-//						newVote.setUtilisateur(voteItere.getUtilisateur());
-//						voteRepository.save(newVote);
-//						listVote.add(voteRepository.findByLikedAndCommentaireAndUtilisateurEquals(voteItere.getLiked(), voteItere.getCommentaire(), voteItere.getUtilisateur()));
-//					}				
-//				}
 				_article.setVote(articleUpdated.getVote());
 			}
 			if (articleUpdated.getLangage() != null) {
@@ -436,32 +420,12 @@ public class ArticleController {
 			if (articleUpdated.getType() != null) {
 				_article.setType(typeRepository.findByLibTypeEquals(articleUpdated.getType().getLibType()));
 
-				
-//				if (typeRepository.findByLibTypeEquals(articleUpdated.getType().getLibType()) != null) {
-//					_article.setType(typeRepository.findByLibTypeEquals(articleUpdated.getType().getLibType()));
-//				} else {
-//					Type newTyp = new Type();
-//					newTyp.setLibType(articleUpdated.getType().getLibType());
-//					typeRepository.save(newTyp);
-//					_article.setType(typeRepository.findByLibTypeEquals(articleUpdated.getType().getLibType()));
-//				}
-
 			}
 			if (articleUpdated.getCategorie() != null) {
 				
 				_article.setCategorie(categorieRepository
 						.findByLibCategorieEquals(articleUpdated.getCategorie().getLibCategorie()));
-//				if (categorieRepository
-//						.findByLibCategorieEquals(articleUpdated.getCategorie().getLibCategorie()) != null) {
-//					_article.setCategorie(categorieRepository
-//							.findByLibCategorieEquals(articleUpdated.getCategorie().getLibCategorie()));
-//				} else {
-//					Categorie newCat = new Categorie();
-//					newCat.setLibCategorie(articleUpdated.getCategorie().getLibCategorie());
-//					categorieRepository.save(newCat);
-//					_article.setCategorie(categorieRepository
-//							.findByLibCategorieEquals(articleUpdated.getCategorie().getLibCategorie()));
-//				}
+
 			}
 
 			return new ResponseEntity<>(articleRepository.save(_article), HttpStatus.OK);
