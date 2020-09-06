@@ -12,98 +12,92 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
-
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-
 
 @Entity
 @Table(name = "article")
-public class Article implements Serializable{
-	
+public class Article implements Serializable {
+
+	private static final long serialVersionUID = -2162084679402384252L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="id_article",unique = true, nullable = false)
+	@Column(name = "id_article", unique = true, nullable = false)
 	private Long idArticle;
 
 	@NotNull
-	@Column(name = "titre") 
+	@Column(name = "titre")
 	private String titre;
-	
+
 	@Column(name = "description")
-    @Size(max = 999999)
+	@Size(max = 255)
 	private String description;
-	
+
 	@Column(name = "contenu")
-    @Size(max = 999999)
+	@Size(max = 10000)
 	private String contenu;
-	
+
 	@Column(name = "date_creation")
 	private LocalDate dateCreation;
-	
+
 	@Column(name = "date_derniere_modif")
 	private LocalDate dateDerniereModif;
-	
+
 	@Column(name = "est_publie", columnDefinition = "boolean default false")
 	private Boolean estPublie;
 
 	@Column(name = "est_promu", columnDefinition = "boolean default false")
 	private Boolean estPromu;
-	
+
 	@Column(name = "est_valide", columnDefinition = "boolean default false")
 	private Boolean estValide;
 
 	@ElementCollection(fetch = FetchType.EAGER)
 	private List<Vote> vote;
-	
-	// En partant du principe qu'un article peut être associé à plusieurs langages ou framework (par ex un article comparatif) :
-	
-	//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
-	//@LazyCollection(LazyCollectionOption.FALSE)
+
+	// @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+	// @LazyCollection(LazyCollectionOption.FALSE)
 	@ManyToOne
-	@JoinColumn(name ="id_lang")
+	@JoinColumn(name = "id_lang")
 	private Langage langage;
-	
-	//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
-	//@LazyCollection(LazyCollectionOption.FALSE)
+
+	// @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+	// @LazyCollection(LazyCollectionOption.FALSE)
 	@ManyToOne
-	@JoinColumn(name ="id_framework")
+	@JoinColumn(name = "id_framework")
 	private Framework framework;
-	
+
 	@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "idUtilisateur")
 	@JsonIdentityReference(alwaysAsId = true)
 	@ManyToOne
-    @JoinColumn(name ="id_utilisateur")
+	@JoinColumn(name = "id_utilisateur")
 	private Utilisateur auteur;
-	
+
 	@ManyToOne
-    @JoinColumn(name ="id_type")
+	@JoinColumn(name = "id_type")
 	private Type type;
-	
+
 	@ManyToOne
-    @JoinColumn(name ="id_categorie")
+	@JoinColumn(name = "id_categorie")
 	private Categorie categorie;
-	
+
 	@Column(name = "com_admin")
-    @Size(max = 500)
+	@Size(max = 500)
 	private String comAdmin;
-	
+
 	public Article() {
 	}
-	
+
 	public Article(Long idArticle, @NotNull String titre, String description, String contenu, LocalDate dateCreation,
-			LocalDate dateDerniereModif, Boolean estPublie, Boolean estPromu, Boolean estValide, List<Vote> vote, Langage langage,
-			Framework framework, Utilisateur auteur, Type type, Categorie categorie, String comAdmin) {
+			LocalDate dateDerniereModif, Boolean estPublie, Boolean estPromu, Boolean estValide, List<Vote> vote,
+			Langage langage, Framework framework, Utilisateur auteur, Type type, Categorie categorie, String comAdmin) {
 		super();
 		this.idArticle = idArticle;
 		this.titre = titre;
@@ -122,8 +116,6 @@ public class Article implements Serializable{
 		this.categorie = categorie;
 		this.comAdmin = comAdmin;
 	}
-
-
 
 	public Long getIdArticle() {
 		return idArticle;
@@ -188,7 +180,7 @@ public class Article implements Serializable{
 	public void setEstPromu(Boolean estPromu) {
 		this.estPromu = estPromu;
 	}
-	
+
 	public Boolean getEstValide() {
 		return estValide;
 	}
@@ -200,11 +192,11 @@ public class Article implements Serializable{
 	public List<Vote> getVote() {
 		return vote;
 	}
-	
+
 	public void setVote(List<Vote> vote) {
 		this.vote = vote;
 	}
-	
+
 	public Langage getLangage() {
 		return langage;
 	}
@@ -253,6 +245,4 @@ public class Article implements Serializable{
 		this.comAdmin = comAdmin;
 	}
 
-	
-	
 }

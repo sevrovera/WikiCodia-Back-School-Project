@@ -19,4 +19,5 @@ public interface ArticleRepository extends JpaRepository<Article, Long>, Article
 	 List<Article> findArticleWithPreferences(String query);
 	 
 	 List<Article> findNewerArticles();
+
 }

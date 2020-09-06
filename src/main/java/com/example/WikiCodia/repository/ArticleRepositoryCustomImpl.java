@@ -14,6 +14,7 @@ public class ArticleRepositoryCustomImpl implements ArticleRepositoryCustom {
 	@PersistenceContext
 	private EntityManager entityManager;
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Article> findArticleWithPreferences(String query) 
 	{

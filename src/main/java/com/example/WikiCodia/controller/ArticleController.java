@@ -613,7 +613,6 @@ public class ArticleController {
 				}
 			}
 			
-			
 			List<Framework> frameworksPreferes = utilisateur.getFramework();
 			
 			if (frameworksPreferes.size() > 0) {
@@ -625,7 +624,6 @@ public class ArticleController {
 					}
 				}
 			}
-			
 			
 			List<Categorie> categoriesPreferes = utilisateur.getCategorie();
 			
@@ -639,7 +637,6 @@ public class ArticleController {
 				}
 			}
 			
-			
 			List<Type> typesPreferes = utilisateur.getType();
 			
 			if (typesPreferes.size() > 0) {
@@ -651,9 +648,7 @@ public class ArticleController {
 					}
 				}
 			}
-			
-			
-			
+				
 			List<Article> articlesPreferes = new ArrayList<Article>();
 			if (query == "Select article from Article article where ") {
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -661,8 +656,6 @@ public class ArticleController {
 				query = query + "and article.estValide = 1";
 				articlesPreferes = articleRepository.findArticleWithPreferences(query);
 			}
-			
-			
 			
 			return new ResponseEntity<>(articlesPreferes , HttpStatus.OK);
 			
