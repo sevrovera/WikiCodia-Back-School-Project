@@ -27,6 +27,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name="utilisateur")
 public class Utilisateur implements Serializable , UserDetails {
 	
+	private static final long serialVersionUID = 6727455988718521095L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="id_utilisateur", unique = true, nullable = false)

@@ -17,4 +17,7 @@ public interface ArticleRepository extends JpaRepository<Article, Long>, Article
 	 	List<Article> findPromotedArticles();
 	 
 	 List<Article>findArticleWithPreferences(String query);
+	 
+	 
+	 
 }
