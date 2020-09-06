@@ -82,7 +82,7 @@ public class Utilisateur implements Serializable , UserDetails {
 	private List<Type> type;
 
 	@LazyCollection(LazyCollectionOption.FALSE)
-	@ManyToMany(cascade = CascadeType.ALL, fetch =  FetchType.LAZY)
+	@ManyToMany
 	private List<Categorie> categorie;
 	
 	@LazyCollection(LazyCollectionOption.FALSE)
@@ -200,22 +200,18 @@ public class Utilisateur implements Serializable , UserDetails {
 	public void setGuilde(List<Guilde> guilde) {
 		this.guilde = guilde;
 	}
-
 	@JsonIgnore
 	public List<Framework> getFramework() {
 		return framework;
 	}
-
 	@JsonIgnore
 	public void setFramework(List<Framework> framework) {
 		this.framework = framework;
 	}
-
 	@JsonIgnore
 	public List<Langage> getLangage() {
 		return langage;
 	}
-	
 	@JsonIgnore
 	public void setLangage(List<Langage> langage) {
 		this.langage = langage;
