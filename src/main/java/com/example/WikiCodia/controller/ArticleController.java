@@ -254,6 +254,7 @@ public class ArticleController {
 		}
 	}
 
+	/*
 	@PostMapping("/creation")
 //	@ResponseBody
 	public ResponseEntity<Article> createArticle(@RequestBody Article article) {
@@ -470,7 +471,8 @@ public class ArticleController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
-
+*/
+	
 	@DeleteMapping("/suppression/{id}")
 	public ResponseEntity<HttpStatus> deleteArticle(@PathVariable("id") long id) {
 		try {
