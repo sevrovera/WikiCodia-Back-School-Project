@@ -580,7 +580,7 @@ public class ArticleController {
 			if (langagesPreferes.size() > 0) {
 				for(int i = 0 ; i < langagesPreferes.size() ; i++) {
 					
-					query = query + "article.langage = " + langagesPreferes.get(i).getLang().toString() + " ";
+					query = query + "article.langage.lang = '" + langagesPreferes.get(i).getLang().toString() + "' ";
 					if (i < langagesPreferes.size() -1) {
 						query = query + "or ";
 					}
@@ -593,7 +593,7 @@ public class ArticleController {
 			if (frameworksPreferes.size() > 0) {
 				query = query + "or ";
 				for(int i = 0 ; i < frameworksPreferes.size() ; i++) {
-					query = query + "article.framework = " + frameworksPreferes.get(i).getFramework().toString() + " ";
+					query = query + "article.framework.framework = '" + frameworksPreferes.get(i).getFramework().toString() + "' ";
 					if (i < frameworksPreferes.size() -1) {
 						query = query + "or ";
 					}
@@ -606,7 +606,7 @@ public class ArticleController {
 			if (categoriesPreferes.size() > 0) {
 				query = query + "or ";
 				for(int i = 0 ; i < categoriesPreferes.size() ; i++) {
-					query = query + "article.categorie = " + categoriesPreferes.get(i).getLibCategorie().toString() + " ";
+					query = query + "article.categorie.libCategorie = '" + categoriesPreferes.get(i).getLibCategorie().toString() + "' ";
 					if (i < categoriesPreferes.size() -1) {
 						query = query + "or ";
 					}
@@ -619,7 +619,7 @@ public class ArticleController {
 			if (typesPreferes.size() > 0) {
 				query = query + "or ";
 				for(int i = 0 ; i < typesPreferes.size() ; i++) {
-					query = query + "article.type = " + typesPreferes.get(i).getLibType().toString() + " ";
+					query = query + "article.type.libType = '" + typesPreferes.get(i).getLibType().toString() + "' ";
 					if (i < typesPreferes.size() -1) {
 						query = query + "or ";
 					}
@@ -627,11 +627,12 @@ public class ArticleController {
 			}
 			
 			
-			System.out.println(query);
+			
 			List<Article> articlesPreferes = new ArrayList<Article>();
 			if (query == "Select article from Article article where ") {
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 			} else {
+				query = query + "and article.estValide = 1";
 				articlesPreferes = articleRepository.findArticleWithPreferences(query);
 			}
 			
