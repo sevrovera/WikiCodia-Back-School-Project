@@ -14,10 +14,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-<<<<<<< HEAD
-=======
+import java.lang.reflect.Array;
+import java.security.Principal;
 import java.time.LocalDate;
->>>>>>> rebase avec dev
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -29,8 +28,12 @@ import com.example.WikiCodia.model.Role;
 import com.example.WikiCodia.model.Type;
 
 import com.example.WikiCodia.model.Utilisateur;
+import com.example.WikiCodia.repository.CategorieRepository;
 import com.example.WikiCodia.repository.EtatRepository;
+import com.example.WikiCodia.repository.FrameworkRepository;
+import com.example.WikiCodia.repository.LangageRepository;
 import com.example.WikiCodia.repository.RoleRepository;
+import com.example.WikiCodia.repository.TypeRepository;
 import com.example.WikiCodia.repository.UtilisateurRepository;
 
 @RestController
@@ -39,6 +42,18 @@ public class UtilisateurController {
 	
 	@Autowired
 	private UtilisateurRepository utilisateurRepository;
+
+	@Autowired
+	private CategorieRepository categorieRepository;
+
+	@Autowired
+	private FrameworkRepository frameworkRepository;
+
+	@Autowired
+	private LangageRepository langageRepository;
+
+	@Autowired
+	private TypeRepository typeRepository;
 
 	@Autowired
 	private EtatRepository etatRepository;
@@ -88,11 +103,38 @@ public class UtilisateurController {
 		return modifUtilisateur;
 	}
 
+	@RequestMapping(value = "/modification-speciale", method = RequestMethod.PUT)
+	@ResponseBody
+	public Utilisateur modificatioSpeciale(@RequestBody Utilisateur u) {
+		System.out.println(u);
+
+		Utilisateur modifUtilisateur = utilisateurRepository.findById(u.getIdUtilisateur()).get();
+
+		if (modifUtilisateur.getMotDePasse() != u.getMotDePasse()) {
+			modifUtilisateur.setMotDePasse(passwordEncoder.encode(u.getMotDePasse()));
+		}
+
+		modifUtilisateur.setNom(u.getNom());
+		modifUtilisateur.setPrenom(u.getPrenom());
+		modifUtilisateur.setPseudo(u.getPseudo());
+		modifUtilisateur.setMail(u.getMail());
+		modifUtilisateur.setLienLinkedIn(u.getLienLinkedIn());
+		modifUtilisateur.setStatut(u.getStatut());
+		modifUtilisateur.setEtat(u.getEtat());
+		modifUtilisateur.setRole(u.getRole());
+		modifUtilisateur.setGuilde(u.getGuilde());
+		modifUtilisateur.setDateInscription(u.getDateInscription());
+		modifUtilisateur.setDateDerniereConnexion(u.getDateDerniereConnexion());
+
+		utilisateurRepository.save(modifUtilisateur);
+
+		return modifUtilisateur;
+	}
+
 	@RequestMapping(value = "/modification-date", method = RequestMethod.PUT)
 	@ResponseBody
 	public Utilisateur modificationDate(@RequestBody Utilisateur u) {
 		System.out.println(u);
-
 		Utilisateur modifUtilisateur = utilisateurRepository.findById(u.getIdUtilisateur()).get();
 
 		modifUtilisateur.setDateDerniereConnexion(u.getDateDerniereConnexion());
@@ -126,12 +168,7 @@ public class UtilisateurController {
 		Utilisateur utilisateur = user.get();
 		
 		List<Categorie> categories = utilisateur.getCategorie();
-		if (categories == null || categories.size() == 0) {
-			return new ResponseEntity<>(categories, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(categories, HttpStatus.OK);
-		}
-		
+		return new ResponseEntity<>(categories, HttpStatus.OK);	
 	}
 
 	@GetMapping("/framework/{userId}")
@@ -141,11 +178,8 @@ public class UtilisateurController {
 		Utilisateur utilisateur = user.get();
 		
 		List<Framework> framework = utilisateur.getFramework();
-		if (framework == null || framework.size() == 0) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		} else {
-			return new ResponseEntity<>(framework, HttpStatus.OK);
-		}
+		return new ResponseEntity<>(framework, HttpStatus.OK);
+
 		
 	}
 
@@ -156,11 +190,8 @@ public class UtilisateurController {
 		Utilisateur utilisateur = user.get();
 		
 		List<Type> type = utilisateur.getType();
-		if (type == null || type.size() == 0) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		} else {
-			return new ResponseEntity<>(type, HttpStatus.OK);
-		}
+		return new ResponseEntity<>(type, HttpStatus.OK);
+		
 		
 	}
 
@@ -171,11 +202,8 @@ public class UtilisateurController {
 		Utilisateur utilisateur = user.get();
 		
 		List<Langage> langage = utilisateur.getLangage();
-		if (langage == null || langage.size() == 0) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		} else {
-			return new ResponseEntity<>(langage, HttpStatus.OK);
-		}
+		return new ResponseEntity<>(langage, HttpStatus.OK);
+		
 		
 	}
 	
@@ -200,7 +228,54 @@ public class UtilisateurController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		} else {
 			return new ResponseEntity<>(auteurs, HttpStatus.OK);
-		}
-		
+		}	
+	}
+
+	@PostMapping("/set-categories/{userId}")
+	@ResponseBody
+	public ResponseEntity<List<Categorie>> findCategories(@RequestBody List<Categorie> catId, @PathVariable("userId") long userId){
+		//recup utilisateur
+		Utilisateur utilisateur = utilisateurRepository.findById(userId).get();
+		//remplacement des données de l utilisateur
+		utilisateur.setCategorie(catId);
+		//sauvegarde utilisateur
+		utilisateurRepository.save(utilisateur);
+		return new ResponseEntity<>(catId, HttpStatus.OK);
+	}
+
+	@PostMapping("/set-framework/{userId}")
+	@ResponseBody
+	public ResponseEntity<List<Framework>> findFramework(@RequestBody List<Framework> frameworks, @PathVariable("userId") long userId){
+		//recup utilisateur
+		Utilisateur utilisateur = utilisateurRepository.findById(userId).get();
+		//remplacement des données de l utilisateur
+		utilisateur.setFramework(frameworks);
+		//sauvegarde utilisateur
+		utilisateurRepository.save(utilisateur);
+		return new ResponseEntity<>(frameworks, HttpStatus.OK);
+	}
+
+	@PostMapping("/set-langage/{userId}")
+	@ResponseBody
+	public ResponseEntity<List<Langage>> findLangage(@RequestBody List<Langage> langages, @PathVariable("userId") long userId){
+		//recup utilisateur
+		Utilisateur utilisateur = utilisateurRepository.findById(userId).get();
+		//remplacement des données de l utilisateur
+		utilisateur.setLangage(langages);
+		//sauvegarde utilisateur
+		utilisateurRepository.save(utilisateur);
+		return new ResponseEntity<>(langages, HttpStatus.OK);
+	}
+
+	@PostMapping("/set-type/{userId}")
+	@ResponseBody
+	public ResponseEntity<List<Type>> findType(@RequestBody List<Type> types, @PathVariable("userId") long userId){
+		//recup utilisateur
+		Utilisateur utilisateur = utilisateurRepository.findById(userId).get();
+		//remplacement des données de l utilisateur
+		utilisateur.setType(types);
+		//sauvegarde utilisateur
+		utilisateurRepository.save(utilisateur);
+		return new ResponseEntity<>(types, HttpStatus.OK);
 	}
 }
