@@ -24,8 +24,18 @@ public class ArticleRepositoryCustomImpl implements ArticleRepositoryCustom {
         List<Article> listeGlobale = new ArrayList<Article>();
         
         
-        listeGlobale = entityManager.createQuery(query).getResultList();
+        listeGlobale = entityManager.createQuery(query).setMaxResults(20).getResultList();
 	
+		return listeGlobale;
+	}
+
+	@Override
+	public List<Article> findNewerArticles() {
+		
+		List<Article> listeGlobale = new ArrayList<Article>();
+		
+		listeGlobale = entityManager.createQuery("select article from Article article order by article.dateCreation desc").setMaxResults(20).getResultList();
+		
 		return listeGlobale;
 	}
 

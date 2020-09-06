@@ -670,5 +670,16 @@ public class ArticleController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}	
 	}
+	
+	@GetMapping("/articlesRecents")
+	public ResponseEntity<List<Article>> findNewArticles(){
+		List<Article> newerArticles = articleRepository.findNewerArticles();
+		if(newerArticles.size() == 0) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		} else {
+			return new ResponseEntity<>(newerArticles , HttpStatus.OK);
+		}
+		
+	}
 
 }

@@ -16,5 +16,7 @@ public interface ArticleRepository extends JpaRepository<Article, Long>, Article
 	 @Query("Select article from Article article where article.estPromu = 1")
 	 	List<Article> findPromotedArticles();
 	 
-	 List<Article>findArticleWithPreferences(String query);
+	 List<Article> findArticleWithPreferences(String query);
+	 
+	 List<Article> findNewerArticles();
 }
