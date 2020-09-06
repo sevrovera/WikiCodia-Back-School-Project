@@ -289,14 +289,14 @@ public class ArticleController {
 			
 
 
-				if (langageRepository.findByLangAndVersionEquals(article.getFramework().getFramework(),article.getFramework().getVersion()) != null) {
-					a.setLangage(langageRepository.findByLangAndVersionEquals(article.getFramework().getFramework(),article.getFramework().getVersion()));
+				if (langageRepository.findByLangAndVersionEquals(article.getLangage().getLang(),article.getLangage().getVersion()) != null) {
+					a.setLangage(langageRepository.findByLangAndVersionEquals(article.getLangage().getLang(),article.getLangage().getVersion()));
 				} else {
 					Langage newLang = new Langage();
 					newLang.setLang(article.getLangage().getLang());
 					newLang.setVersion(article.getLangage().getVersion());
 					langageRepository.save(newLang);
-					a.setLangage(langageRepository.findByLangAndVersionEquals(article.getFramework().getFramework(),article.getFramework().getVersion()));
+					a.setLangage(langageRepository.findByLangAndVersionEquals(article.getLangage().getLang(),article.getLangage().getVersion()));
 				}
 				
 				a.setCategorie(categorieRepository.findByLibCategorieEquals(article.getCategorie().getLibCategorie()));
