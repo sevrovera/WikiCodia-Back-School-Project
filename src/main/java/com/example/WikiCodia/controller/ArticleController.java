@@ -134,6 +134,7 @@ public class ArticleController {
 			}
 
 			return new ResponseEntity<>(articles, HttpStatus.OK);
+
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -151,10 +152,16 @@ public class ArticleController {
 	public ResponseEntity<Article> commentDecision(@PathVariable("id") long id, @PathVariable("com") String com) {
 
 		Article commentedArticle = articleRepository.findById(id).get();
-		commentedArticle.setComAdmin(com);
-		articleRepository.save(commentedArticle);
 
-		return new ResponseEntity<>(commentedArticle, HttpStatus.OK);
+		if (commentedArticle != null) {
+			commentedArticle.setComAdmin(com);
+			articleRepository.save(commentedArticle);
+
+			return new ResponseEntity<>(commentedArticle, HttpStatus.OK);
+
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
 	}
 
 	/**
@@ -165,25 +172,26 @@ public class ArticleController {
 	 */
 	@PutMapping("/reject/{id}")
 	public ResponseEntity<Article> rejectArticle(@PathVariable("id") long id) {
+		try {
+			Article rejectedArticle = articleRepository.findById(id).get();
+			if (rejectedArticle != null) {
+				if (rejectedArticle.getComAdmin() != null && !rejectedArticle.getComAdmin().trim().isEmpty()) {
 
-		Article rejectedArticle = articleRepository.findById(id).get();
-		
-		if (rejectedArticle != null) {
-			
-			if (rejectedArticle.getComAdmin() != null && !rejectedArticle.getComAdmin().trim().isEmpty()) {
-				
-				rejectedArticle.setEstPublie(false);
-				articleRepository.save(rejectedArticle);
+					rejectedArticle.setEstPublie(false);
+					articleRepository.save(rejectedArticle);
 
-				// Envoi de l'email d'information à l'utilisateur
-				emailAuthor(rejectedArticle.getAuteur(), rejectedArticle.getEstValide(), rejectedArticle.getTitre(),
-						rejectedArticle.getComAdmin());
+					// Envoi de l'email d'information à l'utilisateur
+					emailAuthor(rejectedArticle.getAuteur(), rejectedArticle.getEstValide(), rejectedArticle.getTitre(),
+							rejectedArticle.getComAdmin());
 
-			} else {
-				return new ResponseEntity<>(rejectedArticle, HttpStatus.EXPECTATION_FAILED);
+				} else {
+					return new ResponseEntity<>(rejectedArticle, HttpStatus.EXPECTATION_FAILED);
+				}
 			}
+			return new ResponseEntity<>(rejectedArticle, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<>(rejectedArticle, HttpStatus.OK);
 	}
 
 	/**
@@ -194,16 +202,20 @@ public class ArticleController {
 	 */
 	@PutMapping("/validate/{id}")
 	public ResponseEntity<Article> validateArticle(@PathVariable("id") long id) {
-		
-		Article validatedArticle = articleRepository.findById(id).get();
-		if (validatedArticle != null) {
-			validatedArticle.setEstValide(true);
-			articleRepository.save(validatedArticle);
-			// Envoi de l'email d'information à l'utilisateur
-			emailAuthor(validatedArticle.getAuteur(), validatedArticle.getEstValide(), validatedArticle.getTitre(),
-					validatedArticle.getComAdmin());
+		try {
+			Article validatedArticle = articleRepository.findById(id).get();
+
+			if (validatedArticle != null) {
+				validatedArticle.setEstValide(true);
+				articleRepository.save(validatedArticle);
+				// Envoi de l'email d'information à l'utilisateur
+				emailAuthor(validatedArticle.getAuteur(), validatedArticle.getEstValide(), validatedArticle.getTitre(),
+						validatedArticle.getComAdmin());
+			}
+			return new ResponseEntity<>(validatedArticle, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<>(validatedArticle, HttpStatus.OK);
 	}
 
 	/**
@@ -227,8 +239,7 @@ public class ArticleController {
 			subject = "Votre article a été validé!";
 			body = "Bonjour " + prenom + ", \n Votre article '" + titre
 					+ "' vient d'être validé et est désormais accessible à la communauté. \n"
-					+ " Commentaire de l'admin : '" + comAdmin + "' \n" 
-					+ " Un grand merci pour votre contribution ! \n"
+					+ " Commentaire de l'admin : '" + comAdmin + "' \n" + " Un grand merci pour votre contribution ! \n"
 					+ "L'Equipe Wikicodia";
 			// Contenu du mail si l'admin a refusé l'article
 		} else {
@@ -236,8 +247,7 @@ public class ArticleController {
 			body = "Bonjour " + prenom + ", \n Votre article '" + titre
 					+ "' a malheureusement été refusé pour le motif suivant : '" + comAdmin
 					+ "'. N'hésitez pas à y apporter des modifications et à le soumettre de nouveau. \n"
-					+ " Merci de votre compréhension et à bientôt ! \n"
-					+ "L'Equipe Wikicodia";
+					+ " Merci de votre compréhension et à bientôt ! \n" + "L'Equipe Wikicodia";
 		}
 
 		EmailUtils.sendFromGmail(recipient, subject, body);
@@ -502,6 +512,34 @@ public class ArticleController {
 		}
 	}
 
+	/**
+	 * Change la visibilité de l'article, sans impact sur la validité mais avec
+	 * impact sur la promotion. Lorsqu'on dé-publie un article qui a été promu par
+	 * un admin, cela a pour effet d'annuler la promotion.
+	 * 
+	 * @param articleId
+	 * @return article avec nouvelle visibilité
+	 */
+	@PutMapping("/toggle-visibility/{articleId}")
+	public ResponseEntity<Article> toggleArticleVisibility(@PathVariable("articleId") Long articleId) {
+		try {
+			Article article = articleRepository.findById(articleId).get();
+			if (article != null) {
+				if (article.getEstPublie()) {
+					article.setEstPublie(false);
+					article.setEstPromu(false);
+					articleRepository.save(article);
+				} else {
+					article.setEstPublie(true);
+					articleRepository.save(article);
+				}
+			}
+			return new ResponseEntity<>(article, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
+
 	@GetMapping("/articlesFavoris/{userId}")
 	public ResponseEntity<List<Article>> getArticlesFavorisByUserId(@PathVariable("userId") long userId) {
 
@@ -516,43 +554,43 @@ public class ArticleController {
 		}
 
 	}
-	
+
 	@GetMapping("/articlesPromus")
-	public ResponseEntity<List<Article>> getArticlesPromus(){
-		
-		List<Article> articlesPromus = articleRepository.findPomotedArticles();
+	public ResponseEntity<List<Article>> getArticlesPromus() {
+
+		List<Article> articlesPromus = articleRepository.findPromotedArticles();
 		if (articlesPromus == null || articlesPromus.size() == 0) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		} else {
 			return new ResponseEntity<>(articlesPromus, HttpStatus.OK);
 		}
 	}
-	
+
 	@PutMapping("/togglePromotion/{articleId}")
-	public ResponseEntity<Article> toggleArticlePromotion(@PathVariable("articleId") Long articleId){
-		
+	public ResponseEntity<Article> toggleArticlePromotion(@PathVariable("articleId") Long articleId) {
+
 		Optional<Article> articleOptional = articleRepository.findById(articleId);
-		
-		if(articleOptional.isPresent()) {
+
+		if (articleOptional.isPresent()) {
 			Article article = articleOptional.get();
-			
+
 			if (article.getEstPromu().booleanValue() == true) {
 				System.out.println("Article promu ? :" + article.getEstPromu().booleanValue());
 				article.setEstPromu(false);
 				articleRepository.save(article);
-				
+
 			} else {
 				System.out.println("Article promu ? :" + article.getEstPromu().booleanValue());
 				article.setEstPromu(true);
 				articleRepository.save(article);
 			}
 			return new ResponseEntity<>(article, HttpStatus.OK);
-			
+
 		} else {
-			
+
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-		
+
 	}
 	
 	//Select article from Article article where article.langage = nom or article.langage = nom or article.framework = nom or 
