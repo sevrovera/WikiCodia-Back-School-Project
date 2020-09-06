@@ -638,5 +638,34 @@ public class ArticleController {
 		}
 		
 	}
+	
+	@GetMapping("/articlesFavorisIds/{userId}")
+	public ResponseEntity<List<Long>> findArticlesFavorisIds(@PathVariable("userId") Long userId){
+		Utilisateur utilisateur = utilisateurRepository.findById(userId).get();
+		List<Article> articlesFavoris = utilisateur.getArticlesFavoris();
+		List<Long> articlesFavorisIds = new ArrayList<Long>();
+		for(int i = 0 ; i < articlesFavoris.size() ; i++) {
+			articlesFavorisIds.add(articlesFavoris.get(i).getIdArticle());
+		}
+		if(articlesFavorisIds.size() == 0) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		} else {
+			return new ResponseEntity<>(articlesFavorisIds , HttpStatus.OK);
+		}
+		
+	}
+	
+	@PutMapping("/ajouterAuxFavoris/{userId}")
+	public ResponseEntity<Article> addToMyFavorites(@PathVariable("userId") Long userId , @RequestBody Article article){
+		Utilisateur utilisateur = utilisateurRepository.findById(userId).get();
+		utilisateur.getArticlesFavoris().add(article);
+		try {
+			utilisateurRepository.save(utilisateur);
+			return new ResponseEntity<>(article , HttpStatus.OK);
+		} catch(Exception e) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		
+	}
 
 }
