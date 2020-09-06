@@ -566,5 +566,82 @@ public class ArticleController {
 		}
 		
 	}
+	
+	//Select article from Article article where article.langage = nom or article.langage = nom or article.framework = nom or 
+	@GetMapping("/articlesSuggeres/{userId}")
+	public ResponseEntity<List<Article>> getArticlesSuggeres(@PathVariable("userId") Long userId){
+		Optional <Utilisateur> user = utilisateurRepository.findById(userId);
+		if (user.isPresent()) {
+			Utilisateur utilisateur = user.get();
+			String query = "Select article from Article article where ";
+			//Récupération des langages préférés
+			List<Langage> langagesPreferes = utilisateur.getLangage();
+			
+			if (langagesPreferes.size() > 0) {
+				for(int i = 0 ; i < langagesPreferes.size() ; i++) {
+					
+					query = query + "article.langage = " + langagesPreferes.get(i).getLang().toString() + " ";
+					if (i < langagesPreferes.size() -1) {
+						query = query + "or ";
+					}
+				}
+			}
+			
+			
+			List<Framework> frameworksPreferes = utilisateur.getFramework();
+			
+			if (frameworksPreferes.size() > 0) {
+				query = query + "or ";
+				for(int i = 0 ; i < frameworksPreferes.size() ; i++) {
+					query = query + "article.framework = " + frameworksPreferes.get(i).getFramework().toString() + " ";
+					if (i < frameworksPreferes.size() -1) {
+						query = query + "or ";
+					}
+				}
+			}
+			
+			
+			List<Categorie> categoriesPreferes = utilisateur.getCategorie();
+			
+			if (categoriesPreferes.size() > 0) {
+				query = query + "or ";
+				for(int i = 0 ; i < categoriesPreferes.size() ; i++) {
+					query = query + "article.categorie = " + categoriesPreferes.get(i).getLibCategorie().toString() + " ";
+					if (i < categoriesPreferes.size() -1) {
+						query = query + "or ";
+					}
+				}
+			}
+			
+			
+			List<Type> typesPreferes = utilisateur.getType();
+			
+			if (typesPreferes.size() > 0) {
+				query = query + "or ";
+				for(int i = 0 ; i < typesPreferes.size() ; i++) {
+					query = query + "article.type = " + typesPreferes.get(i).getLibType().toString() + " ";
+					if (i < typesPreferes.size() -1) {
+						query = query + "or ";
+					}
+				}
+			}
+			
+			
+			System.out.println(query);
+			List<Article> articlesPreferes = new ArrayList<Article>();
+			if (query == "Select article from Article article where ") {
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			} else {
+				articlesPreferes = articleRepository.findArticleWithPreferences(query);
+			}
+			
+			
+			
+			return new ResponseEntity<>(articlesPreferes , HttpStatus.OK);
+			
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}	
+	}
 
 }
