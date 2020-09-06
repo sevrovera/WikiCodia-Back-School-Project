@@ -264,6 +264,7 @@ public class ArticleController {
 		}
 	}
 
+	
 	@PostMapping("/creation")
 //	@ResponseBody
 	public ResponseEntity<Article> createArticle(@RequestBody Article article) {
@@ -283,60 +284,54 @@ public class ArticleController {
 			// suppose qu'on ne peut pas voter pour son propre article
 			a.setVote(null);
 
-			List<Framework> listFram = new ArrayList<Framework>();
-			for (Framework frameworkItere : article.getFramework()) {
-				if (frameworkRepository.findByFrameworkAndVersionEquals(frameworkItere.getFramework(),
-						frameworkItere.getVersion()) != null) {
-					listFram.add(frameworkRepository.findByFrameworkAndVersionEquals(frameworkItere.getFramework(),
-							frameworkItere.getVersion()));
+				if (frameworkRepository.findByFrameworkAndVersionEquals(article.getFramework().getFramework(),
+						article.getFramework().getVersion()) != null) {
+					a.setFramework(frameworkRepository.findByFrameworkAndVersionEquals(article.getFramework().getFramework(),
+						article.getFramework().getVersion()));
 				} else {
 					Framework newFram = new Framework();
-					newFram.setFramework(frameworkItere.getFramework());
-					newFram.setVersion(frameworkItere.getVersion());
+					newFram.setFramework(article.getFramework().getFramework());
+					newFram.setVersion(article.getFramework().getVersion());
 					frameworkRepository.save(newFram);
-					listFram.add(frameworkRepository.findByFrameworkAndVersionEquals(frameworkItere.getFramework(),
-							frameworkItere.getVersion()));
+					a.setFramework(frameworkRepository.findByFrameworkAndVersionEquals(article.getFramework().getFramework(),
+							article.getFramework().getVersion()));
 				}
-			}
-			a.setFramework(listFram);
+			
 
-			List<Langage> listLang = new ArrayList<Langage>();
-			for (Langage langageItere : article.getLangage()) {
 
-				if (langageRepository.findByLangAndVersionEquals(langageItere.getLang(),
-						langageItere.getVersion()) != null) {
-					listLang.add(langageRepository.findByLangAndVersionEquals(langageItere.getLang(),
-							langageItere.getVersion()));
+				if (langageRepository.findByLangAndVersionEquals(article.getFramework().getFramework(),article.getFramework().getVersion()) != null) {
+					a.setLangage(langageRepository.findByLangAndVersionEquals(article.getFramework().getFramework(),article.getFramework().getVersion()));
 				} else {
 					Langage newLang = new Langage();
-					newLang.setLang(langageItere.getLang());
-					newLang.setVersion(langageItere.getVersion());
+					newLang.setLang(article.getLangage().getLang());
+					newLang.setVersion(article.getLangage().getVersion());
 					langageRepository.save(newLang);
-					listLang.add(langageRepository.findByLangAndVersionEquals(langageItere.getLang(),
-							langageItere.getVersion()));
+					a.setLangage(langageRepository.findByLangAndVersionEquals(article.getFramework().getFramework(),article.getFramework().getVersion()));
 				}
-			}
-			a.setLangage(listLang);
+				
+				a.setCategorie(categorieRepository.findByLibCategorieEquals(article.getCategorie().getLibCategorie()));
+
 
 //			a.setCategorie(categorieRepository.findByLibCategorieEquals(article.getCategorie().getLibCategorie()));
-			if (categorieRepository.findByLibCategorieEquals(article.getCategorie().getLibCategorie()) != null) {
-				a.setCategorie(categorieRepository.findByLibCategorieEquals(article.getCategorie().getLibCategorie()));
-			} else {
-				Categorie newCat = new Categorie();
-				newCat.setLibCategorie(article.getCategorie().getLibCategorie());
-				categorieRepository.save(newCat);
-				a.setCategorie(categorieRepository.findByLibCategorieEquals(article.getCategorie().getLibCategorie()));
-			}
+//			if (categorieRepository.findByLibCategorieEquals(article.getCategorie().getLibCategorie()) != null) {
+//			} else {
+//				Categorie newCat = new Categorie();
+//				newCat.setLibCategorie(article.getCategorie().getLibCategorie());
+//				categorieRepository.save(newCat);
+//				a.setCategorie(categorieRepository.findByLibCategorieEquals(article.getCategorie().getLibCategorie()));
+//			}
 //			
+				a.setType(typeRepository.findByLibTypeEquals(article.getType().getLibType()));
+
+				
 //			a.setType(typeRepository.findByLibTypeEquals(article.getType().getLibType()));
-			if (typeRepository.findByLibTypeEquals(article.getType().getLibType()) != null) {
-				a.setType(typeRepository.findByLibTypeEquals(article.getType().getLibType()));
-			} else {
-				Type newTyp = new Type();
-				newTyp.setLibType(article.getType().getLibType());
-				typeRepository.save(newTyp);
-				a.setType(typeRepository.findByLibTypeEquals(article.getType().getLibType()));
-			}
+//			if (typeRepository.findByLibTypeEquals(article.getType().getLibType()) != null) {
+//			} else {
+//				Type newTyp = new Type();
+//				newTyp.setLibType(article.getType().getLibType());
+//				typeRepository.save(newTyp);
+//				a.setType(typeRepository.findByLibTypeEquals(article.getType().getLibType()));
+//			}
 
 			Optional<Utilisateur> util = utilisateurRepository.findById(article.getAuteur().getIdUtilisateur());
 			Utilisateur auteur = util.get();
@@ -412,67 +407,61 @@ public class ArticleController {
 				_article.setVote(articleUpdated.getVote());
 			}
 			if (articleUpdated.getLangage() != null) {
-				List<Langage> listLang = new ArrayList<Langage>();
-				for (Langage langageItere : articleUpdated.getLangage()) {
-
-					if (langageRepository.findByLangAndVersionEquals(langageItere.getLang(),
-							langageItere.getVersion()) != null) {
-						listLang.add(langageRepository.findByLangAndVersionEquals(langageItere.getLang(),
-								langageItere.getVersion()));
-					} else {
-						Langage newLang = new Langage();
-						newLang.setLang(langageItere.getLang());
-						newLang.setVersion(langageItere.getVersion());
-						langageRepository.save(newLang);
-						listLang.add(langageRepository.findByLangAndVersionEquals(langageItere.getLang(),
-								langageItere.getVersion()));
-					}
+				if (langageRepository.findByLangAndVersionEquals(articleUpdated.getFramework().getFramework(),articleUpdated.getFramework().getVersion()) != null) {
+					_article.setLangage(langageRepository.findByLangAndVersionEquals(articleUpdated.getFramework().getFramework(),articleUpdated.getFramework().getVersion()));
+				} else {
+					Langage newLang = new Langage();
+					newLang.setLang(articleUpdated.getLangage().getLang());
+					newLang.setVersion(articleUpdated.getLangage().getVersion());
+					langageRepository.save(newLang);
+					_article.setLangage(langageRepository.findByLangAndVersionEquals(articleUpdated.getFramework().getFramework(),articleUpdated.getFramework().getVersion()));
 				}
-				_article.setLangage(listLang);
+				}
 
-			}
+			
 			if (articleUpdated.getFramework() != null) {
-
-				List<Framework> listFram = new ArrayList<Framework>();
-				for (Framework frameworkItere : articleUpdated.getFramework()) {
-					if (frameworkRepository.findByFrameworkAndVersionEquals(frameworkItere.getFramework(),
-							frameworkItere.getVersion()) != null) {
-						listFram.add(frameworkRepository.findByFrameworkAndVersionEquals(frameworkItere.getFramework(),
-								frameworkItere.getVersion()));
-					} else {
-						Framework newFram = new Framework();
-						newFram.setFramework(frameworkItere.getFramework());
-						newFram.setVersion(frameworkItere.getVersion());
-						frameworkRepository.save(newFram);
-						listFram.add(frameworkRepository.findByFrameworkAndVersionEquals(frameworkItere.getFramework(),
-								frameworkItere.getVersion()));
-					}
+				if (frameworkRepository.findByFrameworkAndVersionEquals(articleUpdated.getFramework().getFramework(),
+						articleUpdated.getFramework().getVersion()) != null) {
+					_article.setFramework(frameworkRepository.findByFrameworkAndVersionEquals(articleUpdated.getFramework().getFramework(),
+							articleUpdated.getFramework().getVersion()));
+				} else {
+					Framework newFram = new Framework();
+					newFram.setFramework(articleUpdated.getFramework().getFramework());
+					newFram.setVersion(articleUpdated.getFramework().getVersion());
+					frameworkRepository.save(newFram);
+					_article.setFramework(frameworkRepository.findByFrameworkAndVersionEquals(articleUpdated.getFramework().getFramework(),
+							articleUpdated.getFramework().getVersion()));
 				}
-				_article.setFramework(listFram);
 			}
 			if (articleUpdated.getType() != null) {
-				if (typeRepository.findByLibTypeEquals(articleUpdated.getType().getLibType()) != null) {
-					_article.setType(typeRepository.findByLibTypeEquals(articleUpdated.getType().getLibType()));
-				} else {
-					Type newTyp = new Type();
-					newTyp.setLibType(articleUpdated.getType().getLibType());
-					typeRepository.save(newTyp);
-					_article.setType(typeRepository.findByLibTypeEquals(articleUpdated.getType().getLibType()));
-				}
+				_article.setType(typeRepository.findByLibTypeEquals(articleUpdated.getType().getLibType()));
+
+				
+//				if (typeRepository.findByLibTypeEquals(articleUpdated.getType().getLibType()) != null) {
+//					_article.setType(typeRepository.findByLibTypeEquals(articleUpdated.getType().getLibType()));
+//				} else {
+//					Type newTyp = new Type();
+//					newTyp.setLibType(articleUpdated.getType().getLibType());
+//					typeRepository.save(newTyp);
+//					_article.setType(typeRepository.findByLibTypeEquals(articleUpdated.getType().getLibType()));
+//				}
 
 			}
 			if (articleUpdated.getCategorie() != null) {
-				if (categorieRepository
-						.findByLibCategorieEquals(articleUpdated.getCategorie().getLibCategorie()) != null) {
-					_article.setCategorie(categorieRepository
-							.findByLibCategorieEquals(articleUpdated.getCategorie().getLibCategorie()));
-				} else {
-					Categorie newCat = new Categorie();
-					newCat.setLibCategorie(articleUpdated.getCategorie().getLibCategorie());
-					categorieRepository.save(newCat);
-					_article.setCategorie(categorieRepository
-							.findByLibCategorieEquals(articleUpdated.getCategorie().getLibCategorie()));
-				}
+				
+				_article.setCategorie(categorieRepository
+						.findByLibCategorieEquals(articleUpdated.getCategorie().getLibCategorie()));
+//				if (categorieRepository
+//						.findByLibCategorieEquals(articleUpdated.getCategorie().getLibCategorie()) != null) {
+//					_article.setCategorie(categorieRepository
+//							.findByLibCategorieEquals(articleUpdated.getCategorie().getLibCategorie()));
+//				} else {
+//					Categorie newCat = new Categorie();
+//					newCat.setLibCategorie(articleUpdated.getCategorie().getLibCategorie());
+//					categorieRepository.save(newCat);
+//					_article.setCategorie(categorieRepository
+//							.findByLibCategorieEquals(articleUpdated.getCategorie().getLibCategorie()));
+//				}
 			}
 
 			return new ResponseEntity<>(articleRepository.save(_article), HttpStatus.OK);
@@ -481,6 +470,7 @@ public class ArticleController {
 		}
 	}
 
+	
 	@DeleteMapping("/suppression/{id}")
 	public ResponseEntity<HttpStatus> deleteArticle(@PathVariable("id") long id) {
 		try {
@@ -601,6 +591,83 @@ public class ArticleController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 
+	}
+	
+	//Select article from Article article where article.langage = nom or article.langage = nom or article.framework = nom or 
+	@GetMapping("/articlesSuggeres/{userId}")
+	public ResponseEntity<List<Article>> getArticlesSuggeres(@PathVariable("userId") Long userId){
+		Optional <Utilisateur> user = utilisateurRepository.findById(userId);
+		if (user.isPresent()) {
+			Utilisateur utilisateur = user.get();
+			String query = "Select article from Article article where ";
+			//Récupération des langages préférés
+			List<Langage> langagesPreferes = utilisateur.getLangage();
+			
+			if (langagesPreferes.size() > 0) {
+				for(int i = 0 ; i < langagesPreferes.size() ; i++) {
+					
+					query = query + "article.langage = " + langagesPreferes.get(i).getLang().toString() + " ";
+					if (i < langagesPreferes.size() -1) {
+						query = query + "or ";
+					}
+				}
+			}
+			
+			
+			List<Framework> frameworksPreferes = utilisateur.getFramework();
+			
+			if (frameworksPreferes.size() > 0) {
+				query = query + "or ";
+				for(int i = 0 ; i < frameworksPreferes.size() ; i++) {
+					query = query + "article.framework = " + frameworksPreferes.get(i).getFramework().toString() + " ";
+					if (i < frameworksPreferes.size() -1) {
+						query = query + "or ";
+					}
+				}
+			}
+			
+			
+			List<Categorie> categoriesPreferes = utilisateur.getCategorie();
+			
+			if (categoriesPreferes.size() > 0) {
+				query = query + "or ";
+				for(int i = 0 ; i < categoriesPreferes.size() ; i++) {
+					query = query + "article.categorie = " + categoriesPreferes.get(i).getLibCategorie().toString() + " ";
+					if (i < categoriesPreferes.size() -1) {
+						query = query + "or ";
+					}
+				}
+			}
+			
+			
+			List<Type> typesPreferes = utilisateur.getType();
+			
+			if (typesPreferes.size() > 0) {
+				query = query + "or ";
+				for(int i = 0 ; i < typesPreferes.size() ; i++) {
+					query = query + "article.type = " + typesPreferes.get(i).getLibType().toString() + " ";
+					if (i < typesPreferes.size() -1) {
+						query = query + "or ";
+					}
+				}
+			}
+			
+			
+			System.out.println(query);
+			List<Article> articlesPreferes = new ArrayList<Article>();
+			if (query == "Select article from Article article where ") {
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			} else {
+				articlesPreferes = articleRepository.findArticleWithPreferences(query);
+			}
+			
+			
+			
+			return new ResponseEntity<>(articlesPreferes , HttpStatus.OK);
+			
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}	
 	}
 
 }

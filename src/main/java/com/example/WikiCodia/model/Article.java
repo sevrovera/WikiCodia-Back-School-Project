@@ -68,15 +68,17 @@ public class Article implements Serializable{
 	
 	// En partant du principe qu'un article peut être associé à plusieurs langages ou framework (par ex un article comparatif) :
 	
-	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
-	@LazyCollection(LazyCollectionOption.FALSE)
-	@ManyToMany
-	private List<Langage> langage;
+	//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
+	//@LazyCollection(LazyCollectionOption.FALSE)
+	@ManyToOne
+	@JoinColumn(name ="id_lang")
+	private Langage langage;
 	
-	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
-	@LazyCollection(LazyCollectionOption.FALSE)
-	@ManyToMany
-	private List<Framework> framework;
+	//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
+	//@LazyCollection(LazyCollectionOption.FALSE)
+	@ManyToOne
+	@JoinColumn(name ="id_framework")
+	private Framework framework;
 	
 	@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "idUtilisateur")
 	@JsonIdentityReference(alwaysAsId = true)
@@ -100,8 +102,8 @@ public class Article implements Serializable{
 	}
 	
 	public Article(Long idArticle, @NotNull String titre, String description, String contenu, LocalDate dateCreation,
-			LocalDate dateDerniereModif, Boolean estPublie, Boolean estPromu, Boolean estValide, List<Vote> vote, List<Langage> langage,
-			List<Framework> framework, Utilisateur auteur, Type type, Categorie categorie, String comAdmin) {
+			LocalDate dateDerniereModif, Boolean estPublie, Boolean estPromu, Boolean estValide, List<Vote> vote, Langage langage,
+			Framework framework, Utilisateur auteur, Type type, Categorie categorie, String comAdmin) {
 		super();
 		this.idArticle = idArticle;
 		this.titre = titre;
@@ -203,19 +205,19 @@ public class Article implements Serializable{
 		this.vote = vote;
 	}
 	
-	public List<Langage> getLangage() {
+	public Langage getLangage() {
 		return langage;
 	}
 
-	public void setLangage(List<Langage> langage) {
+	public void setLangage(Langage langage) {
 		this.langage = langage;
 	}
 
-	public List<Framework> getFramework() {
+	public Framework getFramework() {
 		return framework;
 	}
 
-	public void setFramework(List<Framework> framework) {
+	public void setFramework(Framework framework) {
 		this.framework = framework;
 	}
 
