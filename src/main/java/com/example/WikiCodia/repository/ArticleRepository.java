@@ -7,14 +7,14 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.example.WikiCodia.model.Article;
 
-public interface ArticleRepository extends JpaRepository<Article, Long> , ArticleRepositoryCustom{
+public interface ArticleRepository extends JpaRepository<Article, Long>, ArticleRepositoryCustom{
 	List<Article> findByTitreContaining(String titre);
 	
 	 @Query("select article from Article article where article.estValide = 0 and article.estPublie = 1")
 	    List<Article> findByIsPublishedAndNotValidated();
 	 
 	 @Query("Select article from Article article where article.estPromu = 1")
-	 	List<Article> findPomotedArticles();
+	 	List<Article> findPromotedArticles();
 	 
 	 List<Article>findArticleWithPreferences(String query);
 }
