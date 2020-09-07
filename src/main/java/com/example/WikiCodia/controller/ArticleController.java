@@ -374,16 +374,8 @@ public class ArticleController {
 			} else {
 				_article.setEstPublie(false);
 			}
-			if (articleUpdated.getEstPromu() && articleUpdated.getEstPublie()) {
-					_article.setEstPromu(articleUpdated.getEstPromu());
-			} else {
-				_article.setEstPromu(false);
-			}
-			if (articleUpdated.getEstValide()) {
-				_article.setEstValide(articleUpdated.getEstValide());
-			} else {
-				_article.setEstValide(false);
-			}
+			_article.setEstPromu(false);
+			_article.setEstValide(false);
 			if (articleUpdated.getComAdmin() != null) {
 				_article.setComAdmin(articleUpdated.getComAdmin());
 			}
