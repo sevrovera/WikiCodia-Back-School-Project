@@ -503,6 +503,15 @@ public class ArticleController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
+	
+	@GetMapping("/mesarticles-profil/{userid}")
+	public ResponseEntity<List<Article>> getAllArticlesOfUserLimitFive(@PathVariable("userid") long userid) {
+
+		Utilisateur user = utilisateurRepository.findById(userid).get();
+		List<Article> tousMesArticles = articleRepository.findFirst5ByAuteur(user);
+
+		return new ResponseEntity<>(tousMesArticles, HttpStatus.OK);
+	}
 
 	@GetMapping("/articlesFavoris/{userId}")
 	public ResponseEntity<List<Article>> getArticlesFavorisByUserId(@PathVariable("userId") long userId) {
