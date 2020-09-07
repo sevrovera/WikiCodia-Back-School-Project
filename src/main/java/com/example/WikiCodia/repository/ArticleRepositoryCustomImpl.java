@@ -68,6 +68,17 @@ public class ArticleRepositoryCustomImpl implements ArticleRepositoryCustom {
 		}
 	
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Article> findLastPromotedArticles(){
+		
+		List<Article> listeGlobale = new ArrayList<Article>();
+		
+		listeGlobale = entityManager.createQuery("select article from Article article where article.estPromu = 1 order by article.dateDerniereModif desc").setMaxResults(20).getResultList();
+		System.out.println("coucou");
+		return listeGlobale;
+		
+	}
 
 	
 }

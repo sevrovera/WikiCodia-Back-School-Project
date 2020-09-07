@@ -530,6 +530,17 @@ public class ArticleController {
 			return new ResponseEntity<>(articlesPromus, HttpStatus.OK);
 		}
 	}
+	
+	@GetMapping("/derniersArticlesPromus")
+	public ResponseEntity<List<Article>> getDerniersArticlesPromus() {
+		List<Article> derniersArticlesPromus = articleRepository.findLastPromotedArticles();
+		
+		if(derniersArticlesPromus == null || derniersArticlesPromus.size() == 0) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		} else {
+			return new ResponseEntity<>(derniersArticlesPromus, HttpStatus.OK);
+		}
+	}
 
 	@PutMapping("/togglePromotion/{articleId}")
 	public ResponseEntity<Article> toggleArticlePromotion(@PathVariable("articleId") Long articleId) {
@@ -565,69 +576,55 @@ public class ArticleController {
 		if (user.isPresent()) {
 			Utilisateur utilisateur = user.get();
 			String query = "Select article from Article article where ";
-			//Récupération des langages préférés
-			List<Langage> langagesPreferes = utilisateur.getLangage();
 			
-			if (langagesPreferes.size() > 0) {
-				for(int i = 0 ; i < langagesPreferes.size() ; i++) {
-					
-					query = query + "article.langage.lang = '" + langagesPreferes.get(i).getLang().toString() + "' ";
-					if (i < langagesPreferes.size() -1) {
+			List<Langage> langagesPreferes = utilisateur.getLangage();
+			List<Framework> frameworksPreferes = utilisateur.getFramework();
+			//List<Categorie> categoriesPreferes = utilisateur.getCategorie();
+			List<Type> typesPreferes = utilisateur.getType();
+			
+			if(langagesPreferes.size() > 0) {
+				for(int j = 0 ; j < langagesPreferes.size() ; j++) {
+					if(typesPreferes.size() == 0) {
+						query = query + "article.langage.lang = '" + langagesPreferes.get(j).getLang() + "' ";
+					} else {
+						for(int i = 0 ; i < typesPreferes.size() ; i++) {
+							query = query + "article.langage.lang = '" + langagesPreferes.get(j).getLang() + "' and article.type.libType = '" + typesPreferes.get(i).getLibType() + "' ";
+							if (i < typesPreferes.size() -1) {
+								query = query + "or ";
+							}
+						}
+					}
+					if (j < langagesPreferes.size() -1) {
 						query = query + "or ";
 					}
 				}
 			}
 			
-			List<Framework> frameworksPreferes = utilisateur.getFramework();
-			
-			if (frameworksPreferes.size() > 0) {
-				if (query == "Select article from Article article where ") {
-					
-				} else {
+			if(frameworksPreferes.size() > 0) {
+				if(query != "Select article from Article article where ") {
 					query = query + "or ";
 				}
 				
 				for(int i = 0 ; i < frameworksPreferes.size() ; i++) {
-					query = query + "article.framework.framework = '" + frameworksPreferes.get(i).getFramework().toString() + "' ";
-					if (i < frameworksPreferes.size() -1) {
+					if(typesPreferes.size() == 0) {
+						query = query + "article.framework.framework = '" + frameworksPreferes.get(i).getFramework() + "' ";
+					} else {
+						for(int j = 0 ; j < typesPreferes.size(); j++) {
+							query = query + "article.framework.framework = '" + frameworksPreferes.get(i).getFramework() + "' and article.type.libType = '" + typesPreferes.get(j).getLibType() + "' ";
+							if(j < typesPreferes.size() -1) {
+								query = query + "or ";
+							}
+						}
+					}
+					if(i < frameworksPreferes.size() -1) {
 						query = query + "or ";
 					}
 				}
 			}
 			
-			List<Categorie> categoriesPreferes = utilisateur.getCategorie();
-			
-			if (categoriesPreferes.size() > 0) {
-				if (query == "Select article from Article article where ") {
-					
-				} else {
-					query = query + "or ";
-				}
-				for(int i = 0 ; i < categoriesPreferes.size() ; i++) {
-					query = query + "article.categorie.libCategorie = '" + categoriesPreferes.get(i).getLibCategorie().toString() + "' ";
-					if (i < categoriesPreferes.size() -1) {
-						query = query + "or ";
-					}
-				}
-			}
-			
-			List<Type> typesPreferes = utilisateur.getType();
-			
-			if (typesPreferes.size() > 0) {
-				if (query == "Select article from Article article where ") {
-					
-				} else {
-					query = query + "or ";
-				}
-				for(int i = 0 ; i < typesPreferes.size() ; i++) {
-					query = query + "article.type.libType = '" + typesPreferes.get(i).getLibType().toString() + "' ";
-					if (i < typesPreferes.size() -1) {
-						query = query + "or ";
-					}
-				}
-			}
-				
+			System.out.println(query);
 			List<Article> articlesPreferes = new ArrayList<Article>();
+			
 			if (query == "Select article from Article article where ") {
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 			} else {
