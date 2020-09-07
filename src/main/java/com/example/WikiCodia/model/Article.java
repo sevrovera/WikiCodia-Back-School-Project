@@ -33,15 +33,16 @@ public class Article implements Serializable {
 	private Long idArticle;
 
 	@NotNull
+	@Size(max = 300)
 	@Column(name = "titre")
 	private String titre;
 
 	@Column(name = "description")
-	@Size(max = 255)
+	@Size(max = 99999)
 	private String description;
 
 	@Column(name = "contenu")
-	@Size(max = 10000)
+	@Size(max = 99999)
 	private String contenu;
 
 	@Column(name = "date_creation")

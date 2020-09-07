@@ -6,6 +6,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Embeddable
 public class Vote implements Serializable {
@@ -25,6 +26,7 @@ public class Vote implements Serializable {
     @JoinColumn(name ="id_utilisateur")
     private Utilisateur utilisateur;
 
+	@Size(max = 99999)
     private String commentaire;
     
     
