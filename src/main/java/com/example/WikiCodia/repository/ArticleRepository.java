@@ -14,12 +14,12 @@ public interface ArticleRepository extends JpaRepository<Article, Long>, Article
 	@Query("select article from Article article where article.estValide = 0 and article.estPublie = 1")
 	List<Article> findByIsPublishedAndNotValidated();
 	 
-	 @Query("Select article from Article article where article.estPromu = 1")
-	 	List<Article> findPromotedArticles();
-	 
-	 List<Article> findArticleWithPreferences(String query);
-	 
-	 List<Article> findNewerArticles();
+	@Query("Select article from Article article where article.estPromu = 1")
+	List<Article> findPromotedArticles();
+	
+	List<Article> findArticleWithPreferences(String query);
+	
+	List<Article> findNewerArticles();
 
 	@Query("Select article from Article article where article.estPromu = 1")
 	List<Article> findPomotedArticles();
