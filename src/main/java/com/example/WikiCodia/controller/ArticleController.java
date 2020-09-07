@@ -589,7 +589,12 @@ public class ArticleController {
 			List<Framework> frameworksPreferes = utilisateur.getFramework();
 			
 			if (frameworksPreferes.size() > 0) {
-				query = query + "or ";
+				if (query == "Select article from Article article where ") {
+					
+				} else {
+					query = query + "or ";
+				}
+				
 				for(int i = 0 ; i < frameworksPreferes.size() ; i++) {
 					query = query + "article.framework.framework = '" + frameworksPreferes.get(i).getFramework().toString() + "' ";
 					if (i < frameworksPreferes.size() -1) {
@@ -601,7 +606,11 @@ public class ArticleController {
 			List<Categorie> categoriesPreferes = utilisateur.getCategorie();
 			
 			if (categoriesPreferes.size() > 0) {
-				query = query + "or ";
+				if (query == "Select article from Article article where ") {
+					
+				} else {
+					query = query + "or ";
+				}
 				for(int i = 0 ; i < categoriesPreferes.size() ; i++) {
 					query = query + "article.categorie.libCategorie = '" + categoriesPreferes.get(i).getLibCategorie().toString() + "' ";
 					if (i < categoriesPreferes.size() -1) {
@@ -613,7 +622,11 @@ public class ArticleController {
 			List<Type> typesPreferes = utilisateur.getType();
 			
 			if (typesPreferes.size() > 0) {
-				query = query + "or ";
+				if (query == "Select article from Article article where ") {
+					
+				} else {
+					query = query + "or ";
+				}
 				for(int i = 0 ; i < typesPreferes.size() ; i++) {
 					query = query + "article.type.libType = '" + typesPreferes.get(i).getLibType().toString() + "' ";
 					if (i < typesPreferes.size() -1) {
@@ -670,6 +683,19 @@ public class ArticleController {
 		utilisateur.getArticlesFavoris().add(article);
 		try {
 			utilisateurRepository.save(utilisateur);
+			return new ResponseEntity<>(article , HttpStatus.OK);
+		} catch(Exception e) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		
+	}
+	
+	@PutMapping("/supprimerDesFavoris/{userId}")
+	public ResponseEntity<Article> deleteFromFavorites(@PathVariable("userId") Long userId , @RequestBody Article article){
+		
+		
+		try {
+			articleRepository.deleteFromFavorites(userId, article.getIdArticle());
 			return new ResponseEntity<>(article , HttpStatus.OK);
 		} catch(Exception e) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
