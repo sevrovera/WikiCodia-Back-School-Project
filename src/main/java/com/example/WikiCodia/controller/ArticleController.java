@@ -391,14 +391,14 @@ public class ArticleController {
 				_article.setVote(articleUpdated.getVote());
 			}
 			if (articleUpdated.getLangage() != null) {
-				if (langageRepository.findByLangAndVersionEquals(articleUpdated.getFramework().getFramework(),articleUpdated.getFramework().getVersion()) != null) {
-					_article.setLangage(langageRepository.findByLangAndVersionEquals(articleUpdated.getFramework().getFramework(),articleUpdated.getFramework().getVersion()));
+				if (langageRepository.findByLangAndVersionEquals(articleUpdated.getLangage().getLang(),articleUpdated.getLangage().getVersion()) != null) {
+					_article.setLangage(langageRepository.findByLangAndVersionEquals(articleUpdated.getLangage().getLang(),articleUpdated.getLangage().getVersion()));
 				} else {
 					Langage newLang = new Langage();
 					newLang.setLang(articleUpdated.getLangage().getLang());
 					newLang.setVersion(articleUpdated.getLangage().getVersion());
 					langageRepository.save(newLang);
-					_article.setLangage(langageRepository.findByLangAndVersionEquals(articleUpdated.getFramework().getFramework(),articleUpdated.getFramework().getVersion()));
+					_article.setLangage(langageRepository.findByLangAndVersionEquals(articleUpdated.getLangage().getLang(),articleUpdated.getLangage().getVersion()));
 				}
 				}
 
