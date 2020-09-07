@@ -585,10 +585,10 @@ public class ArticleController {
 			if(langagesPreferes.size() > 0) {
 				for(int j = 0 ; j < langagesPreferes.size() ; j++) {
 					if(typesPreferes.size() == 0) {
-						query = query + "article.langage.lang = '" + langagesPreferes.get(j).getLang() + "' ";
+						query = query + "article.langage.lang = '" + langagesPreferes.get(j).getLang() + "' and article.estValide = 1 ";
 					} else {
 						for(int i = 0 ; i < typesPreferes.size() ; i++) {
-							query = query + "article.langage.lang = '" + langagesPreferes.get(j).getLang() + "' and article.type.libType = '" + typesPreferes.get(i).getLibType() + "' ";
+							query = query + "article.langage.lang = '" + langagesPreferes.get(j).getLang() + "' and article.type.libType = '" + typesPreferes.get(i).getLibType() + "' and article.estValide = 1 ";
 							if (i < typesPreferes.size() -1) {
 								query = query + "or ";
 							}
@@ -607,10 +607,10 @@ public class ArticleController {
 				
 				for(int i = 0 ; i < frameworksPreferes.size() ; i++) {
 					if(typesPreferes.size() == 0) {
-						query = query + "article.framework.framework = '" + frameworksPreferes.get(i).getFramework() + "' ";
+						query = query + "article.framework.framework = '" + frameworksPreferes.get(i).getFramework() + "' and article.estValide = 1 ";
 					} else {
 						for(int j = 0 ; j < typesPreferes.size(); j++) {
-							query = query + "article.framework.framework = '" + frameworksPreferes.get(i).getFramework() + "' and article.type.libType = '" + typesPreferes.get(j).getLibType() + "' ";
+							query = query + "article.framework.framework = '" + frameworksPreferes.get(i).getFramework() + "' and article.type.libType = '" + typesPreferes.get(j).getLibType() + "' and article.estValide = 1 ";
 							if(j < typesPreferes.size() -1) {
 								query = query + "or ";
 							}
@@ -628,7 +628,6 @@ public class ArticleController {
 			if (query == "Select article from Article article where ") {
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 			} else {
-				query = query + "and article.estValide = 1";
 				articlesPreferes = articleRepository.findArticleWithPreferences(query);
 			}
 			

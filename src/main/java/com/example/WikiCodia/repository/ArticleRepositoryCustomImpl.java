@@ -42,7 +42,7 @@ public class ArticleRepositoryCustomImpl implements ArticleRepositoryCustom {
 		
 		List<Article> listeGlobale = new ArrayList<Article>();
 		
-		listeGlobale = entityManager.createQuery("select article from Article article order by article.dateCreation desc").setMaxResults(20).getResultList();
+		listeGlobale = entityManager.createQuery("select article from Article article where article.estValide = 1 order by article.dateCreation desc").setMaxResults(20).getResultList();
 		
 		return listeGlobale;
 	}
@@ -74,7 +74,7 @@ public class ArticleRepositoryCustomImpl implements ArticleRepositoryCustom {
 		
 		List<Article> listeGlobale = new ArrayList<Article>();
 		
-		listeGlobale = entityManager.createQuery("select article from Article article where article.estPromu = 1 order by article.dateDerniereModif desc").setMaxResults(20).getResultList();
+		listeGlobale = entityManager.createQuery("select article from Article article where article.estPromu = 1 and article.estValide = 1 order by article.dateDerniereModif desc").setMaxResults(20).getResultList();
 		System.out.println("coucou");
 		return listeGlobale;
 		
