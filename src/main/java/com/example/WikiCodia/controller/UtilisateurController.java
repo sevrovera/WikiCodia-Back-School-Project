@@ -81,6 +81,10 @@ public class UtilisateurController {
 
 		Utilisateur modifUtilisateur = utilisateurRepository.findById(u.getIdUtilisateur()).get();
 
+		if (modifUtilisateur.getMotDePasse() != u.getMotDePasse()) {
+			modifUtilisateur.setMotDePasse(passwordEncoder.encode(u.getMotDePasse()));
+		}
+
 		modifUtilisateur.setNom(u.getNom());
 		modifUtilisateur.setPrenom(u.getPrenom());
 		modifUtilisateur.setPseudo(u.getPseudo());
@@ -90,7 +94,6 @@ public class UtilisateurController {
 		modifUtilisateur.setEtat(u.getEtat());
 		modifUtilisateur.setRole(u.getRole());
 		modifUtilisateur.setGuilde(u.getGuilde());
-		modifUtilisateur.setMotDePasse(u.getMotDePasse());
 		modifUtilisateur.setFramework(u.getFramework());
 		modifUtilisateur.setLangage(u.getLangage());
 		modifUtilisateur.setType(u.getType());
