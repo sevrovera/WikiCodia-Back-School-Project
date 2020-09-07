@@ -81,7 +81,7 @@ public class UtilisateurController {
 
 		Utilisateur modifUtilisateur = utilisateurRepository.findById(u.getIdUtilisateur()).get();
 
-		if (modifUtilisateur.getMotDePasse() != u.getMotDePasse()) {
+		if (!modifUtilisateur.getMotDePasse().equals(u.getMotDePasse())) {
 			modifUtilisateur.setMotDePasse(passwordEncoder.encode(u.getMotDePasse()));
 		}
 
@@ -113,7 +113,7 @@ public class UtilisateurController {
 
 		Utilisateur modifUtilisateur = utilisateurRepository.findById(u.getIdUtilisateur()).get();
 
-		if (modifUtilisateur.getMotDePasse() != u.getMotDePasse()) {
+		if (!modifUtilisateur.getMotDePasse().equals(u.getMotDePasse())) {
 			modifUtilisateur.setMotDePasse(passwordEncoder.encode(u.getMotDePasse()));
 		}
 
