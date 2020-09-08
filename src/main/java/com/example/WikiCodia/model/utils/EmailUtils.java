@@ -12,13 +12,13 @@ import javax.mail.internet.MimeMessage;
 
 public class EmailUtils {
 
-	private static String USER_NAME = "wikicodia.team"; // Gmail user name (just the part before "@gmail.com")
-	private static String PASSWORD = "mesi2+++"; // Gmail password
+	private static String USER_NAME = "wikicodia.team";
+	private static String PASSWORD = "mesi2+++";
 
 	String from = USER_NAME;
 	String pass = PASSWORD;
 	
-	public static void sendFromGmail(String to, String subject, String body) {
+	public static void sendMail(String to, String subject, String body) {
 		Properties props = System.getProperties();
 		String host = "smtp.gmail.com";
 
