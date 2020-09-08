@@ -90,7 +90,7 @@ public class Article implements Serializable {
 	private Categorie categorie;
 
 	@Column(name = "com_admin")
-	@Size(max = 500)
+	@Size(max = 99999)
 	private String comAdmin;
 
 	public Article() {

@@ -3,6 +3,8 @@ package com.example.WikiCodia.controller;
 import com.example.WikiCodia.model.Framework;
 import com.example.WikiCodia.repository.FrameworkRepository;
 
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -58,8 +60,9 @@ public class FrameworkController {
 	@ResponseBody
 	public Iterable<Framework> voirTous() {
 
-        return frameworkRepository.findAll();
-        
+        return frameworkRepository.findAll().stream()
+			     .distinct()
+			     .collect(Collectors.toList()); 
     }
     
 }

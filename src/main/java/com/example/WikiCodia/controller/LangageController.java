@@ -3,6 +3,8 @@ package com.example.WikiCodia.controller;
 import com.example.WikiCodia.model.Langage;
 import com.example.WikiCodia.repository.LangageRepository;
 
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -57,8 +59,10 @@ public class LangageController {
     @RequestMapping("/all")
 	@ResponseBody
 	public Iterable<Langage> voirTous() {
-
-        return langageRepository.findAll();
+    	
+        return langageRepository.findAll().stream()
+			     .distinct()
+			     .collect(Collectors.toList()); 
         
     }
 }

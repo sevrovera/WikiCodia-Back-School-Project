@@ -265,7 +265,6 @@ public class ArticleController {
 
 	
 	@PostMapping("/creation")
-//	@ResponseBody
 	public ResponseEntity<Article> createArticle(@RequestBody Article article) {
 
 		try {
@@ -295,9 +294,6 @@ public class ArticleController {
 					a.setFramework(frameworkRepository.findByFrameworkAndVersionEquals(article.getFramework().getFramework(),
 							article.getFramework().getVersion()));
 				}
-			
-
-
 				if (langageRepository.findByLangAndVersionEquals(article.getLangage().getLang(),article.getLangage().getVersion()) != null) {
 					a.setLangage(langageRepository.findByLangAndVersionEquals(article.getLangage().getLang(),article.getLangage().getVersion()));
 				} else {
@@ -307,37 +303,11 @@ public class ArticleController {
 					langageRepository.save(newLang);
 					a.setLangage(langageRepository.findByLangAndVersionEquals(article.getLangage().getLang(),article.getLangage().getVersion()));
 				}
-				
 				a.setCategorie(categorieRepository.findByLibCategorieEquals(article.getCategorie().getLibCategorie()));
-
-
-//			a.setCategorie(categorieRepository.findByLibCategorieEquals(article.getCategorie().getLibCategorie()));
-//			if (categorieRepository.findByLibCategorieEquals(article.getCategorie().getLibCategorie()) != null) {
-//			} else {
-//				Categorie newCat = new Categorie();
-//				newCat.setLibCategorie(article.getCategorie().getLibCategorie());
-//				categorieRepository.save(newCat);
-//				a.setCategorie(categorieRepository.findByLibCategorieEquals(article.getCategorie().getLibCategorie()));
-//			}
-//			
 				a.setType(typeRepository.findByLibTypeEquals(article.getType().getLibType()));
-
-				
-//			a.setType(typeRepository.findByLibTypeEquals(article.getType().getLibType()));
-//			if (typeRepository.findByLibTypeEquals(article.getType().getLibType()) != null) {
-//			} else {
-//				Type newTyp = new Type();
-//				newTyp.setLibType(article.getType().getLibType());
-//				typeRepository.save(newTyp);
-//				a.setType(typeRepository.findByLibTypeEquals(article.getType().getLibType()));
-//			}
-
 			Optional<Utilisateur> util = utilisateurRepository.findById(article.getAuteur().getIdUtilisateur());
 			Utilisateur auteur = util.get();
 			a.setAuteur(auteur);
-//			a.setAuteur(utilisateurRepository.getOne((long)1));
-//			System.out.println("TEEEEEESSSSSSSTTTTTTTT REEEEESSSSSUUUULLLLLTTTTT");
-//			System.out.println(article.auteur);
 
 			articleRepository.save(a);
 
@@ -419,6 +389,21 @@ public class ArticleController {
 
 			}
 
+			return new ResponseEntity<>(articleRepository.save(_article), HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
+	
+	
+	@PutMapping("/votes/{id}")
+	public ResponseEntity<Article> updateVoteArticle(@PathVariable("id") long id, @RequestBody Article articleUpdated) {
+		Optional<Article> articleData = articleRepository.findById(id);
+		if (articleData.isPresent()) {
+			Article _article = articleData.get();
+			if (articleUpdated.getVote() != null) {
+				_article.setVote(articleUpdated.getVote());
+			}
 			return new ResponseEntity<>(articleRepository.save(_article), HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
