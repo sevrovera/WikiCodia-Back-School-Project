@@ -80,5 +80,12 @@ public class ArticleRepositoryCustomImpl implements ArticleRepositoryCustom {
 		
 	}
 
-	
+	@Override
+	public List<Article> findArticleWithSearch(String query) {
+		System.out.println(query);
+		List<Article> listeGlobale = new ArrayList<Article>();
+		listeGlobale = entityManager.createQuery(query).setMaxResults(20).getResultList();
+		return listeGlobale;
+	}
+
 }
