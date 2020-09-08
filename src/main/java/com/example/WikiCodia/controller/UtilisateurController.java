@@ -14,9 +14,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.lang.reflect.Array;
-import java.security.Principal;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +25,7 @@ import com.example.WikiCodia.model.Role;
 import com.example.WikiCodia.model.Type;
 
 import com.example.WikiCodia.model.Utilisateur;
+import com.example.WikiCodia.model.utils.EmailUtils;
 import com.example.WikiCodia.repository.CategorieRepository;
 import com.example.WikiCodia.repository.EtatRepository;
 import com.example.WikiCodia.repository.FrameworkRepository;
@@ -65,12 +63,16 @@ public class UtilisateurController {
 	@RequestMapping(value = "/creation", method = RequestMethod.POST)
 	@ResponseBody
 	public Utilisateur cree(Utilisateur u) {
-		//mise ne place de l etat actif
+		//mise en place de l etat actif
 		u.setEtat(etatRepository.findById((long) 1).get());
 		u.setMotDePasse(passwordEncoder.encode(u.getMotDePasse()));
 		Role role = roleRepository.save(new Role("normal"));
 		u.setRole(role);
 		utilisateurRepository.save(u);
+		
+		// Envoi d'un email de confirmation de l'inscription
+		emailNewMember(u);
+		
 		return u;
 	}
 
@@ -280,5 +282,28 @@ public class UtilisateurController {
 		//sauvegarde utilisateur
 		utilisateurRepository.save(utilisateur);
 		return new ResponseEntity<>(types, HttpStatus.OK);
+	}
+	
+	/**
+	 * Récupère l'email de l'auteur de l'article et l'éventuel commentaire associé à
+	 * l'article puis envoie un email à l'auteur
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public void emailNewMember(Utilisateur user) {
+
+		// Récupération de l'email associé au nouvel inscrit
+		String recipient = user.getMail();
+
+		// Contenu du mail
+		String subject = "Bienvenue dans la communauté WikiCodia";
+		String body = "Bonjour " + user.getPrenom() + ",\n"
+				+ "Votre inscription a bien été prise en compte ! \n"
+				+ "Pour rappel votre pseudo est : " + user.getPseudo() + "\n"
+				+ "A bientôt ! \n"
+				+ "L'Equipe Wikicodia";
+
+		EmailUtils.sendMail(recipient, subject, body);
 	}
 }

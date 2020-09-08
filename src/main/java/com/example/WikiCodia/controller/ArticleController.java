@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.WikiCodia.model.Article;
-import com.example.WikiCodia.model.Categorie;
 import com.example.WikiCodia.model.Framework;
 import com.example.WikiCodia.model.Langage;
 import com.example.WikiCodia.model.Type;
@@ -250,7 +249,7 @@ public class ArticleController {
 					+ " Merci de votre compréhension et à bientôt ! \n" + "L'Equipe Wikicodia";
 		}
 
-		EmailUtils.sendFromGmail(recipient, subject, body);
+		EmailUtils.sendMail(recipient, subject, body);
 	}
 
 	@GetMapping("/{id}")
