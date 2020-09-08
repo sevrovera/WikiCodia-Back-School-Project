@@ -23,6 +23,8 @@ public interface ArticleRepository extends JpaRepository<Article, Long>, Article
 
 	@Query("Select article from Article article where article.estPromu = 1")
 	List<Article> findPomotedArticles();
-		 
+
 	List<Article> findFirst5ByAuteur(Utilisateur auteur);
+
+	List<Article> findArticleWithSearch(String query);
 }

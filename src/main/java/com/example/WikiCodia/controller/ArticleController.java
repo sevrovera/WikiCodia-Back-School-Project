@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.example.WikiCodia.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -621,7 +622,54 @@ public class ArticleController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}	
 	}
-	
+
+	@PostMapping("/search")
+	public ResponseEntity<List<Article>> search (
+			@RequestBody Recherche recherche){
+		String query = "SELECT article FROM Article article WHERE article.estValide = 1 AND article.estPublie = 1";
+
+		// Traitement des Frameworks
+		if(recherche.getFramework() != null && (!recherche.getFramework().isEmpty()) && recherche.getFramework().size() > 0) {
+			for (int i = 0; i < recherche.getFramework().size(); i++) {
+				query = query + " AND article.framework.idFramework = '" + recherche.getFramework().get(i).getIdFramework() + "'";
+			}
+		}
+
+		// Traitement des Languages
+		if(recherche.getLanguage() != null && (!recherche.getLanguage().isEmpty()) && recherche.getLanguage().size() > 0) {
+			for (int i = 0; i < recherche.getLanguage().size(); i++) {
+				query = query + " AND article.langage.idLang = '" + recherche.getLanguage().get(i).getIdLang() + "'";
+			}
+		}
+
+		// Traitement des Categories
+		if(recherche.getCategory() != null && (!recherche.getCategory().isEmpty()) && recherche.getCategory().size() > 0) {
+			for (int i = 0; i < recherche.getCategory().size(); i++) {
+				query = query + " AND article.categorie.idCategorie = '" + recherche.getCategory().get(i).getIdCategorie() + "'";
+			}
+		}
+
+		// Traitement des Types
+		if(recherche.getType() != null && (!recherche.getType().isEmpty()) && recherche.getType().size() > 0) {
+			for (int i = 0; i < recherche.getType().size(); i++) {
+				query = query + "AND article.type.idType = '" + recherche.getType().get(i).getIdType() + "'";
+			}
+		}
+		if(recherche.getDateCreate() != null){
+			query = query + " AND article.dateCreation <='" + recherche.getDateCreate() + "'";
+		}
+		if(recherche.getDateModif() != null){
+			query = query + " AND article.dateDerniereModif <='" + recherche.getDateModif() + "'";
+		}
+		if(recherche.getSearchString() != null){
+			query = query + " AND article.titre LIKE '%" + recherche.getSearchString() +"%' OR article.description LIKE '%"
+					+ recherche.getSearchString() +"%' OR article.contenu LIKE '%" + recherche.getSearchString() + "%'";
+		}
+		List<Article> listArticle = articleRepository.findArticleWithSearch(query);
+		System.out.println(query);
+		return new ResponseEntity<>(listArticle , HttpStatus.OK);
+	}
+
 	@GetMapping("/articlesRecents")
 	public ResponseEntity<List<Article>> findNewArticles(){
 		List<Article> newerArticles = articleRepository.findNewerArticles();
@@ -674,5 +722,6 @@ public class ArticleController {
 		}
 		
 	}
+
 
 }
