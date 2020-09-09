@@ -632,14 +632,14 @@ public class ArticleController {
 		// Traitement des Frameworks
 		if(recherche.getFramework() != null && (!recherche.getFramework().isEmpty()) && recherche.getFramework().size() > 0) {
 			for (int i = 0; i < recherche.getFramework().size(); i++) {
-				query = query + " AND article.framework.idFramework = '" + recherche.getFramework().get(i).getIdFramework() + "'";
+				query = query + " AND article.framework.framework = '" + recherche.getFramework().get(i).getFramework() + "'";
 			}
 		}
 
 		// Traitement des Languages
 		if(recherche.getLanguage() != null && (!recherche.getLanguage().isEmpty()) && recherche.getLanguage().size() > 0) {
 			for (int i = 0; i < recherche.getLanguage().size(); i++) {
-				query = query + " AND article.langage.idLang = '" + recherche.getLanguage().get(i).getIdLang() + "'";
+				query = query + " AND article.langage.lang = '" + recherche.getLanguage().get(i).getLang() + "'";
 			}
 		}
 
@@ -679,9 +679,7 @@ public class ArticleController {
 			for (int i = 0; i < recherche.getPopularity().size(); i++) {
 
 				if (recherche.getPopularity().get(i).equals("Populaire")) {
-					query = query + " AND COUNT(article.vote) >= '10'";
-				}else if (recherche.getPopularity().get(i).equals("Très populaire")) {
-					query = query + " AND COUNT(article.vote) >= '15'" ;
+					query = query + " AND article.estPromu = '1'";
 				}
 
 				if (recherche.getPopularity().get(i).equals("Nouveau")) {
@@ -689,6 +687,8 @@ public class ArticleController {
 				}
 			}
 		}
+
+		query = query + " ORDER BY idArticle DESC";
 
 		List<Article> listArticle = articleRepository.findArticleWithSearch(query);
 		System.out.println(query);
