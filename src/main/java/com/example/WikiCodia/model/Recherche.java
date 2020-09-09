@@ -19,11 +19,11 @@ public class Recherche implements  Serializable {
 
     private List<Categorie> category;
 
-    private List<Integer> popularity;
+    private List<String> popularity;
 
     private List<Type> type;
 
-    public Recherche(String searchString, LocalDate dateCreate, LocalDate dateModif, List<Langage> language, List<Framework> framework, List<Categorie> category, List<Integer> popularity, List<Type> type) {
+    public Recherche(String searchString, LocalDate dateCreate, LocalDate dateModif, List<Langage> language, List<Framework> framework, List<Categorie> category, List<String> popularity, List<Type> type) {
         this.searchString = searchString;
         this.dateCreate = dateCreate;
         this.dateModif = dateModif;
@@ -82,11 +82,11 @@ public class Recherche implements  Serializable {
         this.category = category;
     }
 
-    public List<Integer> getPopularity() {
+    public List<String> getPopularity() {
         return popularity;
     }
 
-    public void setPopularity(List<Integer> popularity) {
+    public void setPopularity(List<String> popularity) {
         this.popularity = popularity;
     }
 

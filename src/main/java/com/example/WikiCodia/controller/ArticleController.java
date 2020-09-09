@@ -37,6 +37,7 @@ import com.example.WikiCodia.repository.RoleRepository;
 import com.example.WikiCodia.repository.TypeRepository;
 import com.example.WikiCodia.repository.UtilisateurRepository;
 //import com.example.WikiCodia.repository.VoteRepository;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
 @CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
 //@CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -655,16 +656,40 @@ public class ArticleController {
 				query = query + "AND article.type.idType = '" + recherche.getType().get(i).getIdType() + "'";
 			}
 		}
+
+		// Traitement Date de creation 
 		if(recherche.getDateCreate() != null){
-			query = query + " AND article.dateCreation <='" + recherche.getDateCreate() + "'";
+			query = query + " AND article.dateCreation >='" + recherche.getDateCreate() + "'";
 		}
+
+		// Traitement Date de creation 
 		if(recherche.getDateModif() != null){
-			query = query + " AND article.dateDerniereModif <='" + recherche.getDateModif() + "'";
+			query = query + " AND article.dateDerniereModif >='" + recherche.getDateModif() + "'";
 		}
+
+		// Traitement des mots clefs
 		if(recherche.getSearchString() != null){
 			query = query + " AND article.titre LIKE '%" + recherche.getSearchString() +"%' OR article.description LIKE '%"
 					+ recherche.getSearchString() +"%' OR article.contenu LIKE '%" + recherche.getSearchString() + "%'";
 		}
+
+		// Traitement de la popularité
+		if(recherche.getPopularity() != null){
+			LocalDate date = LocalDate.now().minusMonths(1);
+			for (int i = 0; i < recherche.getPopularity().size(); i++) {
+
+				if (recherche.getPopularity().get(i).equals("Populaire")) {
+					query = query + " AND COUNT(article.vote) >= '10'";
+				}else if (recherche.getPopularity().get(i).equals("Très populaire")) {
+					query = query + " AND COUNT(article.vote) >= '15'" ;
+				}
+
+				if (recherche.getPopularity().get(i).equals("Nouveau")) {
+					query = query + " AND article.dateCreation >= '" + date + "' OR article.dateDerniereModif >= '" + date + "'";
+				}
+			}
+		}
+
 		List<Article> listArticle = articleRepository.findArticleWithSearch(query);
 		System.out.println(query);
 		return new ResponseEntity<>(listArticle , HttpStatus.OK);
