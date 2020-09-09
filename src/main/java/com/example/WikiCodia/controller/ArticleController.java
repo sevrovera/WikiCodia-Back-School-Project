@@ -37,6 +37,7 @@ import com.example.WikiCodia.repository.RoleRepository;
 import com.example.WikiCodia.repository.TypeRepository;
 import com.example.WikiCodia.repository.UtilisateurRepository;
 //import com.example.WikiCodia.repository.VoteRepository;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
 @CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
 //@CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -631,14 +632,14 @@ public class ArticleController {
 		// Traitement des Frameworks
 		if(recherche.getFramework() != null && (!recherche.getFramework().isEmpty()) && recherche.getFramework().size() > 0) {
 			for (int i = 0; i < recherche.getFramework().size(); i++) {
-				query = query + " AND article.framework.idFramework = '" + recherche.getFramework().get(i).getIdFramework() + "'";
+				query = query + " AND article.framework.framework = '" + recherche.getFramework().get(i).getFramework() + "'";
 			}
 		}
 
 		// Traitement des Languages
 		if(recherche.getLanguage() != null && (!recherche.getLanguage().isEmpty()) && recherche.getLanguage().size() > 0) {
 			for (int i = 0; i < recherche.getLanguage().size(); i++) {
-				query = query + " AND article.langage.idLang = '" + recherche.getLanguage().get(i).getIdLang() + "'";
+				query = query + " AND article.langage.lang = '" + recherche.getLanguage().get(i).getLang() + "'";
 			}
 		}
 
@@ -655,16 +656,40 @@ public class ArticleController {
 				query = query + "AND article.type.idType = '" + recherche.getType().get(i).getIdType() + "'";
 			}
 		}
+
+		// Traitement Date de creation 
 		if(recherche.getDateCreate() != null){
-			query = query + " AND article.dateCreation <='" + recherche.getDateCreate() + "'";
+			query = query + " AND article.dateCreation >='" + recherche.getDateCreate() + "'";
 		}
+
+		// Traitement Date de creation 
 		if(recherche.getDateModif() != null){
-			query = query + " AND article.dateDerniereModif <='" + recherche.getDateModif() + "'";
+			query = query + " AND article.dateDerniereModif >='" + recherche.getDateModif() + "'";
 		}
+
+		// Traitement des mots clefs
 		if(recherche.getSearchString() != null){
 			query = query + " AND article.titre LIKE '%" + recherche.getSearchString() +"%' OR article.description LIKE '%"
 					+ recherche.getSearchString() +"%' OR article.contenu LIKE '%" + recherche.getSearchString() + "%'";
 		}
+
+		// Traitement de la popularité
+		if(recherche.getPopularity() != null){
+			LocalDate date = LocalDate.now().minusMonths(1);
+			for (int i = 0; i < recherche.getPopularity().size(); i++) {
+
+				if (recherche.getPopularity().get(i).equals("Populaire")) {
+					query = query + " AND article.estPromu = '1'";
+				}
+
+				if (recherche.getPopularity().get(i).equals("Nouveau")) {
+					query = query + " AND article.dateCreation >= '" + date + "' OR article.dateDerniereModif >= '" + date + "'";
+				}
+			}
+		}
+
+		query = query + " ORDER BY idArticle DESC";
+
 		List<Article> listArticle = articleRepository.findArticleWithSearch(query);
 		System.out.println(query);
 		return new ResponseEntity<>(listArticle , HttpStatus.OK);

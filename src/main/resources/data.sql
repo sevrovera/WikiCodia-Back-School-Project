@@ -8,6 +8,7 @@ INSERT INTO wikicodia.role VALUES(6 , "normal");
 
 
 INSERT INTO wikicodia.etat (etat) values ("actif") ON DUPLICATE KEY UPDATE `etat` = `etat`; ;
+INSERT INTO wikicodia.etat (etat) values ("inactif") ON DUPLICATE KEY UPDATE `etat` = `etat`; ;
 
 
 INSERT INTO wikicodia.categorie (lib_categorie) values ("Front-End") ON DUPLICATE KEY UPDATE `lib_categorie` = `lib_categorie`; ;
