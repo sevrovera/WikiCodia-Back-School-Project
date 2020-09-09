@@ -13,4 +13,6 @@ public interface ArticleRepositoryCustom {
 	void deleteFromFavorites(Long userId , Long articleId) throws SQLException;
 	
 	List<Article> findLastPromotedArticles();
+
+	List<Article> findArticleWithSearch(String query);
 }
