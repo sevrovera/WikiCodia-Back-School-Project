@@ -1,11 +1,5 @@
 INSERT INTO wikicodia.role VALUES(1 , "admin");
-INSERT INTO wikicodia.role VALUES(2 , "admin");
-INSERT INTO wikicodia.role VALUES(3 , "admin");
-INSERT INTO wikicodia.role VALUES(4 , "admin");
-INSERT INTO wikicodia.role VALUES(5 , "admin");
-INSERT INTO wikicodia.role VALUES(6 , "normal");
-
-
+INSERT INTO wikicodia.role VALUES(2 , "normal");
 
 INSERT INTO wikicodia.etat (etat) values ("actif") ON DUPLICATE KEY UPDATE `etat` = `etat`; ;
 INSERT INTO wikicodia.etat (etat) values ("inactif") ON DUPLICATE KEY UPDATE `etat` = `etat`; ;
@@ -13,7 +7,8 @@ INSERT INTO wikicodia.etat (etat) values ("inactif") ON DUPLICATE KEY UPDATE `et
 
 INSERT INTO wikicodia.categorie (lib_categorie) values ("Front-End") ON DUPLICATE KEY UPDATE `lib_categorie` = `lib_categorie`; ;
 INSERT INTO wikicodia.categorie (lib_categorie) values ("Back-End") ON DUPLICATE KEY UPDATE `lib_categorie` = `lib_categorie`; ;
-
+INSERT INTO wikicodia.categorie (lib_categorie) values ("Base de données") ON DUPLICATE KEY UPDATE `lib_categorie` = `lib_categorie`; ;
+INSERT INTO wikicodia.categorie (lib_categorie) values ("Git") ON DUPLICATE KEY UPDATE `lib_categorie` = `lib_categorie`; ;
 
 INSERT INTO wikicodia.type_article (lib_type) values ("Tutoriel") ON DUPLICATE KEY UPDATE `lib_type` = `lib_type`; ;
 INSERT INTO wikicodia.type_article (lib_type) values ("Erreur") ON DUPLICATE KEY UPDATE `lib_type` = `lib_type`; ;
@@ -74,7 +69,7 @@ INSERT INTO wikicodia.framework (framework) values ("JavaFX") ON DUPLICATE KEY U
 INSERT INTO wikicodia.framework (framework) values ("JavaServer Faces") ON DUPLICATE KEY UPDATE `framework` = `framework`; ;
 INSERT INTO wikicodia.framework (framework) values ("Jersey") ON DUPLICATE KEY UPDATE `framework` = `framework`; ;
 INSERT INTO wikicodia.framework (framework) values ("JMaki") ON DUPLICATE KEY UPDATE `framework` = `framework`; ;
-
+INSERT INTO wikicodia.framework (framework) values ("JHipster") ON DUPLICATE KEY UPDATE `framework` = `framework`; ;
 
 
 INSERT INTO wikicodia.langage (lang) values ("4th Dimension/4D") ON DUPLICATE KEY UPDATE `lang` = `lang`; ;
@@ -330,11 +325,11 @@ INSERT INTO wikicodia.langage (lang) values ("Z shell") ON DUPLICATE KEY UPDATE 
 
 
 INSERT INTO wikicodia.utilisateur VALUES (1 , "2020-09-08" , null , null , "joris.garand@ipilyon.net" , "$2a$10$ENUAGlFBPZs52DYgj91vy.qu9oREgB4IoJmgl5igdCJrVMxkibTJW" , "Garand" , "Joris" , "Jojo" , null , 1 , 1);
-INSERT INTO wikicodia.utilisateur VALUES (2 , "2020-09-08" , null , null , "rodrigue.juriens@ipilyon.net" , "$2a$10$RS9tm39HMvKxF1iLH65IwOuqRbT2vojj6A6LKGObmdfkp64sstX9i" , "Juriens" , "Rodrigue" , "Roro" , null , 1 , 2);
-INSERT INTO wikicodia.utilisateur VALUES (3 , "2020-09-08" , null , null , "severine.rovera@ipilyon.net" , "$2a$10$b1ez/QS00wsUaQtouH63aeRLWKrsvju/4/LZvwgLT0vU0BeeTUFV2" , "Rovera" , "Séverine" , "Sésé" , null , 1 , 3);
-INSERT INTO wikicodia.utilisateur VALUES (4 , "2020-09-08" , null , null , "thomas.donnay1@ipilyon.net" , "$2a$10$qUUcfGU7hpKj/W6Gs902kuNfI5oxn564kP.qaiIIjIfcTpaw2w2mW" , "Donnay" , "Thomas" , "Toto" , null , 1 , 4);
-INSERT INTO wikicodia.utilisateur VALUES (5 , "2020-09-08" , null , null , "jessica.michon@ipilyon.net" , "$2a$10$cEgCQb0S9ICY5Fk8vSXR7uIhNmAe2Uis6rXjnm0HeVavgqvO/RfNe" , "Michon" , "Jessica" , "Jeje" , null , 1 , 5);
-INSERT INTO wikicodia.utilisateur VALUES (6 , "2020-09-08" , null , null , "jcl@jcl.com" , "$2a$10$x7Oglb2CfIM3HsNKwaHOuuWK6tS8qC.afGGuepb0x8.s.yNLrf02a" , "Lambda" , "Jean-Claude" , "JC-NonAdmin" , null , 1 , 6);
+INSERT INTO wikicodia.utilisateur VALUES (2 , "2020-09-08" , null , null , "rodrigue.juriens@ipilyon.net" , "$2a$10$RS9tm39HMvKxF1iLH65IwOuqRbT2vojj6A6LKGObmdfkp64sstX9i" , "Juriens" , "Rodrigue" , "Roro" , null , 1 , 1);
+INSERT INTO wikicodia.utilisateur VALUES (3 , "2020-09-08" , null , null , "severine.rovera@ipilyon.net" , "$2a$10$b1ez/QS00wsUaQtouH63aeRLWKrsvju/4/LZvwgLT0vU0BeeTUFV2" , "Rovera" , "Séverine" , "Sésé" , null , 1 , 1);
+INSERT INTO wikicodia.utilisateur VALUES (4 , "2020-09-08" , null , null , "thomas.donnay1@ipilyon.net" , "$2a$10$qUUcfGU7hpKj/W6Gs902kuNfI5oxn564kP.qaiIIjIfcTpaw2w2mW" , "Donnay" , "Thomas" , "Toto" , null , 1 , 1);
+INSERT INTO wikicodia.utilisateur VALUES (5 , "2020-09-08" , null , null , "jessica.michon@ipilyon.net" , "$2a$10$cEgCQb0S9ICY5Fk8vSXR7uIhNmAe2Uis6rXjnm0HeVavgqvO/RfNe" , "Michon" , "Jessica" , "Jeje" , null , 1 , 1);
+INSERT INTO wikicodia.utilisateur VALUES (6 , "2020-09-08" , null , null , "jcl@jcl.com" , "$2a$10$x7Oglb2CfIM3HsNKwaHOuuWK6tS8qC.afGGuepb0x8.s.yNLrf02a" , "Lambda" , "Jean-Claude" , "JC-NonAdmin" , null , 1 , 2);
 
 
 

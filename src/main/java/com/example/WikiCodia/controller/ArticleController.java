@@ -36,8 +36,6 @@ import com.example.WikiCodia.repository.LangageRepository;
 import com.example.WikiCodia.repository.RoleRepository;
 import com.example.WikiCodia.repository.TypeRepository;
 import com.example.WikiCodia.repository.UtilisateurRepository;
-//import com.example.WikiCodia.repository.VoteRepository;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
 @CrossOrigin(origins = "http://localhost:4200", allowedHeaders = "*")
 //@CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -239,9 +237,11 @@ public class ArticleController {
 		if (estValide) {
 			subject = "Votre article a été validé!";
 			body = "Bonjour " + prenom + ", \n Votre article '" + titre
-					+ "' vient d'être validé et est désormais accessible à la communauté. \n"
-					+ " Commentaire de l'admin : '" + comAdmin + "' \n" + " Un grand merci pour votre contribution ! \n"
-					+ "L'Equipe Wikicodia";
+					+ "' vient d'être validé et est désormais accessible à la communauté. \n";
+			if (comAdmin != null) {
+				body = body + " Commentaire de l'admin : '" + comAdmin + "' \n" + " Un grand merci pour votre contribution ! \n";
+			}
+			body = body + "L'Equipe Wikicodia";
 			// Contenu du mail si l'admin a refusé l'article
 		} else {
 			subject = "Votre article a été refusé...";
